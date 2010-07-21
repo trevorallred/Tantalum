@@ -35,55 +35,56 @@ public class MainServlet extends HttpServlet {
 		WebPage page = null;
 		PageContent results = new PageContent();
 
-		try {
-			page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
+		page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
 
-			MainDAO dao = new MainDAO();
-			for (View view : page.getViews()) {
-				dao.setView(view);
-				if (view.getParentID() == null) {
-					if (view.getResultsPerPage() == 1) {
-						dao.getSql().addWhere(
-								"id = '" + urlRequest.getPageId() + "'");
-					} else {
-						String[] orderbys = (String[]) urlRequest
-								.getParameters().get("orderby");
-						if (orderbys != null) {
-							for (String orderby : orderbys) {
-								dao.getSql()
-										.addOrderBy(
-												view.getField(orderby)
-														.getBasisColumn().getDbName());
-							}
+		MainDAO dao = new MainDAO();
+		for (View view : page.getViews()) {
+			dao.setView(view);
+			if (view.getParentID() == null) {
+				if (view.getResultsPerPage() == 1) {
+					dao.getSql().addWhere(
+							"id = '" + urlRequest.getPageId() + "'");
+				} else {
+					String[] orderbys = (String[]) urlRequest.getParameters()
+							.get("orderby");
+					if (orderbys != null) {
+						for (String orderby : orderbys) {
+							dao.getSql().addOrderBy(
+									view.getField(orderby).getBasisColumn()
+											.getDbName());
 						}
 					}
-				} else {
-					View parentView = page.getView(view.getParentID());
-					String fieldName = "id";
-					for (Field field : parentView.getFields()) {
-						if (field.getBasisColumn().getDbName().equals("id"))
-							fieldName = field.getName();
-					}
-					Reference referenceToParent = view.getReference(view
-							.getReferenceID());
-					String parentIDs = "0";
-					for (PageContentBean parentRow : results.getRows(parentView
-							.getName())) {
-
-						parentIDs += ", " + parentRow.getInteger(fieldName);
-					}
-					dao.getSql().addWhere(referenceToParent.getFromColumnDbName() + " IN (" + parentIDs + ")");
 				}
+			} else {
+				View parentView = page.getView(view.getParentID());
+				String fieldName = "id";
+				for (Field field : parentView.getFields()) {
+					if (field.getBasisColumn().getDbName().equals("id"))
+						fieldName = field.getName();
+				}
+				Reference referenceToParent = view.getReference(view
+						.getReferenceID());
+				String parentIDs = "0";
+				for (PageContentBean parentRow : results.getRows(parentView
+						.getName())) {
+
+					parentIDs += ", " + parentRow.getInteger(fieldName);
+				}
+				dao.getSql().addWhere(
+						referenceToParent.getFromColumnDbName() + " IN ("
+								+ parentIDs + ")");
+			}
+			results.addViewContent(view.getName(), dao.getResults());
+		}
+
+		if (urlRequest.getParameters().containsKey("button")) {
+			for (View view : page.getViews()) {
+				dao.saveRequest(view, urlRequest);
 				results.addViewContent(view.getName(), dao.getResults());
 			}
+		}
 
-			if (urlRequest.getParameters().containsKey("button")) {
-				for (View view : page.getViews()) {
-					dao.saveRequest(view, urlRequest);
-					results.addViewContent(view.getName(), dao.getResults());
-				}
-			}
-
+		try {
 		} catch (Exception e) {
 			page = new WebPage();
 			page.setTitle("Error");

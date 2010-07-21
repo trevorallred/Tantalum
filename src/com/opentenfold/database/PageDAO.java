@@ -40,13 +40,18 @@ public class PageDAO extends MainDAO {
 		return object;
 	}
 
-	public WebPage getWebPageDefinition(String pageName) throws Exception {
+	public WebPage getWebPageDefinition(String pageName) {
 		System.out.println("Getting page definition for " + pageName);
 		WebPage page = new WebPage();
 		{
 			SelectSQL sql = new SelectSQL("dd_webpage t");
 			sql.addWhere("t.url = '" + pageName + "'");
-			PageContentBean row = db.selectSingle(sql);
+			PageContentBean row;
+			try {
+				row = db.selectSingle(sql);
+			} catch (NoResultFoundException e) {
+				return null;
+			}
 
 			page.setId(row.getInteger("id"));
 			page.setUrl(row.getString("url"));

@@ -62,4 +62,11 @@ public class Reference extends BaseTable {
 			view.getReferences().add(this);
 	}
 
+	public String toString() {
+		String out = "";
+		if (parent != null)
+			out += "\n  Child of " + parent;
+		out += "from " + tableDbName + "." + fromColumnDbName + " to " + toColumnID;
+		return out;
+	}
 }
