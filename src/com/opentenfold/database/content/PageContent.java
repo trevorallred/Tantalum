@@ -4,17 +4,27 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.opentenfold.database.DatabaseException;
 
-public class TenFoldDynaBeanSet {
-	private List<TenFoldDynaBean> rows = new ArrayList<TenFoldDynaBean>();
+public class PageContent {
+	private Map<String, List<PageContentBean>> data = new HashMap<String, List<PageContentBean>>();
 
-	public TenFoldDynaBeanSet(ResultSet rs) throws DatabaseException {
-		rows.clear();
+	public void addViewContent(String viewName, List<PageContentBean> list) {
+		data.put(viewName, list);
+	}
+
+	public List<PageContentBean> getRows(String viewName) {
+		return data.get(viewName);
+	}
+
+	public static List<PageContentBean> parseResultSet(ResultSet rs) {
+		List<PageContentBean> rows = new ArrayList<PageContentBean>();
 		try {
 			ResultSetMetaData rsMetaData = rs.getMetaData();
 			int numberOfColumns = rsMetaData.getColumnCount();
@@ -25,20 +35,13 @@ public class TenFoldDynaBeanSet {
 			}
 
 			while (rs.next()) {
-				TenFoldDynaBean row = new TenFoldDynaBean(rs, columnNames);
+				PageContentBean row = new PageContentBean(rs, columnNames);
 				rows.add(row);
 			}
 		} catch (SQLException e) {
-			throw new DatabaseException();
+			throw new DatabaseException(e);
 		}
-	}
 
-	public List<TenFoldDynaBean> getRows() {
 		return rows;
 	}
-
-	public void setRows(List<TenFoldDynaBean> rows) {
-		this.rows = rows;
-	}
-
 }

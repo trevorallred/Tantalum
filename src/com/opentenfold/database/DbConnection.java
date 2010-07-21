@@ -4,14 +4,15 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.opentenfold.database.content.TenFoldDynaBean;
-import com.opentenfold.database.content.TenFoldDynaBeanSet;
+import com.opentenfold.database.content.PageContentBean;
+import com.opentenfold.database.content.PageContent;
 
 public class DbConnection {
 
@@ -25,15 +26,15 @@ public class DbConnection {
 		return ds.getConnection();
 	}
 
-	public TenFoldDynaBeanSet select(SelectSQL sql) throws DatabaseException {
+	public List<PageContentBean> select(SelectSQL sql) throws DatabaseException {
 		return select(sql.toString(), false);
 	}
 
-	public TenFoldDynaBeanSet select(String sql) throws DatabaseException {
+	public List<PageContentBean> select(String sql) throws DatabaseException {
 		return select(sql, false);
 	}
 
-	public TenFoldDynaBeanSet select(String sql, boolean countRows)
+	public List<PageContentBean> select(String sql, boolean countRows)
 			throws DatabaseException {
 		Connection conn = null;
 		Statement stmt = null; // Or PreparedStatement if needed
@@ -43,7 +44,7 @@ public class DbConnection {
 			stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(sql);
-			TenFoldDynaBeanSet rsdc = new TenFoldDynaBeanSet(rs);
+			List<PageContentBean> list = PageContent.parseResultSet(rs);
 			rs.close();
 			rs = null;
 
@@ -58,11 +59,11 @@ public class DbConnection {
 			stmt = null;
 			conn.close(); // Return to connection pool
 			conn = null; // Make sure we don't close it twice
-			return rsdc;
+			return list;
 		} catch (NamingException e) {
-			throw new DatabaseException();
+			throw new DatabaseException(e);
 		} catch (SQLException e) {
-			throw new DatabaseException();
+			throw new DatabaseException(e);
 		} finally {
 			if (rs != null) {
 				try {
@@ -91,17 +92,17 @@ public class DbConnection {
 		}
 	}
 
-	public TenFoldDynaBean selectSingle(SelectSQL sql)
+	public PageContentBean selectSingle(SelectSQL sql)
 			throws NoResultFoundException {
 		return selectSingle(sql.toString());
 	}
 
-	public TenFoldDynaBean selectSingle(String sql)
+	public PageContentBean selectSingle(String sql)
 			throws NoResultFoundException {
-		TenFoldDynaBeanSet result = select(sql);
-		if (result.getRows().size() == 0)
+		List<PageContentBean> result = select(sql);
+		if (result.size() == 0)
 			throw new NoResultFoundException();
-		return result.getRows().get(0);
+		return result.get(0);
 	}
 
 	public int getRowCount() {
@@ -115,7 +116,8 @@ public class DbConnection {
 		try {
 			conn = getConnection();
 			stmt = conn.createStatement();
-			changedRows = stmt.executeUpdate(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+			changedRows = stmt.executeUpdate(sql.toString(),
+					Statement.RETURN_GENERATED_KEYS);
 			stmt.close();
 			stmt = null;
 			conn.close(); // Return to connection pool

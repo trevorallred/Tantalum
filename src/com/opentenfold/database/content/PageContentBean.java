@@ -13,10 +13,10 @@ import java.util.Set;
 import com.opentenfold.database.DatabaseException;
 import com.opentenfold.util.Strings;
 
-public class TenFoldDynaBean {
+public class PageContentBean {
 	private Map<String, Object> values = new HashMap<String, Object>();
 
-	public TenFoldDynaBean(ResultSet rs, Set<String> columnNames)
+	public PageContentBean(ResultSet rs, Set<String> columnNames)
 			throws DatabaseException {
 		try {
 			for (String columnName : columnNames) {

@@ -2,7 +2,7 @@ package com.opentenfold.model;
 
 import java.util.Date;
 
-import com.opentenfold.database.content.TenFoldDynaBean;
+import com.opentenfold.database.content.PageContentBean;
 
 public class BaseTable {
 	protected int id;
@@ -56,7 +56,7 @@ public class BaseTable {
 	 * 
 	 * @param record
 	 */
-	public void load(TenFoldDynaBean record) {
+	public void load(PageContentBean record) {
 		id = record.getInteger("id");
 	}
 }

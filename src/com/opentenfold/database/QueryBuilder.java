@@ -9,7 +9,8 @@ public class QueryBuilder {
 		for (Field field : view.getFields()) {
 			sql.addField("`" + field.getBasisColumn() + "` AS '" + field.getName() + "'");
 		}
-		sql.setLimit(view.getResultsPerPage());
+		if (view.getResultsPerPage() > 0)
+			sql.setLimit(view.getResultsPerPage());
 		return sql;
 	}
 }

@@ -1,14 +1,14 @@
 package com.opentenfold.ui;
 
-import com.opentenfold.database.content.TenFoldDynaBean;
-import com.opentenfold.database.content.TenFoldDynaBeanSet;
+import com.opentenfold.database.content.PageContentBean;
+import com.opentenfold.database.content.PageContent;
 import com.opentenfold.model.Field;
 import com.opentenfold.model.View;
 import com.opentenfold.model.WebPage;
 
 public class PageBuilder {
-	static public StringBuilder draw(WebPage page, TenFoldDynaBeanSet content) {
-		System.out.println("Drawing page for " + page.getTitle());
+	static public StringBuilder draw(WebPage page, PageContent content) {
+		System.out.println("Drawing page for " + page);
 		String baseURL = "/TenFoldA";
 		StringBuilder out = new StringBuilder();
 		out.append("<html><head>");
@@ -27,8 +27,8 @@ public class PageBuilder {
 
 		for (View view : page.getViews()) {
 			if (view.getResultsPerPage() == 1) {
-				TenFoldDynaBean row = content.getRows().get(0);
-				out.append("<form><ul>");
+				PageContentBean row = content.getRows(view.getName()).get(0);
+				out.append("<form><h2>").append(view.getName()).append("</h2><ul>");
 				for (Field field : view.getFields()) {
 					if (field.isVisible()) {
 						out.append("<li><label>" + field.getLabel()
@@ -47,7 +47,7 @@ public class PageBuilder {
 						.append("</ul><button name='button' value='Save'>Save</button></form>");
 			} else {
 
-				out.append("<table><thead><tr>");
+				out.append("<h2>").append(view.getName()).append("</h2><table><thead><tr>");
 				for (Field field : view.getFields()) {
 					if (field.isVisible())
 						out.append("<th><a href='" + baseURL + "/"
@@ -56,7 +56,7 @@ public class PageBuilder {
 				}
 				out.append("</tr></thead><tbody>");
 
-				for (TenFoldDynaBean row : content.getRows()) {
+				for (PageContentBean row : content.getRows(view.getName())) {
 					out.append("<tr>");
 					for (Field field : view.getFields()) {
 						if (field.isVisible()) {

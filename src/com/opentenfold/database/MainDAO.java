@@ -1,6 +1,8 @@
 package com.opentenfold.database;
 
-import com.opentenfold.database.content.TenFoldDynaBeanSet;
+import java.util.List;
+
+import com.opentenfold.database.content.PageContentBean;
 import com.opentenfold.model.Field;
 import com.opentenfold.model.View;
 import com.opentenfold.util.Strings;
@@ -9,21 +11,14 @@ import com.opentenfold.util.UrlRequest;
 public class MainDAO {
 	protected DbConnection db = new DbConnection();
 
-	public TenFoldDynaBeanSet getResults(View view, UrlRequest request)
-			throws DatabaseException {
+	private SelectSQL sql = null;
+
+	public void setView(View view) {
 		System.out.println("Getting results for " + view.getBasisTable());
-		SelectSQL sql = QueryBuilder.build(view);
-		if (view.getResultsPerPage() == 1) {
-			sql.addWhere("id = '" + request.getPageId() + "'");
-		} else {
-			String[] orderbys = (String[]) request.getParameters().get(
-					"orderby");
-			if (orderbys != null) {
-				for (String orderby : orderbys) {
-					sql.addOrderBy(view.getField(orderby).getBasisColumn());
-				}
-			}
-		}
+		sql = QueryBuilder.build(view);
+	}
+	
+	public List<PageContentBean> getResults() {
 		return db.select(sql.toString(), true);
 	}
 
@@ -40,7 +35,8 @@ public class MainDAO {
 				Field field = view.getField(param);
 				if (field != null) {
 					dirty = true;
-					sql.addField(field.getBasisColumn(), urlRequest.getParameters().get(param)[0]);
+					sql.addField(field.getBasisColumn(), urlRequest
+							.getParameters().get(param)[0]);
 				}
 			}
 		}
@@ -48,8 +44,13 @@ public class MainDAO {
 		sql.setInsert(Strings.isEmpty(id));
 		if (!sql.isInsert())
 			sql.addWhere("id = '" + urlRequest.getPageId() + "'");
-		
-		if (dirty )
+
+		if (dirty)
 			db.execute(sql);
 	}
+
+	public SelectSQL getSql() {
+		return sql;
+	}
+
 }

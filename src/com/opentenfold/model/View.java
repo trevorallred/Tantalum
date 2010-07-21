@@ -10,6 +10,7 @@ public class View extends BaseTable {
 	private int resultsPerPage = 100;
 	private String basisTable;
 	private Integer parentID = null;
+	private Integer referenceID = null;
 
 	private List<Field> fields = new ArrayList<Field>();
 	private List<Reference> references = new ArrayList<Reference>();
@@ -54,12 +55,30 @@ public class View extends BaseTable {
 		this.references = references;
 	}
 
+	public Reference getReference(Integer referenceID) {
+		if (referenceID == null)
+			return null;
+		for (Reference reference : references) {
+			if (reference.getId() == referenceID)
+				return reference;
+		}
+		return null;
+	}
+
 	public Integer getParentID() {
 		return parentID;
 	}
 
 	public void setParentID(Integer parentID) {
 		this.parentID = parentID;
+	}
+
+	public Integer getReferenceID() {
+		return referenceID;
+	}
+
+	public void setReferenceID(Integer referenceID) {
+		this.referenceID = referenceID;
 	}
 
 	/** Helper methods **/
@@ -82,4 +101,13 @@ public class View extends BaseTable {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		String out = name + "(" + id + ")";
+		for (Field field : fields)
+			out += "\n    F: " + field.toString();
+		for (Reference reference : references)
+			out += "\n    R: " + reference.toString();
+		return out;
+	}
 }

@@ -75,4 +75,22 @@ public class WebPage extends BaseTable {
 		return null;
 	}
 
+	public View getView(Integer viewID) {
+		if (viewID == null)
+			return null;
+
+		for (View view : views) {
+			if (view.getId() == viewID)
+				return view;
+		}
+		return null;
+	}
+
+	public String toString() {
+		String out = url + "(" + id + ")";
+		for (View view : views)
+			out += "\n  V: " + view.toString();
+		return out;
+	}
+
 }

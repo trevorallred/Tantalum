@@ -1,6 +1,6 @@
 package com.opentenfold.model;
 
-import com.opentenfold.database.content.TenFoldDynaBean;
+import com.opentenfold.database.content.PageContentBean;
 
 public class Field extends BaseTable {
 	private String name;
@@ -112,13 +112,18 @@ public class Field extends BaseTable {
 		this.linkToUrl = linkToUrl;
 	}
 
-	public String getValue(TenFoldDynaBean row) {
+	public String getValue(PageContentBean row) {
 		return row.getString(name);
 		// if (object == null)
 		// return "";
 		//
 		// String value = object.toString();
 		// return value;
+	}
+	
+	public String toString() {
+		String out = name + "(" + id + ")";
+		return out;
 	}
 
 }

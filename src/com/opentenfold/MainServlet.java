@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.opentenfold.database.MainDAO;
 import com.opentenfold.database.PageDAO;
-import com.opentenfold.database.content.TenFoldDynaBeanSet;
+import com.opentenfold.database.content.PageContent;
+import com.opentenfold.database.content.PageContentBean;
+import com.opentenfold.model.Field;
+import com.opentenfold.model.Reference;
 import com.opentenfold.model.View;
 import com.opentenfold.model.WebPage;
 import com.opentenfold.ui.PageBuilder;
@@ -30,20 +33,54 @@ public class MainServlet extends HttpServlet {
 
 		PageDAO pageDAO = new PageDAO();
 		WebPage page = null;
-		TenFoldDynaBeanSet results = null;
+		PageContent results = new PageContent();
 
 		try {
 			page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
 
 			MainDAO dao = new MainDAO();
 			for (View view : page.getViews()) {
-				results = dao.getResults(view, urlRequest);
+				dao.setView(view);
+				if (view.getParentID() == null) {
+					if (view.getResultsPerPage() == 1) {
+						dao.getSql().addWhere(
+								"id = '" + urlRequest.getPageId() + "'");
+					} else {
+						String[] orderbys = (String[]) urlRequest
+								.getParameters().get("orderby");
+						if (orderbys != null) {
+							for (String orderby : orderbys) {
+								dao.getSql()
+										.addOrderBy(
+												view.getField(orderby)
+														.getBasisColumn());
+							}
+						}
+					}
+				} else {
+					View parentView = page.getView(view.getParentID());
+					String fieldName = "id";
+					for (Field field : parentView.getFields()) {
+						if (field.getBasisColumn().equals("id"))
+							fieldName = field.getName();
+					}
+					Reference referenceToParent = view.getReference(view
+							.getReferenceID());
+					String parentIDs = "0";
+					for (PageContentBean parentRow : results.getRows(parentView
+							.getName())) {
+
+						parentIDs += ", " + parentRow.getInteger(fieldName);
+					}
+					dao.getSql().addWhere(referenceToParent.getFromColumnDbName() + " IN (" + parentIDs + ")");
+				}
+				results.addViewContent(view.getName(), dao.getResults());
 			}
 
 			if (urlRequest.getParameters().containsKey("button")) {
 				for (View view : page.getViews()) {
 					dao.saveRequest(view, urlRequest);
-					results = dao.getResults(view, urlRequest);
+					results.addViewContent(view.getName(), dao.getResults());
 				}
 			}
 

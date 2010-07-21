@@ -1,8 +1,11 @@
 package com.opentenfold.database;
 
-import com.opentenfold.database.content.TenFoldDynaBean;
-import com.opentenfold.database.content.TenFoldDynaBeanSet;
+import java.util.List;
+
+import com.opentenfold.database.content.PageContentBean;
 import com.opentenfold.model.Field;
+import com.opentenfold.model.Reference;
+import com.opentenfold.model.ReferenceStep;
 import com.opentenfold.model.View;
 import com.opentenfold.model.WebPage;
 
@@ -13,37 +16,63 @@ public class PageDAO extends MainDAO {
 		{
 			SelectSQL sql = new SelectSQL("dd_webpage t");
 			sql.addWhere("t.url = '" + pageName + "'");
-			TenFoldDynaBean row = db.selectSingle(sql);
+			PageContentBean row = db.selectSingle(sql);
 
 			page.setId(row.getInteger("id"));
 			page.setUrl(row.getString("url"));
 			page.setTitle(row.getString("title"));
 			page.setKeyField(new Field(row.getInteger("keyFieldID")));
 		}
+		String viewIDs = "0";
 		{
 			SelectSQL sql = new SelectSQL("dd_view t");
 			sql.addField("t.*");
 			sql.addJoin("LEFT JOIN dd_table bt ON t.basisTableID = bt.id");
 			sql.addField("bt.dbName AS tableDbName");
 			sql.addWhere("t.pageID = " + page.getId());
-			TenFoldDynaBeanSet views = db.select(sql);
+			sql.addOrderBy("t.parentID");
+			List<PageContentBean> views = db.select(sql);
 
-			for (TenFoldDynaBean row : views.getRows()) {
+			for (PageContentBean row : views) {
 				View view = new View();
 				view.setId(row.getInteger("id"));
 				view.setName(row.getString("name"));
 				view.setResultsPerPage(row.getInteger("resultsPerPage"));
 				view.setBasisTable(row.getString("tableDbName"));
-				view.setParentID(row.getInteger("resultsPerPage"));
+				view.setParentID(row.getInteger("parentID"));
+				view.setReferenceID(row.getInteger("referenceID"));
 				page.getViews().add(view);
+				viewIDs += ", " + view.getId();
+			}
+		}
+		if (page.getViews().size() == 0)
+			return page;
+		{
+			SelectSQL sql = new SelectSQL("dd_reference d");
+			sql.addField("d.*");
+			sql.addJoin("JOIN dd_join j ON d.joinID = j.id");
+			sql.addJoin("JOIN dd_table t ON t.id = j.toTableID");
+			sql.addField("t.dbName", "tableDbName");
+			sql.addJoin("JOIN dd_join_column jc ON j.id = jc.joinID");
+			sql.addJoin("LEFT JOIN dd_column fc ON fc.id = jc.fromColumnID");
+			sql.addField("fc.dbName", "fromColumnDbName");
+			sql.addJoin("LEFT JOIN dd_column tc ON tc.id = jc.toColumnID");
+			sql.addField("tc.dbName", "toColumnDbName");
+			sql.addWhere("d.viewID IN (" + viewIDs + ")");
+			sql.addOrderBy("d.queryOrder, d.parentID");
+			List<PageContentBean> references = db.select(sql);
+			for (PageContentBean row : references) {
+				Reference ref = new Reference();
+				ref.setId(row.getInteger("id"));
+				ref.setName(row.getString("name"));
+				ref.setView(page.getView(row.getInteger("viewID")));
+				ref.setParent(ref.getView().getReference(row.getInteger("parentID")));
+				ref.setTableDbName(row.getString("tableDbName"));
+				ref.setFromColumnDbName(row.getString("fromColumnDbName"));
+				// ref.setToColumnDbName(row.getString("toColumnDbName"));
 			}
 		}
 		{
-			String viewIDs = "0";
-			for (View view : page.getViews()) {
-				viewIDs += ", " + view.getId();
-			}
-			
 			SelectSQL sql = new SelectSQL("dd_field d");
 			sql.addField("d.*");
 			sql.addJoin("LEFT JOIN dd_column bc ON d.basisColumnID = bc.id");
@@ -58,9 +87,9 @@ public class PageDAO extends MainDAO {
 
 			sql.addWhere("d.viewID IN (" + viewIDs + ")");
 			sql.addOrderBy("d.displayOrder");
-			TenFoldDynaBeanSet fields = db.select(sql);
+			List<PageContentBean> fields = db.select(sql);
 
-			for (TenFoldDynaBean row : fields.getRows()) {
+			for (PageContentBean row : fields) {
 				Field field = new Field(row.getInteger("id"));
 				field.setViewID(row.getInteger("viewID"));
 				field.setName(row.getString("name"));
@@ -75,7 +104,7 @@ public class PageDAO extends MainDAO {
 				}
 				field.setLinkFromFieldID(row.getInteger("linkFromFieldID"));
 				field.setLinkToUrl(row.getString("linkToUrl"));
-				
+
 				page.addFieldToView(field);
 			}
 		}
