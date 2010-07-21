@@ -1,15 +1,45 @@
 package com.opentenfold.database;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.opentenfold.database.content.PageContentBean;
+import com.opentenfold.model.BaseTable;
+import com.opentenfold.model.Column;
 import com.opentenfold.model.Field;
 import com.opentenfold.model.Reference;
-import com.opentenfold.model.ReferenceStep;
+import com.opentenfold.model.Table;
 import com.opentenfold.model.View;
 import com.opentenfold.model.WebPage;
 
 public class PageDAO extends MainDAO {
+	private Map<String, Map<Integer, BaseTable>> cache = new HashMap<String, Map<Integer, BaseTable>>();
+
+	private BaseTable getCache(String className, Integer id) {
+		Map<Integer, BaseTable> objectList = cache.get(className);
+		if (objectList == null)
+			return null;
+
+		return objectList.get(id);
+	}
+
+	private BaseTable putCache(BaseTable object) {
+		if (object == null || object.getId() == 0)
+			return null;
+		Map<Integer, BaseTable> objectList = cache.get(object.getClass().getSimpleName());
+		if (objectList == null) {
+			objectList = new HashMap<Integer, BaseTable>();
+			cache.put(object.getClass().getSimpleName(), objectList);
+		}
+		BaseTable existing = getCache(object.getClass().getSimpleName(), object
+				.getId());
+		if (existing != null)
+			return existing;
+		objectList.put(object.getId(), object);
+		return object;
+	}
+
 	public WebPage getWebPageDefinition(String pageName) throws Exception {
 		System.out.println("Getting page definition for " + pageName);
 		WebPage page = new WebPage();
@@ -36,6 +66,7 @@ public class PageDAO extends MainDAO {
 			for (PageContentBean row : views) {
 				View view = new View();
 				view.setId(row.getInteger("id"));
+				view = (View) putCache(view);
 				view.setName(row.getString("name"));
 				view.setResultsPerPage(row.getInteger("resultsPerPage"));
 				view.setBasisTable(row.getString("tableDbName"));
@@ -45,7 +76,7 @@ public class PageDAO extends MainDAO {
 				viewIDs += ", " + view.getId();
 			}
 		}
-		if (page.getViews().size() == 0)
+		if (cache.get("View").size() == 0)
 			return page;
 		{
 			SelectSQL sql = new SelectSQL("dd_reference d");
@@ -62,11 +93,13 @@ public class PageDAO extends MainDAO {
 			sql.addOrderBy("d.queryOrder, d.parentID");
 			List<PageContentBean> references = db.select(sql);
 			for (PageContentBean row : references) {
-				Reference ref = new Reference();
-				ref.setId(row.getInteger("id"));
+				Reference ref = (Reference) putCache(new Reference(row
+						.getInteger("id")));
+
 				ref.setName(row.getString("name"));
-				ref.setView(page.getView(row.getInteger("viewID")));
-				ref.setParent(ref.getView().getReference(row.getInteger("parentID")));
+				ref.setView((View) getCache("View", row.getInteger("viewID")));
+				ref.setParent((Reference) putCache(new Reference(row
+						.getInteger("parentID"))));
 				ref.setTableDbName(row.getString("tableDbName"));
 				ref.setFromColumnDbName(row.getString("fromColumnDbName"));
 				// ref.setToColumnDbName(row.getString("toColumnDbName"));
@@ -76,9 +109,11 @@ public class PageDAO extends MainDAO {
 			SelectSQL sql = new SelectSQL("dd_field d");
 			sql.addField("d.*");
 			sql.addJoin("LEFT JOIN dd_column bc ON d.basisColumnID = bc.id");
-			sql.addField("bc.dbName", "columnDbName");
+			sql.addField("bc.id", "bc_id");
+			sql.addField("bc.dbName", "bc_dbName");
 			sql.addJoin("LEFT JOIN dd_table bt ON bc.tableID = bt.id");
-			sql.addField("bt.dbName", "tableDbName");
+			sql.addField("bt.id", "bt_id");
+			sql.addField("bt.dbName", "bt_dbName");
 
 			sql.addJoin("LEFT JOIN dd_field lf ON d.linkToFieldID = lf.id");
 			sql.addJoin("LEFT JOIN dd_view lv ON lf.viewID = lv.id");
@@ -90,20 +125,33 @@ public class PageDAO extends MainDAO {
 			List<PageContentBean> fields = db.select(sql);
 
 			for (PageContentBean row : fields) {
-				Field field = new Field(row.getInteger("id"));
+				Field field = (Field) putCache(new Field(row.getInteger("id")));
 				field.setViewID(row.getInteger("viewID"));
 				field.setName(row.getString("name"));
 				field.setLabel(row.getString("label"));
 				field.setVisible(row.getBoolean("visible"));
 				field.setEditable(row.getBoolean("editable"));
 				field.setSearchable(row.getBoolean("searchable"));
-				Integer basisColumnID = row.getInteger("basisColumnID");
+				Integer basisColumnID = row.getInteger("bc_id");
 				if (basisColumnID != null) {
-					field.setBasisTable(row.getString("tableDbName"));
-					field.setBasisColumn(row.getString("columnDbName"));
+					Column column = new Column();
+					column.setId(basisColumnID);
+					column = (Column) putCache(column);
+					column.setDbName(row.getString("bc_dbName"));
+					field.setBasisColumn(column);
+
+					Table table = new Table();
+					table.setId(row.getInteger("bt_id"));
+					table = (Table) putCache(table);
+					table.setDbName(row.getString("bt_dbName"));
+					column.setTable(table);
 				}
-				field.setLinkFromFieldID(row.getInteger("linkFromFieldID"));
-				field.setLinkToUrl(row.getString("linkToUrl"));
+				Integer linkFromFieldID = row.getInteger("linkFromFieldID");
+				if (linkFromFieldID != null) {
+					field.setLinkFromField((Field) putCache(new Field(
+							linkFromFieldID)));
+					field.setLinkToUrl(row.getString("linkToUrl"));
+				}
 
 				page.addFieldToView(field);
 			}

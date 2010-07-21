@@ -35,7 +35,7 @@ public class MainDAO {
 				Field field = view.getField(param);
 				if (field != null) {
 					dirty = true;
-					sql.addField(field.getBasisColumn(), urlRequest
+					sql.addField(field.getBasisColumn().getDbName(), urlRequest
 							.getParameters().get(param)[0]);
 				}
 			}

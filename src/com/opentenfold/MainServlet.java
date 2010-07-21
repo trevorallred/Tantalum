@@ -53,7 +53,7 @@ public class MainServlet extends HttpServlet {
 								dao.getSql()
 										.addOrderBy(
 												view.getField(orderby)
-														.getBasisColumn());
+														.getBasisColumn().getDbName());
 							}
 						}
 					}
@@ -61,7 +61,7 @@ public class MainServlet extends HttpServlet {
 					View parentView = page.getView(view.getParentID());
 					String fieldName = "id";
 					for (Field field : parentView.getFields()) {
-						if (field.getBasisColumn().equals("id"))
+						if (field.getBasisColumn().getDbName().equals("id"))
 							fieldName = field.getName();
 					}
 					Reference referenceToParent = view.getReference(view

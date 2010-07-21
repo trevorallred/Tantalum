@@ -8,6 +8,10 @@ public class Reference extends BaseTable {
 	private String fromColumnDbName;
 	private int toColumnID;
 
+	public Reference(Integer id) {
+		super(id);
+	}
+
 	public Reference getParent() {
 		return parent;
 	}

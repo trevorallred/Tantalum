@@ -10,14 +10,12 @@ public class Field extends BaseTable {
 	private boolean searchable = false;
 	private boolean editable = false;
 	private Integer maxSize = null;
-	private String basisTable;
-	private String basisColumn;
+	private Column basisColumn;
 	private String linkToUrl;
-	private Integer linkFromFieldID = null;
+	private Field linkFromField;
 
 	public Field(Integer id) {
-		if (id != null)
-			this.id = id;
+		super(id);
 	}
 
 	public String getName() {
@@ -80,28 +78,20 @@ public class Field extends BaseTable {
 		this.maxSize = maxSize;
 	}
 
-	public String getBasisTable() {
-		return basisTable;
-	}
-
-	public void setBasisTable(String basisTable) {
-		this.basisTable = basisTable;
-	}
-
-	public String getBasisColumn() {
+	public Column getBasisColumn() {
 		return basisColumn;
 	}
 
-	public void setBasisColumn(String basisColumn) {
+	public void setBasisColumn(Column basisColumn) {
 		this.basisColumn = basisColumn;
 	}
 
-	public Integer getLinkFromFieldID() {
-		return linkFromFieldID;
+	public Field getLinkFromField() {
+		return linkFromField;
 	}
 
-	public void setLinkFromFieldID(Integer linkFromFieldID) {
-		this.linkFromFieldID = linkFromFieldID;
+	public void setLinkFromField(Field linkFromField) {
+		this.linkFromField = linkFromField;
 	}
 
 	public String getLinkToUrl() {
@@ -120,7 +110,7 @@ public class Field extends BaseTable {
 		// String value = object.toString();
 		// return value;
 	}
-	
+
 	public String toString() {
 		String out = name + "(" + id + ")";
 		return out;

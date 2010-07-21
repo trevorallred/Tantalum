@@ -7,7 +7,7 @@ public class QueryBuilder {
 	static public SelectSQL build(View view) {
 		SelectSQL sql = new SelectSQL(view.getBasisTable());
 		for (Field field : view.getFields()) {
-			sql.addField("`" + field.getBasisColumn() + "` AS '" + field.getName() + "'");
+			sql.addField("`" + field.getBasisColumn().getDbName() + "` AS '" + field.getName() + "'");
 		}
 		if (view.getResultsPerPage() > 0)
 			sql.setLimit(view.getResultsPerPage());

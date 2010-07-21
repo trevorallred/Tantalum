@@ -11,6 +11,14 @@ public class BaseTable {
 	protected int updatedBy;
 	protected Date updateDate;
 
+	public BaseTable() {
+	}
+
+	public BaseTable(Integer id) {
+		if (id != null)
+			this.id = id;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -51,12 +59,11 @@ public class BaseTable {
 		this.updateDate = updateDate;
 	}
 
-	/**
-	 * This may not work since we may have two records with id in the front
-	 * 
-	 * @param record
-	 */
-	public void load(PageContentBean record) {
-		id = record.getInteger("id");
+	public void fill(PageContentBean record) {
+		fill(record, "");
+	}
+
+	public void fill(PageContentBean record, String prefix) {
+		id = record.getInteger(prefix + "id");
 	}
 }
