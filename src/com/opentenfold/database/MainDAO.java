@@ -11,6 +11,7 @@ public class MainDAO {
 
 	public TenFoldDynaBeanSet getResults(View view, UrlRequest request)
 			throws DatabaseException {
+		System.out.println("Getting results for " + view.getBasisTable());
 		SelectSQL sql = QueryBuilder.build(view);
 		if (view.getResultsPerPage() == 1) {
 			sql.addWhere("id = '" + request.getPageId() + "'");

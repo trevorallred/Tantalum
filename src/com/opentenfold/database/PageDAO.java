@@ -8,6 +8,7 @@ import com.opentenfold.model.WebPage;
 
 public class PageDAO extends MainDAO {
 	public WebPage getWebPageDefinition(String pageName) throws Exception {
+		System.out.println("Getting page definition for " + pageName);
 		WebPage page = new WebPage();
 		{
 			SelectSQL sql = new SelectSQL("dd_webpage t");
@@ -24,7 +25,7 @@ public class PageDAO extends MainDAO {
 			sql.addField("t.*");
 			sql.addJoin("LEFT JOIN dd_table bt ON t.basisTableID = bt.id");
 			sql.addField("bt.dbName AS tableDbName");
-			sql.addWhere("d.pageID = " + page.getId());
+			sql.addWhere("t.pageID = " + page.getId());
 			TenFoldDynaBeanSet views = db.select(sql);
 
 			for (TenFoldDynaBean row : views.getRows()) {
@@ -34,9 +35,15 @@ public class PageDAO extends MainDAO {
 				view.setResultsPerPage(row.getInteger("resultsPerPage"));
 				view.setBasisTable(row.getString("tableDbName"));
 				view.setParentID(row.getInteger("resultsPerPage"));
+				page.getViews().add(view);
 			}
 		}
 		{
+			String viewIDs = "0";
+			for (View view : page.getViews()) {
+				viewIDs += ", " + view.getId();
+			}
+			
 			SelectSQL sql = new SelectSQL("dd_field d");
 			sql.addField("d.*");
 			sql.addJoin("LEFT JOIN dd_column bc ON d.basisColumnID = bc.id");
@@ -45,10 +52,11 @@ public class PageDAO extends MainDAO {
 			sql.addField("bt.dbName", "tableDbName");
 
 			sql.addJoin("LEFT JOIN dd_field lf ON d.linkToFieldID = lf.id");
-			sql.addJoin("LEFT JOIN dd_webpage lp ON lf.pageID = lp.id");
+			sql.addJoin("LEFT JOIN dd_view lv ON lf.viewID = lv.id");
+			sql.addJoin("LEFT JOIN dd_webpage lp ON lv.pageID = lp.id");
 			sql.addField("lp.url", "linkToUrl");
 
-			sql.addWhere("d.pageID = " + page.getId());
+			sql.addWhere("d.viewID IN (" + viewIDs + ")");
 			sql.addOrderBy("d.displayOrder");
 			TenFoldDynaBeanSet fields = db.select(sql);
 

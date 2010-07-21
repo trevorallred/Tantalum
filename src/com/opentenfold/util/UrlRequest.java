@@ -36,4 +36,9 @@ public class UrlRequest {
 		return parameters;
 	}
 
+	public String toString() {
+		if (pageId == null)
+			return pageName;
+		return pageName + ":" + pageId;
+	}
 }

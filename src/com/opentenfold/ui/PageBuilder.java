@@ -8,6 +8,7 @@ import com.opentenfold.model.WebPage;
 
 public class PageBuilder {
 	static public StringBuilder draw(WebPage page, TenFoldDynaBeanSet content) {
+		System.out.println("Drawing page for " + page.getTitle());
 		String baseURL = "/TenFoldA";
 		StringBuilder out = new StringBuilder();
 		out.append("<html><head>");

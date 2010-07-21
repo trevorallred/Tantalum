@@ -26,6 +26,7 @@ public class MainServlet extends HttpServlet {
 		out = response.getWriter();
 
 		UrlRequest urlRequest = new UrlRequest(request);
+		System.out.println("Starting request for " + urlRequest);
 
 		PageDAO pageDAO = new PageDAO();
 		WebPage page = null;
