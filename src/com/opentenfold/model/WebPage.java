@@ -3,16 +3,15 @@ package com.opentenfold.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.opentenfold.util.Strings;
-
 public class WebPage extends BaseTable {
 	private String name;
 	private String url;
 	private String title;
-	private int resultsPerPage = 100;
-	private List<Field> fields = new ArrayList<Field>();
+	private Field keyField = null;
+	private List<View> views = new ArrayList<View>();
+	private List<PageSection> sections = new ArrayList<PageSection>();
+
 	private List<Exception> exceptions = new ArrayList<Exception>();
-	private String basisTable;
 
 	public String getName() {
 		return name;
@@ -38,28 +37,12 @@ public class WebPage extends BaseTable {
 		this.title = title;
 	}
 
-	public int getResultsPerPage() {
-		return resultsPerPage;
+	public Field getKeyField() {
+		return keyField;
 	}
 
-	public void setResultsPerPage(int resultsPerPage) {
-		this.resultsPerPage = resultsPerPage;
-	}
-
-	public String getBasisTable() {
-		return basisTable;
-	}
-
-	public void setBasisTable(String basisTable) {
-		this.basisTable = basisTable;
-	}
-
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public void setKeyField(Field keyField) {
+		this.keyField = keyField;
 	}
 
 	public List<Exception> getExceptions() {
@@ -70,12 +53,24 @@ public class WebPage extends BaseTable {
 		this.exceptions.add(exception);
 	}
 
-	public Field getField(String name) {
-		if (Strings.isEmpty(name))
-			return null;
-		for (Field field : fields) {
-			if (name.equals(field.getName()))
-				return field;
+	public List<View> getViews() {
+		return views;
+	}
+
+	public List<PageSection> getSections() {
+		return sections;
+	}
+
+	/** Helper methods **/
+
+	public void addFieldToView(Field field) {
+		getView(field).getFields().add(field);
+	}
+
+	public View getView(Field field) {
+		for (View view : views) {
+			if (view.getId() == field.getViewID())
+				return view;
 		}
 		return null;
 	}

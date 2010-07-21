@@ -1,15 +1,15 @@
 package com.opentenfold.database;
 
 import com.opentenfold.model.Field;
-import com.opentenfold.model.WebPage;
+import com.opentenfold.model.View;
 
 public class QueryBuilder {
-	static public SelectSQL build(WebPage page) {
-		SelectSQL sql = new SelectSQL(page.getBasisTable());
-		for (Field field : page.getFields()) {
+	static public SelectSQL build(View view) {
+		SelectSQL sql = new SelectSQL(view.getBasisTable());
+		for (Field field : view.getFields()) {
 			sql.addField("`" + field.getBasisColumn() + "` AS '" + field.getName() + "'");
 		}
-		sql.setLimit(page.getResultsPerPage());
+		sql.setLimit(view.getResultsPerPage());
 		return sql;
 	}
 }

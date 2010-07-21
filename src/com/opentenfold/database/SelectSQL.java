@@ -144,6 +144,11 @@ public class SelectSQL {
 			this.fields.add(field);
 	}
 
+	public void addField(String field, String label) {
+		if (field != null && field.length() > 0)
+			this.fields.add(field + " AS " + label);
+	}
+
 	public void addOrderBy(String field) {
 		if (field != null && field.length() > 0)
 			this.orderBys.add(field);

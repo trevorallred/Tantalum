@@ -3,6 +3,7 @@ package com.opentenfold.database;
 import com.opentenfold.database.content.TenFoldDynaBean;
 import com.opentenfold.database.content.TenFoldDynaBeanSet;
 import com.opentenfold.model.Field;
+import com.opentenfold.model.View;
 import com.opentenfold.model.WebPage;
 
 public class PageDAO extends MainDAO {
@@ -10,33 +11,50 @@ public class PageDAO extends MainDAO {
 		WebPage page = new WebPage();
 		{
 			SelectSQL sql = new SelectSQL("dd_webpage t");
-			sql.addJoin("LEFT JOIN dd_table bt ON t.basisTableID = bt.id");
-			sql.addField("t.*");
-			sql.addField("bt.dbName AS tableDbName");
 			sql.addWhere("t.url = '" + pageName + "'");
 			TenFoldDynaBean row = db.selectSingle(sql);
 
 			page.setId(row.getInteger("id"));
-			page.setName(row.getString("name"));
 			page.setUrl(row.getString("url"));
 			page.setTitle(row.getString("title"));
-			page.setResultsPerPage(row.getInteger("resultsPerPage"));
-			page.setBasisTable(row.getString("tableDbName"));
+			page.setKeyField(new Field(row.getInteger("keyFieldID")));
+		}
+		{
+			SelectSQL sql = new SelectSQL("dd_view t");
+			sql.addField("t.*");
+			sql.addJoin("LEFT JOIN dd_table bt ON t.basisTableID = bt.id");
+			sql.addField("bt.dbName AS tableDbName");
+			sql.addWhere("d.pageID = " + page.getId());
+			TenFoldDynaBeanSet views = db.select(sql);
+
+			for (TenFoldDynaBean row : views.getRows()) {
+				View view = new View();
+				view.setId(row.getInteger("id"));
+				view.setName(row.getString("name"));
+				view.setResultsPerPage(row.getInteger("resultsPerPage"));
+				view.setBasisTable(row.getString("tableDbName"));
+				view.setParentID(row.getInteger("resultsPerPage"));
+			}
 		}
 		{
 			SelectSQL sql = new SelectSQL("dd_field d");
 			sql.addField("d.*");
 			sql.addJoin("LEFT JOIN dd_column bc ON d.basisColumnID = bc.id");
-			sql.addField("bc.dbName columnDbName");
+			sql.addField("bc.dbName", "columnDbName");
 			sql.addJoin("LEFT JOIN dd_table bt ON bc.tableID = bt.id");
-			sql.addField("bt.dbName tableDbName");
+			sql.addField("bt.dbName", "tableDbName");
+
+			sql.addJoin("LEFT JOIN dd_field lf ON d.linkToFieldID = lf.id");
+			sql.addJoin("LEFT JOIN dd_webpage lp ON lf.pageID = lp.id");
+			sql.addField("lp.url", "linkToUrl");
+
 			sql.addWhere("d.pageID = " + page.getId());
 			sql.addOrderBy("d.displayOrder");
 			TenFoldDynaBeanSet fields = db.select(sql);
 
 			for (TenFoldDynaBean row : fields.getRows()) {
-				Field field = new Field();
-				field.setId(row.getInteger("id"));
+				Field field = new Field(row.getInteger("id"));
+				field.setViewID(row.getInteger("viewID"));
 				field.setName(row.getString("name"));
 				field.setLabel(row.getString("label"));
 				field.setVisible(row.getBoolean("visible"));
@@ -47,7 +65,10 @@ public class PageDAO extends MainDAO {
 					field.setBasisTable(row.getString("tableDbName"));
 					field.setBasisColumn(row.getString("columnDbName"));
 				}
-				page.getFields().add(field);
+				field.setLinkFromFieldID(row.getInteger("linkFromFieldID"));
+				field.setLinkToUrl(row.getString("linkToUrl"));
+				
+				page.addFieldToView(field);
 			}
 		}
 

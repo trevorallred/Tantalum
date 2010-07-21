@@ -2,24 +2,24 @@ package com.opentenfold.database;
 
 import com.opentenfold.database.content.TenFoldDynaBeanSet;
 import com.opentenfold.model.Field;
-import com.opentenfold.model.WebPage;
+import com.opentenfold.model.View;
 import com.opentenfold.util.Strings;
 import com.opentenfold.util.UrlRequest;
 
 public class MainDAO {
 	protected DbConnection db = new DbConnection();
 
-	public TenFoldDynaBeanSet getResults(WebPage page, UrlRequest request)
+	public TenFoldDynaBeanSet getResults(View view, UrlRequest request)
 			throws DatabaseException {
-		SelectSQL sql = QueryBuilder.build(page);
-		if (page.getResultsPerPage() == 1) {
+		SelectSQL sql = QueryBuilder.build(view);
+		if (view.getResultsPerPage() == 1) {
 			sql.addWhere("id = '" + request.getPageId() + "'");
 		} else {
 			String[] orderbys = (String[]) request.getParameters().get(
 					"orderby");
 			if (orderbys != null) {
 				for (String orderby : orderbys) {
-					sql.addOrderBy(page.getField(orderby).getBasisColumn());
+					sql.addOrderBy(view.getField(orderby).getBasisColumn());
 				}
 			}
 		}
@@ -30,13 +30,13 @@ public class MainDAO {
 		return db.getRowCount();
 	}
 
-	public void saveRequest(WebPage page, UrlRequest urlRequest) {
+	public void saveRequest(View view, UrlRequest urlRequest) {
 		boolean dirty = false;
 		UpdateSQL sql = new UpdateSQL();
-		sql.setTable(page.getBasisTable());
+		sql.setTable(view.getBasisTable());
 		for (String param : urlRequest.getParameters().keySet()) {
 			if (!param.equalsIgnoreCase("button")) {
-				Field field = page.getField(param);
+				Field field = view.getField(param);
 				if (field != null) {
 					dirty = true;
 					sql.addField(field.getBasisColumn(), urlRequest.getParameters().get(param)[0]);

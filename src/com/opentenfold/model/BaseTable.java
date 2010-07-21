@@ -50,9 +50,10 @@ public class BaseTable {
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
-	
+
 	/**
 	 * This may not work since we may have two records with id in the front
+	 * 
 	 * @param record
 	 */
 	public void load(TenFoldDynaBean record) {

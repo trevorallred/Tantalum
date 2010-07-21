@@ -4,6 +4,7 @@ import com.opentenfold.database.content.TenFoldDynaBean;
 
 public class Field extends BaseTable {
 	private String name;
+	private int viewID;
 	private String label;
 	private boolean visible = true;
 	private boolean searchable = false;
@@ -11,6 +12,13 @@ public class Field extends BaseTable {
 	private Integer maxSize = null;
 	private String basisTable;
 	private String basisColumn;
+	private String linkToUrl;
+	private Integer linkFromFieldID = null;
+
+	public Field(Integer id) {
+		if (id != null)
+			this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -18,6 +26,14 @@ public class Field extends BaseTable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getViewID() {
+		return viewID;
+	}
+
+	public void setViewID(int viewID) {
+		this.viewID = viewID;
 	}
 
 	public String getLabel() {
@@ -78,6 +94,22 @@ public class Field extends BaseTable {
 
 	public void setBasisColumn(String basisColumn) {
 		this.basisColumn = basisColumn;
+	}
+
+	public Integer getLinkFromFieldID() {
+		return linkFromFieldID;
+	}
+
+	public void setLinkFromFieldID(Integer linkFromFieldID) {
+		this.linkFromFieldID = linkFromFieldID;
+	}
+
+	public String getLinkToUrl() {
+		return linkToUrl;
+	}
+
+	public void setLinkToUrl(String linkToUrl) {
+		this.linkToUrl = linkToUrl;
 	}
 
 	public String getValue(TenFoldDynaBean row) {
