@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import com.opentenfold.util.Strings;
 
@@ -28,6 +27,7 @@ public class AppView extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "referenceID")
 	private AppReference reference;
+	private int queryOrder;
 
 	@OneToMany(mappedBy = "view")
 	private List<AppField> fields = new ArrayList<AppField>();
@@ -96,6 +96,14 @@ public class AppView extends BaseTable {
 
 	public void setReferences(List<AppReference> references) {
 		this.references = references;
+	}
+
+	public int getQueryOrder() {
+		return queryOrder;
+	}
+
+	public void setQueryOrder(int queryOrder) {
+		this.queryOrder = queryOrder;
 	}
 
 	/** Helper methods **/

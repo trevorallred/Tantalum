@@ -63,8 +63,10 @@ public class AppReference extends BaseTable {
 		String out = "";
 		if (parent != null)
 			out += "\n  Child of " + parent;
-		// out += "from " + tableDbName + "." + fromColumnDbName + " to " +
-		// toColumnID;
+		out += "from " + this.join.getFromTable() + " to " + this.join.getToTable() + " on ";
+		for (AppJoinColumn jc : this.join.getJoinColumns()) {
+			out += jc.toString();
+		}
 		return out;
 	}
 }

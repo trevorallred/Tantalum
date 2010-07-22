@@ -39,4 +39,8 @@ public class AppTable extends BaseTable {
 		this.columns = columns;
 	}
 
+	@Override
+	public String toString() {
+		return name + "(" + id + ")";
+	}
 }

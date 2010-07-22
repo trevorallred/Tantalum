@@ -15,11 +15,18 @@ public class AppField extends BaseTable {
 	private String name;
 	private String label;
 	private boolean visible = true;
+	private String displayOrder;
 	private boolean searchable = false;
 	private boolean editable = false;
+	private String displayType;
+
 	@ManyToOne
 	@JoinColumn(name = "basisColumnID")
 	private AppColumn basisColumn;
+	@ManyToOne
+	@JoinColumn(name = "referenceID")
+	private AppReference reference;
+
 	@ManyToOne
 	@JoinColumn(name = "linkToFieldID")
 	private AppField linkToField;
@@ -85,6 +92,30 @@ public class AppField extends BaseTable {
 
 	public void setBasisColumn(AppColumn basisColumn) {
 		this.basisColumn = basisColumn;
+	}
+
+	public String getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(String displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
+	public String getDisplayType() {
+		return displayType;
+	}
+
+	public void setDisplayType(String displayType) {
+		this.displayType = displayType;
+	}
+
+	public AppReference getReference() {
+		return reference;
+	}
+
+	public void setReference(AppReference reference) {
+		this.reference = reference;
 	}
 
 	public AppField getLinkFromField() {

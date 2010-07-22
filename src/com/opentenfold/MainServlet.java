@@ -13,6 +13,7 @@ import com.opentenfold.database.PageDAO;
 import com.opentenfold.database.content.PageContent;
 import com.opentenfold.database.content.PageContentBean;
 import com.opentenfold.model.AppField;
+import com.opentenfold.model.AppJoinColumn;
 import com.opentenfold.model.AppPage;
 import com.opentenfold.model.AppView;
 import com.opentenfold.ui.PageBuilder;
@@ -28,7 +29,7 @@ public class MainServlet extends HttpServlet {
 		out = response.getWriter();
 		UrlRequest urlRequest = new UrlRequest(request);
 		System.out.println("Starting request for " + urlRequest);
-		
+
 		PageDAO pageDAO = new PageDAO();
 		AppPage page = null;
 		PageContent results = new PageContent();
@@ -64,11 +65,13 @@ public class MainServlet extends HttpServlet {
 
 					parentIDs += ", " + parentRow.getInteger(fieldName);
 				}
-				// TODO fix this
-				// dao.getSql().addWhere(
-				// view.getReference().getJoin() .getFromTable()
-				// FromColumnDbName() + " IN ("
-				// + parentIDs + ")");
+
+				for (AppJoinColumn joinColumn : view.getReference().getJoin()
+						.getJoinColumns()) {
+					dao.getSql().addWhere(
+							joinColumn.getFromColumn().getDbName() + " IN ("
+									+ parentIDs + ")");
+				}
 			}
 			results.addViewContent(view.getName(), dao.getResults());
 		}

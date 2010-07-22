@@ -1,8 +1,12 @@
 package com.opentenfold.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 @javax.persistence.Table(name = "dd_join")
@@ -16,6 +20,9 @@ public class AppJoin extends BaseTable {
 	@JoinColumn(name = "toTableID")
 	private AppTable toTable;
 	private String parentName;
+
+	@OneToMany(mappedBy = "join", fetch = FetchType.EAGER)
+	private List<AppJoinColumn> joinColumns;
 
 	public String getJoinType() {
 		return joinType;
@@ -55,6 +62,14 @@ public class AppJoin extends BaseTable {
 
 	public void setParentName(String parentName) {
 		this.parentName = parentName;
+	}
+
+	public List<AppJoinColumn> getJoinColumns() {
+		return joinColumns;
+	}
+
+	public void setJoinColumns(List<AppJoinColumn> joinColumns) {
+		this.joinColumns = joinColumns;
 	}
 
 }

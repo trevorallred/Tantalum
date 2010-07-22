@@ -16,7 +16,6 @@ public class AppColumn extends BaseTable {
 	private boolean required = false;
 	private String columnType;
 	private Integer size;
-
 	private String label;
 
 	public AppTable getTable() {
@@ -83,4 +82,8 @@ public class AppColumn extends BaseTable {
 		this.label = label;
 	}
 
+	@Override
+	public String toString() {
+		return table.getName()+"."+name;
+	}
 }

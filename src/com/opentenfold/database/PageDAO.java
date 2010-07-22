@@ -3,6 +3,9 @@ package com.opentenfold.database;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.eclipse.persistence.internal.sessions.IdentityMapAccessor;
+import org.eclipse.persistence.jpa.JpaHelper;
+
 import com.opentenfold.model.AppPage;
 
 public class PageDAO extends BaseDAO {
@@ -15,9 +18,13 @@ public class PageDAO extends BaseDAO {
 
 		try {
 			em = emf.createEntityManager();
-			Query query = em.createQuery("SELECT p FROM AppPage p WHERE p.url = :url");
+			// TODO we'll need to do this when we want to read the data from the database fresh
+			JpaHelper.getEntityManager(em).getServerSession().getIdentityMapAccessor().invalidateAll();
+			Query query = em
+					.createQuery("SELECT p FROM AppPage p WHERE p.url = :url");
 			query.setParameter("url", pageName);
 			page = (AppPage) query.getSingleResult();
+			em.refresh(page);
 		} catch (RuntimeException e) {
 			throw e;
 		} finally {
