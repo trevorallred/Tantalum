@@ -5,6 +5,15 @@
 	<display-name>TenFoldA</display-name>
 
 	<servlet>
+		<servlet-name>tenfold_webservice</servlet-name>
+		<servlet-class>com.opentenfold.JsonServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>tenfold_webservice</servlet-name>
+		<url-pattern>/ws/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>tenfold</servlet-name>
 		<servlet-class>com.opentenfold.MainServlet</servlet-class>
 	</servlet>
