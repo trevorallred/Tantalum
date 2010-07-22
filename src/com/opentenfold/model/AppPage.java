@@ -3,14 +3,25 @@ package com.opentenfold.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebPage extends BaseTable {
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+@Entity
+@javax.persistence.Table(name = "dd_page")
+public class AppPage extends BaseTable {
 	private String name;
 	private String url;
 	private String title;
-	private Field keyField = null;
-	private List<View> views = new ArrayList<View>();
-	private List<PageSection> sections = new ArrayList<PageSection>();
+	@Transient
+	private AppField keyField = null;
 
+	@OneToMany(mappedBy = "page", fetch = FetchType.EAGER)
+	private List<AppView> views = new ArrayList<AppView>();
+	@Transient
+	private List<PageSection> sections = new ArrayList<PageSection>();
+	@Transient
 	private List<Exception> exceptions = new ArrayList<Exception>();
 
 	public String getName() {
@@ -37,11 +48,11 @@ public class WebPage extends BaseTable {
 		this.title = title;
 	}
 
-	public Field getKeyField() {
+	public AppField getKeyField() {
 		return keyField;
 	}
 
-	public void setKeyField(Field keyField) {
+	public void setKeyField(AppField keyField) {
 		this.keyField = keyField;
 	}
 
@@ -53,7 +64,7 @@ public class WebPage extends BaseTable {
 		this.exceptions.add(exception);
 	}
 
-	public List<View> getViews() {
+	public List<AppView> getViews() {
 		return views;
 	}
 
@@ -62,33 +73,9 @@ public class WebPage extends BaseTable {
 	}
 
 	/** Helper methods **/
-
-	public void addFieldToView(Field field) {
-		getView(field).getFields().add(field);
-	}
-
-	public View getView(Field field) {
-		for (View view : views) {
-			if (view.getId() == field.getViewID())
-				return view;
-		}
-		return null;
-	}
-
-	public View getView(Integer viewID) {
-		if (viewID == null)
-			return null;
-
-		for (View view : views) {
-			if (view.getId() == viewID)
-				return view;
-		}
-		return null;
-	}
-
 	public String toString() {
 		String out = url + "(" + id + ")";
-		for (View view : views)
+		for (AppView view : views)
 			out += "\n  V: " + view.toString();
 		return out;
 	}

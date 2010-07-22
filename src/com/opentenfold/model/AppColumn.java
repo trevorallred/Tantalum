@@ -1,23 +1,29 @@
 package com.opentenfold.model;
 
-public class Column extends BaseTable {
-	private Table table;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
+@javax.persistence.Table(name = "dd_column")
+public class AppColumn extends BaseTable {
+	@ManyToOne
+	@JoinColumn(name = "tableID")
+	private AppTable table;
 	private String name;
 	private int displayOrder;
 	private String dbName;
 	private boolean required = false;
 	private String columnType;
 	private Integer size;
-	private Integer precision;
 
 	private String label;
-	private String help;
 
-	public Table getTable() {
+	public AppTable getTable() {
 		return table;
 	}
 
-	public void setTable(Table table) {
+	public void setTable(AppTable table) {
 		this.table = table;
 	}
 
@@ -69,28 +75,12 @@ public class Column extends BaseTable {
 		this.size = size;
 	}
 
-	public Integer getPrecision() {
-		return precision;
-	}
-
-	public void setPrecision(Integer precision) {
-		this.precision = precision;
-	}
-
 	public String getLabel() {
 		return label;
 	}
 
 	public void setLabel(String label) {
 		this.label = label;
-	}
-
-	public String getHelp() {
-		return help;
-	}
-
-	public void setHelp(String help) {
-		this.help = help;
 	}
 
 }

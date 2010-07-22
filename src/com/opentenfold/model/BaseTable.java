@@ -2,22 +2,25 @@ package com.opentenfold.model;
 
 import java.util.Date;
 
-import com.opentenfold.database.content.PageContentBean;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-public class BaseTable {
+@MappedSuperclass
+public abstract class BaseTable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@javax.persistence.Column(nullable = false)
 	protected int id;
-	protected int createdBy;
+	protected Integer createdBy;
+	@Temporal(TemporalType.TIMESTAMP)
 	protected Date creationDate;
-	protected int updatedBy;
+	protected Integer updatedBy;
+	@Temporal(TemporalType.TIMESTAMP)
 	protected Date updateDate;
-
-	public BaseTable() {
-	}
-
-	public BaseTable(Integer id) {
-		if (id != null)
-			this.id = id;
-	}
 
 	public int getId() {
 		return id;
@@ -27,11 +30,11 @@ public class BaseTable {
 		this.id = id;
 	}
 
-	public int getCreatedBy() {
+	public Integer getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(Integer createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -43,11 +46,11 @@ public class BaseTable {
 		this.creationDate = creationDate;
 	}
 
-	public int getUpdatedBy() {
+	public Integer getUpdatedBy() {
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(int updatedBy) {
+	public void setUpdatedBy(Integer updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -59,11 +62,4 @@ public class BaseTable {
 		this.updateDate = updateDate;
 	}
 
-	public void fill(PageContentBean record) {
-		fill(record, "");
-	}
-
-	public void fill(PageContentBean record, String prefix) {
-		id = record.getInteger(prefix + "id");
-	}
 }

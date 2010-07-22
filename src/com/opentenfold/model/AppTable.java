@@ -2,10 +2,18 @@ package com.opentenfold.model;
 
 import java.util.List;
 
-public class Table extends BaseTable {
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
+@Entity
+@javax.persistence.Table(name = "dd_table")
+public class AppTable extends BaseTable {
+	@javax.persistence.Column(nullable = false)
 	private String name;
+	@javax.persistence.Column(nullable = false)
 	private String dbName;
-	private List<Column> columns;
+	@Transient
+	private List<AppColumn> columns;
 
 	public String getName() {
 		return name;
@@ -23,11 +31,11 @@ public class Table extends BaseTable {
 		this.dbName = dbName;
 	}
 
-	public List<Column> getColumns() {
+	public List<AppColumn> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<Column> columns) {
+	public void setColumns(List<AppColumn> columns) {
 		this.columns = columns;
 	}
 

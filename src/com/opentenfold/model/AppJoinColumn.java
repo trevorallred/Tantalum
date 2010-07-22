@@ -1,5 +1,5 @@
 package com.opentenfold.model;
 
-public class JoinColumn {
+public class AppJoinColumn {
 
 }

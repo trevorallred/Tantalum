@@ -3,8 +3,8 @@ package com.opentenfold.database;
 import java.util.List;
 
 import com.opentenfold.database.content.PageContentBean;
-import com.opentenfold.model.Field;
-import com.opentenfold.model.View;
+import com.opentenfold.model.AppField;
+import com.opentenfold.model.AppView;
 import com.opentenfold.util.Strings;
 import com.opentenfold.util.UrlRequest;
 
@@ -13,11 +13,11 @@ public class MainDAO {
 
 	private SelectSQL sql = null;
 
-	public void setView(View view) {
+	public void setView(AppView view) {
 		System.out.println("Getting results for " + view.getBasisTable());
 		sql = QueryBuilder.build(view);
 	}
-	
+
 	public List<PageContentBean> getResults() {
 		return db.select(sql.toString(), true);
 	}
@@ -26,13 +26,13 @@ public class MainDAO {
 		return db.getRowCount();
 	}
 
-	public void saveRequest(View view, UrlRequest urlRequest) {
+	public void saveRequest(AppView view, UrlRequest urlRequest) {
 		boolean dirty = false;
 		UpdateSQL sql = new UpdateSQL();
-		sql.setTable(view.getBasisTable());
+		sql.setTable(view.getBasisTable().getDbName());
 		for (String param : urlRequest.getParameters().keySet()) {
 			if (!param.equalsIgnoreCase("button")) {
-				Field field = view.getField(param);
+				AppField field = view.getField(param);
 				if (field != null) {
 					dirty = true;
 					sql.addField(field.getBasisColumn().getDbName(), urlRequest

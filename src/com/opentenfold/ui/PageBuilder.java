@@ -2,12 +2,12 @@ package com.opentenfold.ui;
 
 import com.opentenfold.database.content.PageContentBean;
 import com.opentenfold.database.content.PageContent;
-import com.opentenfold.model.Field;
-import com.opentenfold.model.View;
-import com.opentenfold.model.WebPage;
+import com.opentenfold.model.AppField;
+import com.opentenfold.model.AppView;
+import com.opentenfold.model.AppPage;
 
 public class PageBuilder {
-	static public StringBuilder draw(WebPage page, PageContent content) {
+	static public StringBuilder draw(AppPage page, PageContent content) {
 		System.out.println("Drawing page for " + page);
 		String baseURL = "/TenFoldA";
 		StringBuilder out = new StringBuilder();
@@ -25,12 +25,12 @@ public class PageBuilder {
 			return out;
 		}
 
-		for (View view : page.getViews()) {
+		for (AppView view : page.getViews()) {
 			if (view.getResultsPerPage() == 1) {
 				PageContentBean row = content.getRows(view.getName()).get(0);
 				out.append("<form><h2>").append(view.getName()).append(
 						"</h2><ul>");
-				for (Field field : view.getFields()) {
+				for (AppField field : view.getFields()) {
 					if (field.isVisible()) {
 						out.append("<li><label>" + field.getLabel()
 								+ ":</label>");
@@ -50,7 +50,7 @@ public class PageBuilder {
 
 				out.append("<h2>").append(view.getName()).append(
 						"</h2><table><thead><tr>");
-				for (Field field : view.getFields()) {
+				for (AppField field : view.getFields()) {
 					if (field.isVisible())
 						out.append("<th><a href='" + baseURL + "/"
 								+ page.getUrl() + "?orderby=" + field.getName()
@@ -60,14 +60,15 @@ public class PageBuilder {
 
 				for (PageContentBean row : content.getRows(view.getName())) {
 					out.append("<tr>");
-					for (Field field : view.getFields()) {
+					for (AppField field : view.getFields()) {
 						if (field.isVisible()) {
 							if (field.getLinkFromField() == null)
 								out.append("<td>" + field.getValue(row)
 										+ "</td>");
 							else
 								out.append("<td><a href='"
-										+ field.getLinkToUrl()
+										+ field.getLinkToField().getView()
+												.getPage().getUrl()
 										+ "/"
 										+ row.getString(field
 												.getLinkFromField().getName())

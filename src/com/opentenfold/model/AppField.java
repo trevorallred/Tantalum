@@ -1,22 +1,31 @@
 package com.opentenfold.model;
 
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import com.opentenfold.database.content.PageContentBean;
 
-public class Field extends BaseTable {
+@Entity
+@javax.persistence.Table(name = "dd_field")
+public class AppField extends BaseTable {
+	@ManyToOne
+	@JoinColumn(name = "viewID")
+	private AppView view;
 	private String name;
-	private int viewID;
 	private String label;
 	private boolean visible = true;
 	private boolean searchable = false;
 	private boolean editable = false;
-	private Integer maxSize = null;
-	private Column basisColumn;
-	private String linkToUrl;
-	private Field linkFromField;
-
-	public Field(Integer id) {
-		super(id);
-	}
+	@ManyToOne
+	@JoinColumn(name = "basisColumnID")
+	private AppColumn basisColumn;
+	@ManyToOne
+	@JoinColumn(name = "linkToFieldID")
+	private AppField linkToField;
+	@ManyToOne
+	@JoinColumn(name = "linkFromFieldID")
+	private AppField linkFromField;
 
 	public String getName() {
 		return name;
@@ -26,12 +35,12 @@ public class Field extends BaseTable {
 		this.name = name;
 	}
 
-	public int getViewID() {
-		return viewID;
+	public AppView getView() {
+		return view;
 	}
 
-	public void setViewID(int viewID) {
-		this.viewID = viewID;
+	public void setView(AppView view) {
+		this.view = view;
 	}
 
 	public String getLabel() {
@@ -70,37 +79,31 @@ public class Field extends BaseTable {
 		this.editable = editable;
 	}
 
-	public Integer getMaxSize() {
-		return maxSize;
-	}
-
-	public void setMaxSize(Integer maxSize) {
-		this.maxSize = maxSize;
-	}
-
-	public Column getBasisColumn() {
+	public AppColumn getBasisColumn() {
 		return basisColumn;
 	}
 
-	public void setBasisColumn(Column basisColumn) {
+	public void setBasisColumn(AppColumn basisColumn) {
 		this.basisColumn = basisColumn;
 	}
 
-	public Field getLinkFromField() {
+	public AppField getLinkFromField() {
 		return linkFromField;
 	}
 
-	public void setLinkFromField(Field linkFromField) {
+	public void setLinkFromField(AppField linkFromField) {
 		this.linkFromField = linkFromField;
 	}
 
-	public String getLinkToUrl() {
-		return linkToUrl;
+	public AppField getLinkToField() {
+		return linkToField;
 	}
 
-	public void setLinkToUrl(String linkToUrl) {
-		this.linkToUrl = linkToUrl;
+	public void setLinkToField(AppField linkToField) {
+		this.linkToField = linkToField;
 	}
+
+	// Helper methods //
 
 	public String getValue(PageContentBean row) {
 		return row.getString(name);
