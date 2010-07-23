@@ -11,9 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.opentenfold.database.DatabaseException;
+import com.opentenfold.model.AppField;
 import com.opentenfold.util.Strings;
 
-public class PageContentBean {
+/**
+ * A single line returned in a query. This extends PageContent which means a line can also have 1 or more child views associated with that data.
+ */
+public class PageContentBean extends PageContent {
 	private Map<String, Object> values = new HashMap<String, Object>();
 
 	public PageContentBean(ResultSet rs, Set<String> columnNames)
@@ -30,6 +34,10 @@ public class PageContentBean {
 	public void setValue(String columnName, String value) {
 		values.put(columnName, value);
 	}
+	
+	public Set<String> getFieldNames() {
+		return values.keySet();
+	}
 
 	public Integer getInteger(String columnName) {
 		String value = getString(columnName);
@@ -38,6 +46,10 @@ public class PageContentBean {
 		return Integer.parseInt(value);
 	}
 
+	public String getString(AppField field) {
+		return getString(field.getName());
+	}
+	
 	public String getString(String columnName) {
 		Object value = values.get(columnName);
 		if (value == null)
@@ -65,4 +77,5 @@ public class PageContentBean {
 			return true;
 		return false;
 	}
+
 }

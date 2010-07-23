@@ -3,7 +3,6 @@ package com.opentenfold.database;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.eclipse.persistence.internal.sessions.IdentityMapAccessor;
 import org.eclipse.persistence.jpa.JpaHelper;
 
 import com.opentenfold.model.AppPage;

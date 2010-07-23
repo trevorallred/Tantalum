@@ -1,6 +1,13 @@
 package com.opentenfold.util;
 
+import com.google.common.base.Joiner;
+
 public class Strings {
+	
+	public static String joinForDB(Iterable<?> parts) {
+		return Joiner.on(",").join(parts);
+	}
+	
 	public static boolean isEmpty(String value) {
 		if (value == null)
 			return true;

@@ -68,6 +68,21 @@ public class AppPage extends BaseTable {
 		return views;
 	}
 
+	/**
+	 * Return a list of the top views (usually only one).
+	 * 
+	 * @return
+	 */
+	public List<AppView> getParentViews() {
+		List<AppView> topViews = new ArrayList<AppView>();
+		for (AppView view : views) {
+			if (view.getParent() == null) {
+				topViews.add(view);
+			}
+		}
+		return topViews;
+	}
+
 	public List<PageSection> getSections() {
 		return sections;
 	}

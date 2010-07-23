@@ -1,47 +1,38 @@
 package com.opentenfold.database.content;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.opentenfold.database.DatabaseException;
+import com.opentenfold.model.AppView;
 
+/**
+ * A set of 1 or more views. This could be a multi-headed page like a list of
+ * Employees and a list of available JobOpenings. Or it could be the children of
+ * another view like Columns and Joins for a Table. Finally, it could be just a
+ * "single-headed" or single-view page like most reports are.
+ */
 public class PageContent {
-	private Map<String, List<PageContentBean>> data = new HashMap<String, List<PageContentBean>>();
+	private Map<String, ViewContent> views = new HashMap<String, ViewContent>();
+
+	public Set<String> getViewNames() {
+		return views.keySet();
+	}
+
+	public ViewContent getViewContent(String viewName) {
+		if (!views.containsKey(viewName))
+			views.put(viewName, new ViewContent());
+		return views.get(viewName);
+	}
 
 	public void addViewContent(String viewName, List<PageContentBean> list) {
-		data.put(viewName, list);
+		views.put(viewName, new ViewContent(list));
 	}
-
-	public List<PageContentBean> getRows(String viewName) {
-		return data.get(viewName);
-	}
-
-	public static List<PageContentBean> parseResultSet(ResultSet rs) {
-		List<PageContentBean> rows = new ArrayList<PageContentBean>();
-		try {
-			ResultSetMetaData rsMetaData = rs.getMetaData();
-			int numberOfColumns = rsMetaData.getColumnCount();
-
-			Set<String> columnNames = new HashSet<String>();
-			for (int i = 1; i < numberOfColumns + 1; i++) {
-				columnNames.add(rsMetaData.getColumnLabel(i));
-			}
-
-			while (rs.next()) {
-				PageContentBean row = new PageContentBean(rs, columnNames);
-				rows.add(row);
-			}
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-
-		return rows;
+	
+	public void addChildContent(AppView childView, PageContentBean childContent) {
+		if (!views.containsKey(childView.getName()))
+			views.put(childView.getName(), new ViewContent());
+		views.get(childView.getName()).getData().add(childContent);
 	}
 }

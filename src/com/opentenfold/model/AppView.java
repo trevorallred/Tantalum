@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 
 import com.opentenfold.util.Strings;
 
@@ -27,12 +29,15 @@ public class AppView extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "referenceID")
 	private AppReference reference;
-	private int queryOrder;
 
 	@OneToMany(mappedBy = "view")
+	@OrderBy(value = "displayOrder")
 	private List<AppField> fields = new ArrayList<AppField>();
 	@OneToMany(mappedBy = "view")
 	private List<AppReference> references = new ArrayList<AppReference>();
+
+	@Transient
+	private List<AppView> childViews = null;
 
 	public AppPage getPage() {
 		return page;
@@ -98,15 +103,18 @@ public class AppView extends BaseTable {
 		this.references = references;
 	}
 
-	public int getQueryOrder() {
-		return queryOrder;
-	}
-
-	public void setQueryOrder(int queryOrder) {
-		this.queryOrder = queryOrder;
-	}
-
 	/** Helper methods **/
+
+	public List<AppView> getChildViews() {
+		if (childViews == null) {
+			childViews = new ArrayList<AppView>();
+			for (AppView childView : page.getViews()) {
+				if (this.equals(childView.getParent()))
+					childViews.add(childView);
+			}
+		}
+		return childViews;
+	}
 
 	public AppField getField(String name) {
 		if (Strings.isEmpty(name))
@@ -121,6 +129,17 @@ public class AppView extends BaseTable {
 	public AppField getField(int fieldID) {
 		for (AppField field : fields) {
 			if (fieldID == field.getId())
+				return field;
+		}
+		return null;
+	}
+
+	public AppField getPrimaryKey() {
+		if (basisTable == null)
+			return null;
+		AppColumn primaryKey = basisTable.getPrimaryKey();
+		for (AppField field : fields) {
+			if (primaryKey.equals(field.getBasisColumn()))
 				return field;
 		}
 		return null;

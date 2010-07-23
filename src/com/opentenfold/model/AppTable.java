@@ -2,17 +2,18 @@ package com.opentenfold.model;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 
 @Entity
 @javax.persistence.Table(name = "dd_table")
 public class AppTable extends BaseTable {
-	@javax.persistence.Column(nullable = false)
+	@Column(nullable = false)
 	private String name;
-	@javax.persistence.Column(nullable = false)
+	@Column(nullable = false)
 	private String dbName;
-	@Transient
+	@OneToMany(mappedBy = "table")
 	private List<AppColumn> columns;
 
 	public String getName() {
@@ -37,6 +38,19 @@ public class AppTable extends BaseTable {
 
 	public void setColumns(List<AppColumn> columns) {
 		this.columns = columns;
+	}
+
+	/**
+	 * TODO store this value on dd_table. For now we can assume it's just "id"
+	 * 
+	 * @return
+	 */
+	public AppColumn getPrimaryKey() {
+		for (AppColumn column : columns) {
+			if (column.getDbName().equals("id"))
+				return column;
+		}
+		return null;
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.opentenfold.database.content.PageContentBean;
-import com.opentenfold.database.content.PageContent;
+import com.opentenfold.database.content.PageContentUtility;
 
 public class DbConnection {
 
@@ -44,7 +44,7 @@ public class DbConnection {
 			stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(sql);
-			List<PageContentBean> list = PageContent.parseResultSet(rs);
+			List<PageContentBean> list = PageContentUtility.parseResultSet(rs);
 			rs.close();
 			rs = null;
 

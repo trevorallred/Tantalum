@@ -84,6 +84,6 @@ public class AppColumn extends BaseTable {
 
 	@Override
 	public String toString() {
-		return table.getName()+"."+name;
+		return table.getName()+"."+name + "(" + id + ")";
 	}
 }

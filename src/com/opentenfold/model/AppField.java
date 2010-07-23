@@ -136,6 +136,17 @@ public class AppField extends BaseTable {
 
 	// Helper methods //
 
+	/**
+	 * Is this field based on a column from the view's basis table
+	 */
+	public boolean isBasisField() {
+		if (view.getBasisTable() == null)
+			return false;
+		if (basisColumn == null)
+			return false;
+		return view.getBasisTable().equals(basisColumn.getTable());
+	}
+	
 	public String getValue(PageContentBean row) {
 		return row.getString(name);
 		// if (object == null)

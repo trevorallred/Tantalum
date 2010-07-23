@@ -13,6 +13,10 @@ public class UrlRequest {
 
 	public UrlRequest(HttpServletRequest request) {
 		String pathInfo = request.getPathInfo();
+		if (pathInfo.startsWith("/ws/"))
+			pathInfo = pathInfo.substring(3);
+		if (pathInfo.startsWith("/t/"))
+			pathInfo = pathInfo.substring(2);
 		int divider = pathInfo.indexOf("/", 1);
 		if (divider > 1) {
 			pageName = pathInfo.substring(1, divider);

@@ -19,7 +19,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>tenfold</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/t/*</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>
