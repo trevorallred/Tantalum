@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>$page.title</title>
+<title>$page.label</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="$baseURL/js/main.js"></script>
 <script type="text/javascript">
@@ -128,7 +128,7 @@ $(document).ready(function() {
 [<a href='$baseURL/t/ManageTables'>Manage Tables</a>]
 [<a href='$baseURL/t/WebpageList'>List Web Pages</a>]
 
-<h1>$page.title</h1>
+<h1>$page.label</h1>
 
 #foreach ( $view in $page.views )
 <div id="${view.name}">
