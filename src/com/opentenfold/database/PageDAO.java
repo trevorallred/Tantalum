@@ -10,7 +10,7 @@ import com.opentenfold.model.AppPage;
 public class PageDAO extends BaseDAO {
 
 	public AppPage getWebPageDefinition(String pageName) {
-		System.out.println("Getting page definition for " + pageName);
+		// System.out.println("Getting page definition for " + pageName);
 		new AppPage();
 		EntityManager em = null;
 		AppPage page = null;
@@ -19,11 +19,10 @@ public class PageDAO extends BaseDAO {
 			em = emf.createEntityManager();
 			// TODO we'll need to do this when we want to read the data from the database fresh
 			JpaHelper.getEntityManager(em).getServerSession().getIdentityMapAccessor().invalidateAll();
-			Query query = em
-					.createQuery("SELECT p FROM AppPage p WHERE p.url = :url");
+			Query query = em.createQuery("SELECT p FROM AppPage p WHERE p.name = :url");
 			query.setParameter("url", pageName);
 			page = (AppPage) query.getSingleResult();
-			em.refresh(page);
+			//em.refresh(page);
 		} catch (RuntimeException e) {
 			throw e;
 		} finally {
@@ -31,7 +30,7 @@ public class PageDAO extends BaseDAO {
 				em.close();
 			}
 		}
-		System.out.println(page);
+		// System.out.println(page);
 		return page;
 	}
 }

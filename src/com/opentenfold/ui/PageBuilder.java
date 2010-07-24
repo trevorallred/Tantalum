@@ -1,89 +1,54 @@
 package com.opentenfold.ui;
 
-import com.opentenfold.model.AppField;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
+
 import com.opentenfold.model.AppPage;
-import com.opentenfold.model.AppView;
 
 public class PageBuilder {
-	static public StringBuilder draw(AppPage page) {
-		System.out.println("Drawing page for " + page);
-		String baseURL = "/TenFoldA";
-		StringBuilder out = new StringBuilder();
-		out.append("<html><head>");
-
-		out.append("<title>").append(page.getTitle()).append("</title>");
-		out
-				.append("<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\"></script>");
-		out.append("<script type=\"text/javascript\" src=\"" + baseURL
-				+ "/js/main.js\"></script>");
-
-		out.append("<script type=\"text/javascript\">");
-		for (AppView view : page.getViews()) {
-			if (view.getParent() == null) {
-				out.append("jQuery.getJSON('" + baseURL + "/ws/"
-						+ page.getUrl() + "/" + view.getName()
-						+ "', function(json){fill('" + view.getName()
-						+ "',json);}); ");
-			}
+	public PageBuilder() {
+		Properties props = new Properties();
+		props.put("resource.loader", "class");
+		props.setProperty("runtime.log.logsystem.class",
+				"org.apache.velocity.runtime.log.NullLogSystem");
+		props.setProperty("class.resource.loader.description",
+				"Velocity Classpath Resource Loader");
+		props
+				.put("class.resource.loader.class",
+						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		try {
+			Velocity.init(props);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("failed to create VelocityAdaptor");
 		}
-		out.append("</script></head><body>");
-		out.append("[<a href='" + baseURL + "/t/tables'>Manage Tables</a>] ");
-		out.append("[<a href='" + baseURL + "/t/webpages'>List Web Pages</a>]");
-		out.append("<h1>").append(page.getTitle()).append("</h1>");
+	}
 
-		if (page.getExceptions().size() > 0) {
-			for (Exception exception : page.getExceptions()) {
-				out.append("<div class=>" + exception.getMessage() + "</div>");
-			}
-			return out;
+	public String draw(AppPage page) {
+		StringWriter result = new StringWriter();
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("page", page);
+		// TODO figure out a better way of setting this
+		data.put("baseURL", "/TenFoldA");
+		VelocityContext velocityContext = new VelocityContext(data);
+		Velocity.setProperty(VelocityEngine.SET_NULL_ALLOWED, true);
+		try {
+			Template t;
+			if (page.getExceptions().size() > 0)
+				t = Velocity.getTemplate("exception.html");
+			else
+				t = Velocity.getTemplate("template.html");
+			t.merge(velocityContext, result);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		for (AppView view : page.getViews()) {
-			out.append("<div id=\"" + view.getName() + "\">");
-			if (view.getResultsPerPage() == 1) {
-				out.append("<form><h2>").append(view.getName()).append(
-						"</h2><ul>");
-				for (AppField field : view.getFields()) {
-					if (field.isVisible()) {
-						out.append("<li><label>" + field.getLabel()
-								+ ":</label>");
-						if (field.isEditable())
-							out.append("<input type=\"text\" name=\""
-									+ field.getName() + "\"></li>");
-						else
-							out.append("<span class=\"" + field.getName()
-									+ "\"></span>");
-						out.append("</li>");
-					}
-				}
-				out
-						.append("</ul><button name='button' value='Save'>Save</button></form>");
-			} else {
-
-				out.append("<h2>").append(view.getName()).append(
-						"</h2><table><thead><tr>");
-				for (AppField field : view.getFields()) {
-					if (field.isVisible())
-						out.append("<th><a href='" + baseURL + "/"
-								+ page.getUrl() + "?orderby=" + field.getName()
-								+ "'>" + field.getLabel() + "</a></th>");
-				}
-				out.append("</tr></thead><tbody>");
-
-				out.append("<tr class='template'>");
-				for (AppField field : view.getFields()) {
-					if (field.isVisible()) {
-						out.append("<td class=\"" + field.getName()
-								+ " fieldContent\"></td>");
-					}
-				}
-				out.append("</tr>");
-
-				out.append("</tbody></table>");
-			}
-			out.append("</div>");
-		}
-		out.append("</body></html>");
-		return out;
+		return result.toString();
 	}
 }

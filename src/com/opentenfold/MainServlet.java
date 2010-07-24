@@ -27,8 +27,11 @@ public class MainServlet extends HttpServlet {
 		UrlRequest urlRequest = new UrlRequest(request);
 
 		PageDAO pageDAO = new PageDAO();
+		System.out.println("Getting page definition");
 		AppPage page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
 
-		out.print(PageBuilder.draw(page));
+		PageBuilder builder = new PageBuilder();
+		System.out.println("Parsing velocity template");
+		out.print(builder.draw(page));
 	}
 }

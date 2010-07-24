@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>$page.title</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="$baseURL/js/main.js"></script>
+<script type="text/javascript">
+
+var json;
+#foreach ( $view in $page.views )
+var ${view.name}Region;
+#end
+
+$(document).ready(function() {
+	jQuery.getJSON('$baseURL/ws/$page.name/',
+		function(jsonCallback) {
+			json = jsonCallback;
+			#foreach ( $view in $page.parentViews )
+			paint_${view.name}(json.${view.name});
+			#end
+		}
+	);
+	
+	#foreach ( $view in $page.views )
+	${view.name}Region = $("#$view.name");
+	#end
+});
+
+#foreach ( $view in $page.views )
+	function nav_${view.name}(amount) {
+		#if ( ! $view.parent )
+			var rows = json.${view.name};
+		#{else}
+			var rows = json.${view.parent.name}.DATA[json.${view.parent.name}.POSITION].CHILDREN.${view.name};
+		#end
+		var maxPosition = rows.DATA.length - 1;
+		
+		rows.POSITION += amount;
+		if (rows.POSITION < 0)
+			rows.POSITION = 0;
+		if (rows.POSITION > maxPosition)
+			rows.POSITION = maxPosition;
+		paint_${view.name}(rows);
+		return false;
+	}
+
+	function paintButtons_${view.name}(rows) {
+		if ($(rows).length > 0) {
+			$('#previous${view.name}').attr("disabled", (rows.POSITION == 0));
+			$('#next${view.name}').attr("disabled", (rows.POSITION == rows.DATA.length - 1));
+		} else {
+			$('#previous${view.name}').attr("disabled", true);
+			$('#next${view.name}').attr("disabled", true);
+		}
+	}
+#if($view.resultsPerPage != 1)
+	function paint_${view.name}(rows) {
+		paintButtons_${view.name}(rows);
+		
+		var tbody = ${view.name}Region.find("tbody");
+		
+		$(tbody).find("tr.data").remove();
+		var template = $(tbody).find('tr.template');
+		if ($(rows).length > 0) {
+			for ( var i = 0; i < rows.DATA.length; i++) {
+				addRow_${view.name}(tbody, template, rows.DATA[i].FIELDS);
+			}
+		}
+		$(template).hide();
+		
+		#if($view.childViews.size() > 0)
+			var row = rows.DATA[rows.POSITION];
+			var childRows = null;
+			#foreach ( $childView in $view.childViews )
+			if ($(row.CHILDREN).length > 0) {
+				childRows = row.CHILDREN.${childView.name};
+			}
+			paint_${childView.name}(childRows);
+			childRows = null;
+			#end
+		#end
+		
+	}
+	function addRow_${view.name}(tbody, template, row) {
+		var rowHTML = $(template).clone();
+		rowHTML.show();
+		rowHTML.addClass("data");
+		rowHTML.removeClass("template");
+		#foreach ( $field in $view.fields )
+			rowHTML.find('.${field.name}').html(row.${field.name});
+		#end
+		tbody.append(rowHTML);
+	}
+
+#{else}
+	function paint_${view.name}(rows) {
+		paintButtons_${view.name}(rows);
+		
+		var row = rows.DATA[rows.POSITION];
+		
+		#foreach ( $field in $view.fields )
+			#if($field.editable)
+				$(${view.name}Region).find('.${field.name}').val(row.FIELDS.${field.name});
+			#{else}
+				$(${view.name}Region).find('.${field.name}').html(row.FIELDS.${field.name});
+			#end
+		#end
+		
+		#if($view.childViews.size() > 0)
+			var childRows = null;
+			#foreach ( $childView in $view.childViews )
+			if ($(row.CHILDREN).length > 0) {
+				childRows = row.CHILDREN.${childView.name};
+			}
+			paint_${childView.name}(childRows);
+			childRows = null;
+			#end
+		#end
+	}
+#end
+#end
+
+
+</script>
+</head>
+<body>
+[<a href='$baseURL/t/ManageTables'>Manage Tables</a>]
+[<a href='$baseURL/t/WebpageList'>List Web Pages</a>]
+
+<h1>$page.title</h1>
+
+#foreach ( $view in $page.views )
+<div id="${view.name}">
+	<h2>$view.name</h2>
+		<button id="previous$view.name" onclick="return nav_${view.name}(-1);">Previous</button>
+		<button id="next$view.name" onclick="return nav_${view.name}(1);">Next</button>
+	#if($view.resultsPerPage != 1)
+		<table>
+		<thead>
+		<tr>
+		#foreach ($field in $view.fields)
+			#if($field.visible)
+				<th><a href='#'>$field.label</a></th>
+			#end
+		#end
+		</tr>
+		</thead>
+		<tbody>
+			<tr class='template'>
+			#foreach ($field in $view.fields)
+				#if($field.visible)
+					<td class="$field.name fieldContent">$field.name</td>
+				#end
+			#end
+			</tr>
+		</tbody>
+		</table>
+	#{else}
+		<form>
+		<ul>
+		#foreach ($field in $view.fields)
+			#if($field.visible)
+				<li><label>$field.label:</label>
+				#if($field.editable)
+					<input type="text" class="$field.name" name="$field.name">
+				#{else}
+					<span class="$field.name"></span>
+				#end
+				</li>
+			#end
+		#end
+		</ul>
+		<button name='button' value='Save'>Save</button>
+		</form>
+	#end
+</div>
+#end
+
+</body>
+</html>

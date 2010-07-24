@@ -40,19 +40,24 @@ public class PageContentUtility {
 	public static JSONObject convertToJSON(PageContent results) {
 		JSONObject json = new JSONObject();
 		for (String view : results.getViewNames()) {
-			JSONArray viewJson = new JSONArray();
-			json.put(view, viewJson);
+			JSONObject jsonView = new JSONObject();
+			json.put(view, jsonView);
+			jsonView.put("POSITION", 0);
+			// When we do lazy loading we'll set fullyLoaded this dynamically
+			jsonView.put("FULLY_LOADED", true);
+			JSONArray dataArray = new JSONArray();
+			jsonView.put("DATA", dataArray);
 			for (PageContentBean row : results.getViewContent(view).getData()) {
 				JSONObject record = new JSONObject();
-				viewJson.add(record);
-
+				dataArray.add(record);
+				
+				JSONObject recordFields = new JSONObject();
+				record.put("FIELDS", recordFields);
 				for (String fieldname : row.getFieldNames()) {
-					record.put(fieldname, row.getString(fieldname));
+					recordFields.put(fieldname, row.getString(fieldname));
 				}
-
-				if (row.getViewNames().size() > 0) {
-					record.put("_CHILDREN_", convertToJSON(row));
-				}
+				
+				record.put("CHILDREN", convertToJSON(row));
 			}
 		}
 		return json;
