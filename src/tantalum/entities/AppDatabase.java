@@ -1,8 +1,14 @@
 package tantalum.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import tantalum.data.DatabaseType;
 
-public class Database extends BaseTable {
+@Entity
+@javax.persistence.Table(name = "dd_database")
+public class AppDatabase extends BaseTable {
+	@Transient
 	private DatabaseType type = DatabaseType.MySQL;
 	private String server = "localhost";
 	private String database = "tenfold";

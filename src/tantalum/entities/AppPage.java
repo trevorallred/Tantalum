@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -14,13 +13,12 @@ public class AppPage extends BaseNamedTable {
 	@Transient
 	private AppField keyField = null;
 
-	@OneToMany(mappedBy = "page", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "page")
 	private List<AppView> views = new ArrayList<AppView>();
-	@Transient
-	private List<AppRegion> sections = new ArrayList<AppRegion>();
+	@OneToMany(mappedBy = "page")
+	private List<AppRegion> regions = new ArrayList<AppRegion>();
 	@Transient
 	private List<Exception> exceptions = new ArrayList<Exception>();
-
 
 	public AppField getKeyField() {
 		return keyField;
@@ -42,27 +40,46 @@ public class AppPage extends BaseNamedTable {
 		return views;
 	}
 
+	public List<AppRegion> getRegions() {
+		return regions;
+	}
+
+	public void setRegions(List<AppRegion> regions) {
+		this.regions = regions;
+	}
+
 	/**
 	 * Return a list of the top views (usually only one).
 	 * 
 	 * @return
 	 */
 	public List<AppView> getParentViews() {
-		List<AppView> topViews = new ArrayList<AppView>();
+		List<AppView> top = new ArrayList<AppView>();
 		for (AppView view : views) {
 			if (view.getParent() == null) {
-				topViews.add(view);
+				top.add(view);
 			}
 		}
-		return topViews;
+		return top;
 	}
 
-	public List<AppRegion> getSections() {
-		return sections;
+	/**
+	 * Return a list of the top regions (usually only one).
+	 * 
+	 * @return
+	 */
+	public List<AppRegion> getParentRegions() {
+		List<AppRegion> top = new ArrayList<AppRegion>();
+		for (AppRegion view : regions) {
+			if (view.getParent() == null) {
+				top.add(view);
+			}
+		}
+		return top;
 	}
 
 	/** Helper methods **/
-	public String toString() {
+	public String printAll() {
 		String out = name + "(" + id + ")";
 		for (AppView view : views)
 			out += "\n  V: " + view.toString();

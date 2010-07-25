@@ -2,6 +2,7 @@ package tantalum.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +14,7 @@ import javax.persistence.TemporalType;
 public abstract class BaseTable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@javax.persistence.Column(nullable = false)
+	@Column(nullable = false)
 	protected int id;
 	protected Integer createdBy;
 	@Temporal(TemporalType.TIMESTAMP)

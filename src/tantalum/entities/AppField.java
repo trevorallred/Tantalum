@@ -6,7 +6,6 @@ import javax.persistence.ManyToOne;
 
 import tantalum.data.PageContentBean;
 
-
 @Entity
 @javax.persistence.Table(name = "dd_field")
 public class AppField extends BaseNamedTable {
@@ -18,6 +17,9 @@ public class AppField extends BaseNamedTable {
 	private boolean searchable = false;
 	private boolean editable = false;
 	private String displayType;
+	@ManyToOne
+	@JoinColumn(name = "regionID")
+	private AppRegion region;
 
 	@ManyToOne
 	@JoinColumn(name = "basisColumnID")
@@ -119,6 +121,14 @@ public class AppField extends BaseNamedTable {
 
 	// Helper methods //
 
+	public AppRegion getRegion() {
+		return region;
+	}
+
+	public void setRegion(AppRegion region) {
+		this.region = region;
+	}
+
 	/**
 	 * Is this field based on a column from the view's basis table
 	 */
@@ -129,7 +139,7 @@ public class AppField extends BaseNamedTable {
 			return false;
 		return view.getBasisTable().equals(basisColumn.getTable());
 	}
-	
+
 	public String getValue(PageContentBean row) {
 		return row.getString(name);
 		// if (object == null)
@@ -137,11 +147,6 @@ public class AppField extends BaseNamedTable {
 		//
 		// String value = object.toString();
 		// return value;
-	}
-
-	public String toString() {
-		String out = name + "(" + id + ")";
-		return out;
 	}
 
 }

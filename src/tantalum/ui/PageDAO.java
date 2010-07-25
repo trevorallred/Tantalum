@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import org.eclipse.persistence.jpa.JpaHelper;
 
 import tantalum.entities.AppPage;
+import tantalum.entities.AppView;
 
 public class PageDAO {
 	EntityManagerFactory emf;
@@ -32,6 +33,7 @@ public class PageDAO {
 					.createQuery("SELECT p FROM AppPage p WHERE p.name = :url");
 			query.setParameter("url", pageName);
 			page = (AppPage) query.getSingleResult();
+			page.printAll();
 			// em.refresh(page);
 		} catch (RuntimeException e) {
 			throw e;

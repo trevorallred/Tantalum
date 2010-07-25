@@ -6,17 +6,15 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @javax.persistence.Table(name = "dd_column")
-public class AppColumn extends BaseTable {
+public class AppColumn extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "tableID")
 	private AppTable table;
-	private String name;
 	private int displayOrder;
 	private String dbName;
 	private boolean required = false;
 	private String columnType;
 	private Integer size;
-	private String label;
 
 	public AppTable getTable() {
 		return table;
@@ -24,14 +22,6 @@ public class AppColumn extends BaseTable {
 
 	public void setTable(AppTable table) {
 		this.table = table;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public int getDisplayOrder() {
@@ -74,16 +64,8 @@ public class AppColumn extends BaseTable {
 		this.size = size;
 	}
 
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
 	@Override
 	public String toString() {
-		return table.getName()+"."+name + "(" + id + ")";
+		return table.getName() + "." + name + "(" + id + ")";
 	}
 }

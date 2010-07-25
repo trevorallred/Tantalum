@@ -56,7 +56,19 @@ public class JsonServlet extends HttpServlet {
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		super.doPut(req, resp);
+		resp.setStatus(HttpServletResponse.SC_CREATED);
+		out = resp.getWriter();
+		UrlRequest urlRequest = new UrlRequest(req);
+
+		PageDAO pageDAO = new PageDAO();
+		AppPage page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
+
+		DataReader dao = new DataReader();
+		PageContent results = dao.getContent(page, urlRequest);
+
+		out.print(PageContentUtility.convertToJSON(results));
+		out.flush();
+		return;
 	}
 	
 }

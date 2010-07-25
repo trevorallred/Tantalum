@@ -11,6 +11,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
 import tantalum.entities.AppPage;
+import tantalum.util.UrlRequest;
 
 
 public class PageBuilder {
@@ -32,12 +33,14 @@ public class PageBuilder {
 		}
 	}
 
-	public String draw(AppPage page) {
+	public String draw(AppPage page, UrlRequest urlRequest) {
 		StringWriter result = new StringWriter();
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("page", page);
 		// TODO figure out a better way of setting this
 		data.put("baseURL", "/TenFoldA");
+		data.put("urlRequest", urlRequest);
+		data.put("theme", "default");
 		VelocityContext velocityContext = new VelocityContext(data);
 		Velocity.setProperty(VelocityEngine.SET_NULL_ALLOWED, true);
 		try {

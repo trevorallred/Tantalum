@@ -2,23 +2,23 @@
 <web-app id="WebApp_ID" version="2.4"
 	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-	<display-name>TenFoldA</display-name>
+	<display-name>Tantalum</display-name>
 
 	<servlet>
-		<servlet-name>tenfold_webservice</servlet-name>
-		<servlet-class>com.opentenfold.JsonServlet</servlet-class>
+		<servlet-name>tantalum_webservice</servlet-name>
+		<servlet-class>tantalum.JsonServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>tenfold_webservice</servlet-name>
+		<servlet-name>tantalum_webservice</servlet-name>
 		<url-pattern>/ws/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>tenfold</servlet-name>
-		<servlet-class>com.opentenfold.MainServlet</servlet-class>
+		<servlet-name>tantalum</servlet-name>
+		<servlet-class>tantalum.MainServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>tenfold</servlet-name>
+		<servlet-name>tantalum</servlet-name>
 		<url-pattern>/t/*</url-pattern>
 	</servlet-mapping>
 

@@ -23,4 +23,9 @@ public abstract class BaseNamedTable extends BaseTable {
 		this.label = label;
 	}
 
+	@Override
+	public String toString() {
+		return name + " (" + id + ")";
+	}
+
 }

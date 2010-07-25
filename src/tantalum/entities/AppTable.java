@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -13,6 +15,9 @@ public class AppTable extends BaseTable {
 	private String name;
 	@Column(nullable = false)
 	private String dbName;
+	@ManyToOne
+	@JoinColumn(name = "databaseID")
+	private AppDatabase database;
 	@OneToMany(mappedBy = "table")
 	private List<AppColumn> columns;
 
@@ -30,6 +35,14 @@ public class AppTable extends BaseTable {
 
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
+	}
+
+	public AppDatabase getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(AppDatabase database) {
+		this.database = database;
 	}
 
 	public List<AppColumn> getColumns() {

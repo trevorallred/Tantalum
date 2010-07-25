@@ -7,12 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import tantalum.util.Strings;
-
 
 @Entity
 @Table(name = "dd_view")
@@ -33,10 +31,11 @@ public class AppView extends BaseTable {
 	private AppReference reference;
 
 	@OneToMany(mappedBy = "view")
-	@OrderBy(value = "displayOrder")
 	private List<AppField> fields = new ArrayList<AppField>();
 	@OneToMany(mappedBy = "view")
 	private List<AppReference> references = new ArrayList<AppReference>();
+	@OneToMany(mappedBy = "view")
+	private List<AppRegion> regions = new ArrayList<AppRegion>();
 
 	@Transient
 	private List<AppView> childViews = null;
@@ -81,6 +80,10 @@ public class AppView extends BaseTable {
 		this.parent = parent;
 	}
 
+	public boolean isRoot() {
+		return parent == null;
+	}
+
 	public AppReference getReference() {
 		return reference;
 	}
@@ -103,6 +106,14 @@ public class AppView extends BaseTable {
 
 	public void setReferences(List<AppReference> references) {
 		this.references = references;
+	}
+
+	public List<AppRegion> getRegions() {
+		return regions;
+	}
+
+	public void setRegions(List<AppRegion> regions) {
+		this.regions = regions;
 	}
 
 	/** Helper methods **/
