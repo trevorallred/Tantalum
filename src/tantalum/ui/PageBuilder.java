@@ -38,7 +38,7 @@ public class PageBuilder {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("page", page);
 		// TODO figure out a better way of setting this
-		data.put("baseURL", "/TenFoldA");
+		data.put("baseURL", "/Tantalum");
 		data.put("urlRequest", urlRequest);
 		data.put("theme", "default");
 		VelocityContext velocityContext = new VelocityContext(data);

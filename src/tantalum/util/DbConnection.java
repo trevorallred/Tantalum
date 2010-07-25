@@ -26,7 +26,7 @@ public class DbConnection {
 			SQLException {
 		Context initContext = new InitialContext();
 		Context envContext = (Context) initContext.lookup("java:/comp/env");
-		DataSource ds = (DataSource) envContext.lookup("jdbc/tenfold");
+		DataSource ds = (DataSource) envContext.lookup("jdbc/tantalumDB");
 		return ds.getConnection();
 	}
 
