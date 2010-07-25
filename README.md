@@ -19,12 +19,12 @@ Installation
 ------------
 Add this to your local tomcat server.xml file
 
- <Context docBase="Tantalum" path="/Tantalum" reloadable="true"
-	source="org.eclipse.jst.jee.server:Tantalum">
-	<Resource name="jdbc/tantalumDB" auth="Container" type="javax.sql.DataSource"
-		maxActive="60" maxIdle="30" maxWait="10000" removeAbandoned="true"
-		removeAbandonedTimeout="20" driverClassName="com.mysql.jdbc.Driver"
-		logAbandoned="true" username="root" password=""
-		url="jdbc:mysql://localhost:3306/tantalum_dict" />
- </Context>
+	<Context docBase="Tantalum" path="/Tantalum" reloadable="true"
+		source="org.eclipse.jst.jee.server:Tantalum">
+		<Resource name="jdbc/tantalumDB" auth="Container" type="javax.sql.DataSource"
+			maxActive="60" maxIdle="30" maxWait="10000" removeAbandoned="true"
+			removeAbandonedTimeout="20" driverClassName="com.mysql.jdbc.Driver"
+			logAbandoned="true" username="root" password=""
+			url="jdbc:mysql://localhost:3306/tantalum_dict" />
+	</Context>
 
