@@ -23,7 +23,8 @@ public class JsonServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		//resp.setContentType("application/json;");
+		resp.setContentType("application/json;");
+		resp.setStatus(HttpServletResponse.SC_OK);
 
 		out = resp.getWriter();
 		UrlRequest urlRequest = new UrlRequest(req);
@@ -36,8 +37,6 @@ public class JsonServlet extends HttpServlet {
 
 		out.print(PageContentUtility.convertToJSON(results));
 		out.flush();
-
-		super.doGet(req, resp);
 	}
 
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
