@@ -17,7 +17,10 @@ Tantalum is license under the Eclipse Public License (EPL). In short, the EPL is
 
 Installation
 ------------
-Add this to your local tomcat server.xml file
+# Download source from GitHub
+# Create and load dictionary using install.sql
+# Deploy war to your tomcat server
+# Add this to your local tomcat server.xml file
 
 	<Context docBase="Tantalum" path="/Tantalum" reloadable="true"
 		source="org.eclipse.jst.jee.server:Tantalum">
