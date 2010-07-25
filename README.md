@@ -3,13 +3,15 @@ Tantalum
 
 Tantalum is an open source, Java based web application builder that allows business analysts to rapidly create and deploy fully functional enterprise web applications.
 
-Repository
-----------
-Currently this project's source code is being hosted at http://github.com/trevorallred/Tantalum
+It is inspired by the work done by [TenFold Corporation](http://www.tenfold.com/) in the 1990s and Microsoft Access. Think of Tantalum as a web-based Microsoft Access on steroids.
 
 Contributing
 ------------
-Want to contribute? Contact Trevor Allred for details.
+Our biggest need right now is a public server we can use to host the applications development effort. If you have a server we can use, then please contact Trevor Allred.
+
+There are two areas of work that need to be done.
+# Java Development - Trevor is looking for Java coders, experts in jQuery, and graphic designers to help build war file.
+# Applications Development - John Weymouth is leading the effort in building the new "TenFold Library."
 
 License
 -------
@@ -30,4 +32,8 @@ Installation
 			logAbandoned="true" username="root" password=""
 			url="jdbc:mysql://localhost:3306/tantalum_dict" />
 	</Context>
+
+Repository
+----------
+Currently this project's source code is being hosted at http://github.com/trevorallred/Tantalum
 
