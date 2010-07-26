@@ -10,8 +10,8 @@ Contributing
 Our biggest need right now is a public server we can use to host the applications development effort. If you have a server we can use, then please contact Trevor Allred.
 
 There are two areas of work that need to be done.
-+ Java Development - Trevor is looking for Java coders, experts in jQuery, and graphic designers to help build war file.
-+ Applications Development - John Weymouth is leading the effort in building the new "TenFold Library."
+- Java Development - Trevor is looking for Java coders, experts in jQuery, and graphic designers to help build war file.
+- Applications Development - John Weymouth is leading the effort in building the new "TenFold Library."
 
 License
 -------
@@ -23,6 +23,7 @@ Installation
 2. Create and load dictionary using install.sql
 3. Deploy war to your tomcat server
 4. Add this to your local tomcat server.xml file
+
 
 	<Context docBase="Tantalum" path="/Tantalum" reloadable="true"
 		source="org.eclipse.jst.jee.server:Tantalum">
