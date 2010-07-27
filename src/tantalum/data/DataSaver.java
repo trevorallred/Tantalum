@@ -19,7 +19,7 @@ import tantalum.util.UpdateSQL;
 import tantalum.util.UrlRequest;
 
 
-public class DataReader {
+public class DataSaver {
 	protected DbConnection db = new DbConnection();
 
 	private Map<AppView, List<PageContentBean>> viewData = new HashMap<AppView, List<PageContentBean>>();
@@ -105,27 +105,27 @@ public class DataReader {
 		}
 	}
 
-	public void saveRequest(AppPage page, UrlRequest urlRequest) {
-//		boolean dirty = false;
-//		UpdateSQL sql = new UpdateSQL();
-//		sql.setTable(view.getBasisTable().getDbName());
-//		for (String param : urlRequest.getParameters().keySet()) {
-//			if (!param.equalsIgnoreCase("button")) {
-//				AppField field = page.getField(param);
-//				if (field != null) {
-//					dirty = true;
-//					sql.addField(field.getBasisColumn().getDbName(), urlRequest
-//							.getParameters().get(param)[0]);
-//				}
-//			}
-//		}
-//		String id = urlRequest.getPageId();
-//		sql.setInsert(Strings.isEmpty(id));
-//		if (!sql.isInsert())
-//			sql.addWhere("id = '" + urlRequest.getPageId() + "'");
-//
-//		if (dirty)
-//			db.execute(sql);
+	public void saveRequest(AppView view, UrlRequest urlRequest) {
+		boolean dirty = false;
+		UpdateSQL sql = new UpdateSQL();
+		sql.setTable(view.getBasisTable().getDbName());
+		for (String param : urlRequest.getParameters().keySet()) {
+			if (!param.equalsIgnoreCase("button")) {
+				AppField field = view.getField(param);
+				if (field != null) {
+					dirty = true;
+					sql.addField(field.getBasisColumn().getDbName(), urlRequest
+							.getParameters().get(param)[0]);
+				}
+			}
+		}
+		String id = urlRequest.getPageId();
+		sql.setInsert(Strings.isEmpty(id));
+		if (!sql.isInsert())
+			sql.addWhere("id = '" + urlRequest.getPageId() + "'");
+
+		if (dirty)
+			db.execute(sql);
 	}
 
 }

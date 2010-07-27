@@ -1,6 +1,8 @@
 package tantalum.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -16,7 +18,8 @@ public class AppField extends BaseNamedTable {
 	private String displayOrder;
 	private boolean searchable = false;
 	private boolean editable = false;
-	private String displayType;
+	@Enumerated(EnumType.STRING)
+	private FieldDisplayType displayType;
 	@ManyToOne
 	@JoinColumn(name = "regionID")
 	private AppRegion region;
@@ -87,11 +90,11 @@ public class AppField extends BaseNamedTable {
 		this.displayOrder = displayOrder;
 	}
 
-	public String getDisplayType() {
+	public FieldDisplayType getDisplayType() {
 		return displayType;
 	}
 
-	public void setDisplayType(String displayType) {
+	public void setDisplayType(FieldDisplayType displayType) {
 		this.displayType = displayType;
 	}
 
@@ -101,6 +104,10 @@ public class AppField extends BaseNamedTable {
 
 	public void setReference(AppReference reference) {
 		this.reference = reference;
+	}
+
+	public boolean isHasLink() {
+		return linkToField != null;
 	}
 
 	public AppField getLinkFromField() {

@@ -15,59 +15,45 @@ import tantalum.entities.AppPage;
 import tantalum.ui.PageDAO;
 import tantalum.util.UrlRequest;
 
-
 @SuppressWarnings("serial")
 public class JsonServlet extends HttpServlet {
 	protected PrintWriter out;
+	private PageDAO pageDAO = new PageDAO();
+	private AppPage page = null;
+	private UrlRequest urlRequest = null;
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		setup(req, resp);
+
+		DataReader dao = new DataReader();
+		PageContent results = dao.getContent(page, urlRequest);
+
+		out.print(PageContentUtility.convertToJSON(results));
+		out.flush();
+	}
+
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+
+		setup(req, resp);
+
+		DataReader dao = new DataReader();
+		dao.saveRequest(page, urlRequest);
+
+		out.flush();
+	}
+
+	private void setup(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
 		resp.setContentType("application/json;");
+		// resp.setStatus(HttpServletResponse.SC_CREATED);
 		resp.setStatus(HttpServletResponse.SC_OK);
 
 		out = resp.getWriter();
-		UrlRequest urlRequest = new UrlRequest(req);
+		urlRequest = new UrlRequest(req);
 
-		PageDAO pageDAO = new PageDAO();
-		AppPage page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
-
-		DataReader dao = new DataReader();
-		PageContent results = dao.getContent(page, urlRequest);
-
-		out.print(PageContentUtility.convertToJSON(results));
-		out.flush();
+		page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
 	}
-
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		super.doDelete(req, resp);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		super.doPost(req, resp);
-	}
-	
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		resp.setStatus(HttpServletResponse.SC_CREATED);
-		out = resp.getWriter();
-		UrlRequest urlRequest = new UrlRequest(req);
-
-		PageDAO pageDAO = new PageDAO();
-		AppPage page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
-
-		DataReader dao = new DataReader();
-		PageContent results = dao.getContent(page, urlRequest);
-
-		out.print(PageContentUtility.convertToJSON(results));
-		out.flush();
-		return;
-	}
-	
 }

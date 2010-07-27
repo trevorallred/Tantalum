@@ -12,14 +12,16 @@ import java.util.Set;
 
 import tantalum.DatabaseException;
 import tantalum.entities.AppField;
+import tantalum.entities.AppView;
 import tantalum.util.Strings;
 
-
 /**
- * A single line returned in a query. This extends PageContent which means a line can also have 1 or more child views associated with that data.
+ * A single line returned in a query. This extends PageContent which means a
+ * line can also have 1 or more child views associated with that data.
  */
 public class PageContentBean extends PageContent {
 	private Map<String, Object> values = new HashMap<String, Object>();
+	private AppView view = null;
 
 	public PageContentBean(ResultSet rs, Set<String> columnNames)
 			throws DatabaseException {
@@ -35,7 +37,7 @@ public class PageContentBean extends PageContent {
 	public void setValue(String columnName, String value) {
 		values.put(columnName, value);
 	}
-	
+
 	public Set<String> getFieldNames() {
 		return values.keySet();
 	}
@@ -50,7 +52,7 @@ public class PageContentBean extends PageContent {
 	public String getString(AppField field) {
 		return getString(field.getName());
 	}
-	
+
 	public String getString(String columnName) {
 		Object value = values.get(columnName);
 		if (value == null)
@@ -77,6 +79,14 @@ public class PageContentBean extends PageContent {
 		if ("Yes".equalsIgnoreCase(getString(columnName)))
 			return true;
 		return false;
+	}
+
+	public AppView getView() {
+		return view;
+	}
+
+	public void setView(AppView view) {
+		this.view = view;
 	}
 
 }

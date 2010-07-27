@@ -29,6 +29,9 @@ public class AppView extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "referenceID")
 	private AppReference reference;
+	private boolean allowAdd;
+	private boolean allowEdit;
+	private boolean allowDelete;
 
 	@OneToMany(mappedBy = "view")
 	private List<AppField> fields = new ArrayList<AppField>();
@@ -90,6 +93,30 @@ public class AppView extends BaseTable {
 
 	public void setReference(AppReference reference) {
 		this.reference = reference;
+	}
+
+	public boolean isAllowAdd() {
+		return allowAdd;
+	}
+
+	public void setAllowAdd(boolean allowAdd) {
+		this.allowAdd = allowAdd;
+	}
+
+	public boolean isAllowEdit() {
+		return allowEdit;
+	}
+
+	public void setAllowEdit(boolean allowEdit) {
+		this.allowEdit = allowEdit;
+	}
+
+	public boolean isAllowDelete() {
+		return allowDelete;
+	}
+
+	public void setAllowDelete(boolean allowDelete) {
+		this.allowDelete = allowDelete;
 	}
 
 	public List<AppField> getFields() {

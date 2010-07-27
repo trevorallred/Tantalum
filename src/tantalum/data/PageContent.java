@@ -27,10 +27,6 @@ public class PageContent {
 		return views.get(viewName);
 	}
 
-	public void addViewContent(String viewName, List<PageContentBean> list) {
-		views.put(viewName, new ViewContent(list));
-	}
-	
 	public void addChildContent(AppView childView, PageContentBean childContent) {
 		if (!views.containsKey(childView.getName()))
 			views.put(childView.getName(), new ViewContent());
