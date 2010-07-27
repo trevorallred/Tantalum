@@ -21,8 +21,8 @@ DROP TABLE IF EXISTS `dd_column`;
 
 CREATE TABLE `dd_column` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
   `tableID` int(11) unsigned NOT NULL,
@@ -34,12 +34,34 @@ CREATE TABLE `dd_column` (
   `precision` tinyint(4) DEFAULT NULL,
   `dbName` varchar(50) NOT NULL,
   `label` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tableName` (`tableID`,`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 /*Data for the table `dd_column` */
 
-insert  into `dd_column`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`tableID`,`name`,`required`,`displayOrder`,`columnType`,`size`,`precision`,`dbName`,`label`) values (1,NULL,NULL,NULL,NULL,1,'TableID',1,10,'int',11,NULL,'id',NULL),(2,NULL,NULL,NULL,NULL,1,'Name',1,20,'varchar',50,NULL,'name',NULL),(3,NULL,NULL,NULL,NULL,1,'DatabaseName',1,30,'varchar',50,NULL,'dbName',NULL),(4,NULL,NULL,NULL,NULL,4,'PageID',1,10,'int',11,NULL,'id',''),(5,NULL,NULL,NULL,NULL,4,'Name',1,20,'varchar',50,NULL,'name',NULL),(6,NULL,NULL,NULL,NULL,4,'URL',1,30,'varchar',50,NULL,'url',NULL),(7,NULL,NULL,NULL,NULL,2,'Name',1,10,'varchar',50,NULL,'name',NULL),(8,NULL,NULL,NULL,NULL,2,'ColumnID',1,5,'int',11,NULL,'id',NULL),(9,NULL,NULL,NULL,NULL,2,'TableID',1,20,'int',11,NULL,'tableID',NULL),(10,NULL,NULL,NULL,NULL,2,'Required',1,30,'boolean',NULL,NULL,'required',NULL),(11,NULL,NULL,NULL,NULL,2,'DisplayOrder',1,40,'int',11,NULL,'displayOrder',NULL),(12,NULL,NULL,NULL,NULL,6,'ViewID',1,10,'int',11,NULL,'id',NULL),(13,NULL,NULL,NULL,NULL,6,'PageID',1,20,'int',11,NULL,'pageID',NULL),(14,NULL,NULL,NULL,NULL,3,'JoinID',1,10,'int',11,NULL,'id',NULL),(15,NULL,NULL,NULL,NULL,3,'FromTableID',1,20,'int',11,NULL,'fromTableID',NULL),(16,NULL,NULL,NULL,NULL,3,'ToTableID',1,30,'int',11,NULL,'toTableID',NULL),(17,NULL,NULL,NULL,NULL,6,'resultsPerPage',0,0,'int',NULL,NULL,'resultsPerPage',NULL);
+insert  into `dd_column`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`tableID`,`name`,`required`,`displayOrder`,`columnType`,`size`,`precision`,`dbName`,`label`) values (1,NULL,NULL,NULL,NULL,1,'TableID',1,10,'int',11,NULL,'id',NULL),(2,NULL,NULL,NULL,NULL,1,'Name',1,20,'varchar',50,NULL,'name',NULL),(3,NULL,NULL,NULL,NULL,1,'DatabaseName',1,30,'varchar',50,NULL,'dbName',NULL),(4,NULL,NULL,NULL,NULL,4,'PageID',1,10,'int',11,NULL,'id',''),(5,NULL,NULL,NULL,NULL,4,'Name',1,20,'varchar',50,NULL,'name',NULL),(6,NULL,NULL,NULL,NULL,4,'Title',1,30,'varchar',50,NULL,'label',NULL),(7,NULL,NULL,NULL,NULL,2,'Name',1,10,'varchar',50,NULL,'name',NULL),(8,NULL,NULL,NULL,NULL,2,'ColumnID',1,5,'int',11,NULL,'id',NULL),(9,NULL,NULL,NULL,NULL,2,'TableID',1,20,'int',11,NULL,'tableID',NULL),(10,NULL,NULL,NULL,NULL,2,'Required',1,30,'boolean',NULL,NULL,'required',NULL),(11,NULL,NULL,NULL,NULL,2,'DisplayOrder',1,40,'int',11,NULL,'displayOrder',NULL),(12,NULL,NULL,NULL,NULL,6,'ViewID',1,10,'int',11,NULL,'id',NULL),(13,NULL,NULL,NULL,NULL,6,'PageID',1,20,'int',11,NULL,'pageID',NULL),(14,NULL,NULL,NULL,NULL,3,'JoinID',1,10,'int',11,NULL,'id',NULL),(15,NULL,NULL,NULL,NULL,3,'FromTableID',1,20,'int',11,NULL,'fromTableID',NULL),(16,NULL,NULL,NULL,NULL,3,'ToTableID',1,30,'int',11,NULL,'toTableID',NULL),(17,NULL,NULL,NULL,NULL,6,'ResultsPerPage',0,30,'int',NULL,NULL,'resultsPerPage',NULL),(18,NULL,NULL,NULL,NULL,2,'Database',0,50,'varchar',50,NULL,'dbName',NULL),(19,NULL,NULL,NULL,NULL,6,'BasisTableID',0,60,'int',11,NULL,'basisTableID',NULL),(20,NULL,NULL,NULL,NULL,6,'Name',1,70,'varchar',50,NULL,'name',NULL),(21,NULL,NULL,NULL,NULL,6,'ParentID',0,80,'int',11,NULL,'parentID',NULL),(22,NULL,NULL,NULL,NULL,6,'ReferenceID',0,90,'int',11,NULL,'referenceID',NULL);
+
+/*Table structure for table `dd_database` */
+
+DROP TABLE IF EXISTS `dd_database`;
+
+CREATE TABLE `dd_database` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `server` varchar(50) DEFAULT NULL,
+  `database` varchar(50) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+/*Data for the table `dd_database` */
+
+insert  into `dd_database`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`server`,`database`,`username`,`password`) values (1,NULL,NULL,NULL,NULL,'localhost','tenfold','root','');
 
 /*Table structure for table `dd_field` */
 
@@ -47,8 +69,8 @@ DROP TABLE IF EXISTS `dd_field`;
 
 CREATE TABLE `dd_field` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
   `viewID` int(11) unsigned NOT NULL,
@@ -62,14 +84,15 @@ CREATE TABLE `dd_field` (
   `searchable` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `linkToFieldID` int(11) unsigned DEFAULT NULL,
   `linkFromFieldID` int(11) unsigned DEFAULT NULL,
-  `sectionID` int(11) unsigned DEFAULT NULL,
-  `displayType` char(2) DEFAULT NULL,
+  `displayType` varchar(20) DEFAULT NULL,
+  `regionID` int(11) unsigned DEFAULT NULL,
+  `valueScript` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 /*Data for the table `dd_field` */
 
-insert  into `dd_field`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`viewID`,`name`,`basisColumnID`,`referenceID`,`visible`,`label`,`displayOrder`,`editable`,`searchable`,`linkToFieldID`,`linkFromFieldID`,`sectionID`,`displayType`) values (1,NULL,NULL,NULL,NULL,1,'ManageTablesTableID',1,NULL,0,'ID',10,0,0,NULL,NULL,NULL,NULL),(2,NULL,NULL,NULL,NULL,1,'ManageTablesName',2,NULL,1,'Table name',20,0,1,4,1,NULL,NULL),(3,NULL,NULL,NULL,NULL,1,'ManageTablesDatabaseName',3,NULL,1,'DB name',30,0,1,NULL,NULL,NULL,NULL),(4,NULL,NULL,NULL,NULL,2,'DefineTableTableID',1,NULL,1,'ID',10,0,0,NULL,NULL,NULL,NULL),(5,NULL,NULL,NULL,NULL,2,'DefineTableName',2,NULL,1,'Table name',20,1,0,NULL,NULL,NULL,NULL),(6,NULL,NULL,NULL,NULL,2,'DefineTableDatabaseName',3,NULL,1,'DB name',30,1,0,NULL,NULL,NULL,NULL),(7,NULL,NULL,NULL,NULL,3,'WebpageListID',4,NULL,0,'ID',10,1,0,NULL,NULL,NULL,NULL),(8,NULL,NULL,NULL,NULL,3,'WebpageListName',5,NULL,1,'Name',10,1,1,10,7,NULL,NULL),(9,NULL,NULL,NULL,NULL,3,'WebpageListUrl',6,NULL,0,'URL',10,1,1,NULL,NULL,NULL,NULL),(10,NULL,NULL,NULL,NULL,4,'DefineWebpagePageID',4,NULL,1,'ID',10,0,0,NULL,NULL,NULL,NULL),(11,NULL,NULL,NULL,NULL,4,'DefineWebpageName',5,NULL,1,'Webpage name',10,1,0,NULL,NULL,NULL,NULL),(12,NULL,NULL,NULL,NULL,4,'DefineWebpageURL',6,NULL,1,'URL',10,1,0,NULL,NULL,NULL,NULL),(13,NULL,NULL,NULL,NULL,8,'DefineTableColumnName',7,NULL,1,'Name',20,1,0,NULL,NULL,NULL,NULL),(14,NULL,NULL,NULL,NULL,8,'DefineTableColumnID',8,NULL,1,'Column ID',10,1,0,NULL,NULL,NULL,NULL),(15,NULL,NULL,NULL,NULL,8,'DefineTableColumnRequired',10,NULL,1,'Required',30,1,0,NULL,NULL,NULL,NULL),(16,NULL,NULL,NULL,NULL,8,'DefineTableColumnDisplayOrder',11,NULL,1,'Order',15,1,0,NULL,NULL,NULL,NULL),(17,NULL,NULL,NULL,NULL,10,'DefineTableJoinFromTableID',15,NULL,1,'From table',10,1,0,NULL,NULL,NULL,NULL),(18,NULL,NULL,NULL,NULL,10,'DefineTableJoinJoinID',14,NULL,1,'Join ID',10,1,0,NULL,NULL,NULL,NULL),(19,NULL,NULL,NULL,NULL,9,'DefineWebpageViewViewID',12,NULL,1,'View ID',10,1,0,NULL,NULL,NULL,NULL),(20,NULL,NULL,NULL,NULL,10,'DefineTableJoinToTableID',16,NULL,1,'To ',10,1,0,NULL,NULL,NULL,NULL);
+insert  into `dd_field`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`viewID`,`name`,`basisColumnID`,`referenceID`,`visible`,`label`,`displayOrder`,`editable`,`searchable`,`linkToFieldID`,`linkFromFieldID`,`displayType`,`regionID`,`valueScript`) values (1,NULL,NULL,NULL,NULL,1,'ManageTablesTableID',1,NULL,1,'ID',10,0,0,NULL,NULL,'Text',1,NULL),(2,NULL,NULL,NULL,NULL,1,'ManageTablesName',2,NULL,1,'Table name',20,0,1,4,1,'Text',1,NULL),(3,NULL,NULL,NULL,NULL,1,'ManageTablesDatabaseName',3,NULL,1,'DB name',30,0,1,NULL,NULL,'Text',1,NULL),(4,NULL,NULL,NULL,NULL,2,'DefineTableTableID',1,NULL,1,'ID',10,0,0,NULL,NULL,'Text',2,NULL),(5,NULL,NULL,NULL,NULL,2,'DefineTableName',2,NULL,1,'Table name',20,1,0,NULL,NULL,'Text',2,NULL),(6,NULL,NULL,NULL,NULL,2,'DefineTableDatabaseName',3,NULL,1,'DB name',30,1,0,NULL,NULL,'Text',2,NULL),(7,NULL,NULL,NULL,NULL,3,'WebpageListID',4,NULL,0,'ID',10,1,0,NULL,NULL,'Text',NULL,NULL),(8,NULL,NULL,NULL,NULL,3,'WebpageListName',5,NULL,1,'Name',10,1,1,10,7,'Text',NULL,NULL),(9,NULL,NULL,NULL,NULL,3,'WebpageListUrl',6,NULL,0,'URL',10,1,1,NULL,NULL,'Text',NULL,NULL),(10,NULL,NULL,NULL,NULL,4,'DefineWebpagePageID',4,NULL,1,'ID',10,0,0,NULL,NULL,'Text',4,NULL),(11,NULL,NULL,NULL,NULL,4,'DefineWebpageName',5,NULL,1,'Webpage name',10,1,0,NULL,NULL,'Text',4,NULL),(12,NULL,NULL,NULL,NULL,4,'DefineWebpageURL',6,NULL,1,'URL',10,1,0,NULL,NULL,'Text',4,NULL),(13,NULL,NULL,NULL,NULL,8,'DefineTableColumnName',7,NULL,1,'Name',20,1,0,NULL,NULL,'Text',5,NULL),(14,NULL,NULL,NULL,NULL,8,'DefineTableColumnID',8,NULL,1,'ID',10,0,0,NULL,NULL,'Text',5,NULL),(15,NULL,NULL,NULL,NULL,8,'DefineTableColumnRequired',10,NULL,1,'Required',30,1,0,NULL,NULL,'Checkbox',5,NULL),(16,NULL,NULL,NULL,NULL,8,'DefineTableColumnDisplayOrder',11,NULL,1,'Order',15,1,0,NULL,NULL,'Text',5,NULL),(17,NULL,NULL,NULL,NULL,10,'DefineTableJoinFromTableID',15,NULL,1,'From table',10,1,0,NULL,NULL,'Text',6,NULL),(18,NULL,NULL,NULL,NULL,10,'DefineTableJoinJoinID',14,NULL,0,'Join ID',10,1,0,NULL,NULL,'Text',6,NULL),(19,NULL,NULL,NULL,NULL,9,'DefineWebpageViewViewID',12,NULL,1,'View ID',10,1,0,NULL,NULL,'Text',NULL,NULL),(20,NULL,NULL,NULL,NULL,10,'DefineTableJoinToTableID',16,NULL,1,'To table',10,1,0,NULL,NULL,'Text',6,NULL),(21,NULL,NULL,NULL,NULL,10,'DefineTableJoinToTableName',2,3,1,'To table',10,1,0,NULL,NULL,'Text',6,NULL),(22,NULL,NULL,NULL,NULL,8,'DefineTableColumnDbName',18,NULL,1,'Database',40,1,0,NULL,NULL,'Text',5,NULL),(23,NULL,NULL,NULL,NULL,9,'DefineWebpageViewName',20,NULL,1,'Name',20,1,0,NULL,NULL,'Text',NULL,NULL),(24,NULL,NULL,NULL,NULL,8,'DefineTableColumnTableID',9,NULL,0,'TableID',10,1,0,NULL,NULL,'Text',5,NULL);
 
 /*Table structure for table `dd_join` */
 
@@ -77,8 +100,8 @@ DROP TABLE IF EXISTS `dd_join`;
 
 CREATE TABLE `dd_join` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
   `joinType` char(2) NOT NULL,
@@ -87,11 +110,11 @@ CREATE TABLE `dd_join` (
   `toTableID` int(11) unsigned NOT NULL,
   `parentName` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Data for the table `dd_join` */
 
-insert  into `dd_join`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`joinType`,`fromTableID`,`childName`,`toTableID`,`parentName`) values (1,NULL,NULL,NULL,NULL,'OM',2,'Columns',1,'Table'),(2,NULL,NULL,NULL,NULL,'OM',3,'Joins',1,'Table'),(3,NULL,NULL,NULL,NULL,'OM',6,'Views',4,'Page'),(4,NULL,NULL,NULL,NULL,'OM',5,'Field',6,'View');
+insert  into `dd_join`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`joinType`,`fromTableID`,`childName`,`toTableID`,`parentName`) values (1,NULL,NULL,NULL,NULL,'OM',2,'Columns',1,'Table'),(2,NULL,NULL,NULL,NULL,'OM',3,'ParentJoins',1,'FromTable'),(3,NULL,NULL,NULL,NULL,'OM',6,'Views',4,'Page'),(4,NULL,NULL,NULL,NULL,'OM',5,'Field',6,'View'),(5,NULL,NULL,NULL,NULL,'OM',3,'ChildJoins',1,'ToTable');
 
 /*Table structure for table `dd_join_column` */
 
@@ -99,37 +122,80 @@ DROP TABLE IF EXISTS `dd_join_column`;
 
 CREATE TABLE `dd_join_column` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
   `joinID` int(11) unsigned NOT NULL,
   `fromColumnID` int(11) unsigned DEFAULT NULL,
-  `toColumnID` int(11) unsigned DEFAULT NULL,
+  `fromText` varchar(50) DEFAULT NULL,
+  `toColumnID` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Data for the table `dd_join_column` */
 
-insert  into `dd_join_column`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`joinID`,`fromColumnID`,`toColumnID`) values (1,NULL,NULL,NULL,NULL,1,9,1),(2,NULL,NULL,NULL,NULL,2,15,1),(3,NULL,NULL,NULL,NULL,3,13,4),(4,NULL,NULL,NULL,NULL,4,16,1);
+insert  into `dd_join_column`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`joinID`,`fromColumnID`,`fromText`,`toColumnID`) values (1,NULL,NULL,NULL,NULL,1,9,NULL,1),(2,NULL,NULL,NULL,NULL,2,15,NULL,1),(3,NULL,NULL,NULL,NULL,3,13,NULL,4),(4,NULL,NULL,NULL,NULL,4,16,NULL,1),(5,NULL,NULL,NULL,NULL,5,16,NULL,1);
 
-/*Table structure for table `dd_page_section` */
+/*Table structure for table `dd_menu` */
 
-DROP TABLE IF EXISTS `dd_page_section`;
+DROP TABLE IF EXISTS `dd_menu`;
 
-CREATE TABLE `dd_page_section` (
+CREATE TABLE `dd_menu` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
-  `pageID` int(11) unsigned NOT NULL,
-  `label` varchar(11) DEFAULT NULL,
-  `sectionType` char(2) DEFAULT NULL,
+  `name` varchar(50) NOT NULL,
+  `label` varchar(50) DEFAULT NULL,
+  `databaseID` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `dd_page_section` */
+/*Data for the table `dd_menu` */
+
+/*Table structure for table `dd_page` */
+
+DROP TABLE IF EXISTS `dd_page`;
+
+CREATE TABLE `dd_page` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `label` varchar(100) DEFAULT NULL,
+  `keyFieldID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+/*Data for the table `dd_page` */
+
+insert  into `dd_page`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`name`,`label`,`keyFieldID`) values (1,NULL,NULL,NULL,NULL,'ManageTables','Manage Tables',1),(2,NULL,NULL,NULL,NULL,'DefineTable','Define Table',4),(3,NULL,NULL,NULL,NULL,'WebpageList','List Webpages',7),(4,NULL,NULL,NULL,NULL,'DefineWebpage','Define Webpage',10);
+
+/*Table structure for table `dd_project` */
+
+DROP TABLE IF EXISTS `dd_project`;
+
+CREATE TABLE `dd_project` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `userTableID` int(11) DEFAULT NULL,
+  `usernameColumnID` int(11) DEFAULT NULL,
+  `passwordColumnID` int(11) DEFAULT NULL,
+  `projectCode` varchar(4) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+/*Data for the table `dd_project` */
+
+insert  into `dd_project`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`name`,`userTableID`,`usernameColumnID`,`passwordColumnID`,`projectCode`) values (1,NULL,NULL,NULL,NULL,'Tantalum Builder',NULL,NULL,NULL,'TB'),(2,NULL,NULL,NULL,NULL,'Northwind Demo',NULL,NULL,NULL,'NW');
 
 /*Table structure for table `dd_reference` */
 
@@ -137,8 +203,8 @@ DROP TABLE IF EXISTS `dd_reference`;
 
 CREATE TABLE `dd_reference` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
   `viewID` int(11) unsigned NOT NULL,
@@ -151,7 +217,45 @@ CREATE TABLE `dd_reference` (
 
 /*Data for the table `dd_reference` */
 
-insert  into `dd_reference`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`viewID`,`joinID`,`parentID`,`name`,`queryOrder`) values (1,NULL,NULL,NULL,NULL,8,1,NULL,'ColumnToTable',0),(2,NULL,NULL,NULL,NULL,9,3,NULL,'ViewToPage',1),(3,NULL,NULL,NULL,NULL,10,2,NULL,'JoinToParentTable',0),(4,NULL,NULL,NULL,NULL,10,4,NULL,'JoinToChildTable',0);
+insert  into `dd_reference`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`viewID`,`joinID`,`parentID`,`name`,`queryOrder`) values (1,NULL,NULL,NULL,NULL,8,1,NULL,'ColumnToTable',0),(2,NULL,NULL,NULL,NULL,9,3,NULL,'ViewToPage',1),(3,NULL,NULL,NULL,NULL,10,5,NULL,'JoinToParentTable',0),(4,NULL,NULL,NULL,NULL,10,2,NULL,'JoinToChildTable',0);
+
+/*Table structure for table `dd_region` */
+
+DROP TABLE IF EXISTS `dd_region`;
+
+CREATE TABLE `dd_region` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `pageID` int(11) unsigned NOT NULL,
+  `label` varchar(100) DEFAULT NULL,
+  `regionType` varchar(50) DEFAULT NULL,
+  `parentID` int(11) unsigned DEFAULT NULL,
+  `displayOrder` int(11) NOT NULL,
+  `viewID` int(11) unsigned DEFAULT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+/*Data for the table `dd_region` */
+
+insert  into `dd_region`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`pageID`,`label`,`regionType`,`parentID`,`displayOrder`,`viewID`,`name`) values (1,NULL,NULL,NULL,NULL,1,'Tables','BasicTable',NULL,1,1,'ManageTables'),(2,NULL,NULL,NULL,NULL,2,'Table','FormRegion',7,10,2,'Tables'),(3,NULL,NULL,NULL,NULL,3,NULL,'FormRegion',NULL,1,NULL,'ManageTables'),(4,NULL,NULL,NULL,NULL,4,'Webpages','FormRegion',NULL,1,4,'Webpage'),(5,NULL,NULL,NULL,NULL,2,'Columns','BasicTable',8,1,8,'Columns'),(6,NULL,NULL,NULL,NULL,2,'Joins to children','BasicTable',8,1,10,'Join'),(7,NULL,NULL,NULL,NULL,2,NULL,'VerticalContainer',NULL,1,NULL,'ManageTables'),(8,NULL,NULL,NULL,NULL,2,NULL,'HorizontalContainer',7,20,NULL,'JoinColumnContainer'),(9,NULL,NULL,NULL,NULL,4,'Views','BasicTable',4,10,8,'Views');
+
+/*Table structure for table `dd_sequence` */
+
+DROP TABLE IF EXISTS `dd_sequence`;
+
+CREATE TABLE `dd_sequence` (
+  `tableID` int(11) NOT NULL,
+  `nextID` int(11) NOT NULL DEFAULT '1',
+  `countBy` tinyint(4) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `dd_sequence` */
+
+insert  into `dd_sequence`(`tableID`,`nextID`,`countBy`) values (1,1,1),(2,1,1),(3,1,1),(4,1,1),(5,1,1),(6,1,1),(8,1,1);
 
 /*Table structure for table `dd_smart_codes` */
 
@@ -173,18 +277,39 @@ DROP TABLE IF EXISTS `dd_table`;
 
 CREATE TABLE `dd_table` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
   `name` varchar(50) NOT NULL,
   `dbName` varchar(50) NOT NULL,
+  `projectID` int(11) unsigned DEFAULT NULL,
+  `databaseID` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 /*Data for the table `dd_table` */
 
-insert  into `dd_table`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`name`,`dbName`) values (1,NULL,NULL,NULL,NULL,'Table','dd_table'),(2,NULL,NULL,NULL,NULL,'Column','dd_column'),(3,NULL,NULL,NULL,NULL,'Join','dd_join'),(4,NULL,NULL,NULL,NULL,'WebPages','dd_webpage'),(5,NULL,NULL,NULL,NULL,'Field','dd_field'),(6,NULL,NULL,NULL,NULL,'View','dd_view');
+insert  into `dd_table`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`name`,`dbName`,`projectID`,`databaseID`) values (1,NULL,NULL,NULL,NULL,'Table','dd_table',NULL,NULL),(2,NULL,NULL,NULL,NULL,'Column','dd_column',NULL,NULL),(3,NULL,NULL,NULL,NULL,'Join','dd_join',NULL,NULL),(4,NULL,NULL,NULL,NULL,'WebPages','dd_page',NULL,NULL),(5,NULL,NULL,NULL,NULL,'Field','dd_field',NULL,NULL),(6,NULL,NULL,NULL,NULL,'View','dd_view',NULL,NULL),(8,NULL,NULL,NULL,NULL,'SmartCodes','dd_smart_codes',NULL,NULL),(9,NULL,NULL,NULL,NULL,'User','dd_user',NULL,NULL);
+
+/*Table structure for table `dd_user` */
+
+DROP TABLE IF EXISTS `dd_user`;
+
+CREATE TABLE `dd_user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+/*Data for the table `dd_user` */
+
+insert  into `dd_user`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`username`,`password`) values (1,NULL,NULL,NULL,NULL,'tallred',NULL);
 
 /*Table structure for table `dd_view` */
 
@@ -192,8 +317,8 @@ DROP TABLE IF EXISTS `dd_view`;
 
 CREATE TABLE `dd_view` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
   `creationDate` datetime DEFAULT NULL,
   `updateDate` datetime DEFAULT NULL,
   `pageID` int(11) unsigned NOT NULL,
@@ -203,33 +328,16 @@ CREATE TABLE `dd_view` (
   `parentID` int(11) unsigned DEFAULT NULL,
   `referenceID` int(11) unsigned DEFAULT NULL,
   `queryOrder` smallint(6) NOT NULL DEFAULT '0',
+  `label` varchar(100) DEFAULT NULL,
+  `allowAdd` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `allowEdit` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `allowDelete` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 /*Data for the table `dd_view` */
 
-insert  into `dd_view`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`pageID`,`resultsPerPage`,`basisTableID`,`name`,`parentID`,`referenceID`,`queryOrder`) values (1,NULL,NULL,NULL,NULL,1,100,1,'ManageTables',NULL,NULL,0),(2,NULL,NULL,NULL,NULL,2,1,1,'DefineTable',NULL,NULL,0),(3,NULL,NULL,NULL,NULL,3,100,4,'WebpageList',NULL,NULL,0),(4,NULL,NULL,NULL,NULL,4,1,4,'DefineWebpage',NULL,NULL,0),(8,NULL,NULL,NULL,NULL,2,0,2,'DefineTableColumn',2,1,0),(9,NULL,NULL,NULL,NULL,4,0,6,'DefineWebpageView',4,2,0),(10,NULL,NULL,NULL,NULL,2,0,3,'DefineTableJoinParent',2,3,0),(11,NULL,NULL,NULL,NULL,22,0,3,'DefineTableJoinChild',2,3,0);
-
-/*Table structure for table `dd_webpage` */
-
-DROP TABLE IF EXISTS `dd_webpage`;
-
-CREATE TABLE `dd_webpage` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
-  `creationDate` datetime DEFAULT NULL,
-  `updateDate` datetime DEFAULT NULL,
-  `name` varchar(100) NOT NULL,
-  `url` varchar(50) NOT NULL,
-  `title` varchar(100) DEFAULT NULL,
-  `keyFieldID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
-/*Data for the table `dd_webpage` */
-
-insert  into `dd_webpage`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`name`,`url`,`title`,`keyFieldID`) values (1,NULL,NULL,NULL,NULL,'ManageTables','tables','Manage Tables',1),(2,NULL,NULL,NULL,NULL,'DefineTable','table','Define Table',4),(3,NULL,NULL,NULL,NULL,'WebpageList','webpages','List Webpages',7),(4,NULL,NULL,NULL,NULL,'DefineWebpage','webpage','Define Webpage',10);
+insert  into `dd_view`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`pageID`,`resultsPerPage`,`basisTableID`,`name`,`parentID`,`referenceID`,`queryOrder`,`label`,`allowAdd`,`allowEdit`,`allowDelete`) values (1,NULL,NULL,NULL,NULL,1,100,1,'ManageTables',NULL,NULL,0,NULL,0,0,0),(2,NULL,NULL,NULL,NULL,2,10,1,'DefineTable',NULL,NULL,0,NULL,1,1,1),(3,NULL,NULL,NULL,NULL,3,100,4,'WebpageList',NULL,NULL,0,NULL,1,1,1),(4,NULL,NULL,NULL,NULL,4,1,4,'DefineWebpage',NULL,NULL,0,NULL,1,1,1),(8,NULL,NULL,NULL,NULL,2,0,2,'DefineTableColumn',2,1,0,NULL,1,1,1),(9,NULL,NULL,NULL,NULL,4,0,6,'DefineWebpageView',4,2,0,NULL,1,1,1),(10,NULL,NULL,NULL,NULL,2,0,3,'DefineTableJoinParent',2,4,0,NULL,1,1,1),(11,NULL,NULL,NULL,NULL,22,0,3,'DefineTableJoinChild',2,3,0,NULL,1,1,1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
