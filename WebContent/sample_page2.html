@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Define Table</title>
+<link rel="stylesheet" href="/Tantalum/themes/default/style.css" type="text/css" media="screen" charset="utf-8"/> 
+<link rel="stylesheet" href="/Tantalum/themes/default/print.css" type="text/css" media="print"> 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="/Tantalum/js/main.js"></script>
+<script type="text/javascript">
+
+var json;
+
+$(document).ready(function() {
+	jQuery.getJSON('/Tantalum/ws/DefineTable/',
+		function(jsonCallback) {
+			json = jsonCallback;
+						rows_DefineTable = json.DefineTable;
+			position_DefineTable();
+					}
+	);
+});
+
+	var rows_DefineTable = null;
+	function nav_DefineTable(amount) {
+		if (rows_DefineTable == null)
+			return false;
+
+		var r = rows_DefineTable;
+		var maxPosition = r.DATA.length - 1;
+		
+		r.POSITION += amount;
+		if (r.POSITION < 0)
+			r.POSITION = 0;
+		if (r.POSITION > maxPosition)
+			r.POSITION = maxPosition;
+
+		position_DefineTable(r);
+		return false;
+	}
+
+	function position_DefineTable() {
+		// first paint all child regions (not recursively), and then position all child views (recursively)
+									paint_Tables();
+							
+		if (rows_DefineTable == undefined)
+			return;
+	
+		var row = rows_DefineTable.DATA[rows_DefineTable.POSITION];
+		
+					rows_DefineTableColumn = row.CHILDREN.DefineTableColumn;
+			position_DefineTableColumn();
+					rows_DefineTableJoinParent = row.CHILDREN.DefineTableJoinParent;
+			position_DefineTableJoinParent();
+			}
+	var rows_DefineTableColumn = null;
+	function nav_DefineTableColumn(amount) {
+		if (rows_DefineTableColumn == null)
+			return false;
+
+		var r = rows_DefineTableColumn;
+		var maxPosition = r.DATA.length - 1;
+		
+		r.POSITION += amount;
+		if (r.POSITION < 0)
+			r.POSITION = 0;
+		if (r.POSITION > maxPosition)
+			r.POSITION = maxPosition;
+
+		position_DefineTableColumn(r);
+		return false;
+	}
+
+	function position_DefineTableColumn() {
+		// first paint all child regions (not recursively), and then position all child views (recursively)
+									paint_Columns();
+												paint_Views();
+							
+		if (rows_DefineTableColumn == undefined)
+			return;
+	
+		var row = rows_DefineTableColumn.DATA[rows_DefineTableColumn.POSITION];
+		
+			}
+	var rows_DefineTableJoinParent = null;
+	function nav_DefineTableJoinParent(amount) {
+		if (rows_DefineTableJoinParent == null)
+			return false;
+
+		var r = rows_DefineTableJoinParent;
+		var maxPosition = r.DATA.length - 1;
+		
+		r.POSITION += amount;
+		if (r.POSITION < 0)
+			r.POSITION = 0;
+		if (r.POSITION > maxPosition)
+			r.POSITION = maxPosition;
+
+		position_DefineTableJoinParent(r);
+		return false;
+	}
+
+	function position_DefineTableJoinParent() {
+		// first paint all child regions (not recursively), and then position all child views (recursively)
+									paint_Join();
+							
+		if (rows_DefineTableJoinParent == undefined)
+			return;
+	
+		var row = rows_DefineTableJoinParent.DATA[rows_DefineTableJoinParent.POSITION];
+		
+			}
+
+</script>
+</head>
+<body>
+[<a href='/Tantalum/t/ManageTables'>Manage Tables</a>]
+[<a href='/Tantalum/t/WebpageList'>List Web Pages</a>]
+
+
+<h1>Define Table</h1>
+
+<div id="ManageTables" class="region VerticalContainer">
+			<div id="Tables" class="region FormRegion">
+<h2>Table</h2>
+	<div id="TablesNavigation">
+	<button id="previousDefineTable" onclick="return nav_DefineTable(-1);">Previous</button>
+	<button id="nextDefineTable" onclick="return nav_DefineTable(1);">Next</button>
+</div>
+
+<ul>
+	<li><label>ID:</label>
+			<span class="DefineTableTableID"></span>
+		</li>
+	<li><label>Table name:</label>
+			<input type="text" class="DefineTableName" name="DefineTableName">
+		</li>
+	<li><label>DB name:</label>
+
+			<input type="text" class="DefineTableDatabaseName" name="DefineTableDatabaseName">
+		</li>
+</ul>
+
+<script type="text/javascript">
+	function paintButtons_Tables() {
+		var rows = rows_DefineTable;
+		if ($(rows).length > 0) {
+			$('#previousDefineTable').attr("disabled", (rows.POSITION == 0));
+			$('#nextDefineTable').attr("disabled", (rows.POSITION == rows.DATA.length - 1));
+		} else {
+			$('#previousDefineTable').attr("disabled", true);
+			$('#nextDefineTable').attr("disabled", true);
+		}
+	}
+
+	function paint_Tables() {
+		paintButtons_Tables();
+		
+		var row = rows_DefineTable.DATA[rows_DefineTable.POSITION];
+		
+									$("#Tables").find('.DefineTableTableID').html(row.FIELDS.DefineTableTableID);
+												$("#Tables").find('.DefineTableName').val(row.FIELDS.DefineTableName);
+												$("#Tables").find('.DefineTableDatabaseName').val(row.FIELDS.DefineTableDatabaseName);
+						}
+</script>
+</div>
+			<div id="JoinColumnContainer" class="region HorizontalContainer">
+	<table class="horizontalContainer">
+	<tr>
+			<td><div id="Columns" class="region BasicTable">
+
+<h2>Columns</h2>
+	<table class="basicTable">
+<thead>
+<tr>
+	<th></th>
+	<th><a href='#'>ID</a></th>
+	<th><a href='#'>Order</a></th>
+	<th><a href='#'>Name</a></th>
+
+	<th><a href='#'>Required</a></th>
+	<th><a href='#'>Database</a></th>
+</tr>
+</thead>
+<tbody>
+	<tr class='template view'>
+		<td class="actionButtons">
+							<a href="#" class="edit" title="Edit">Edit</a>
+										<a href="#" class="delete" title="Delete">Delete</a>
+
+					</td>
+						<td class="DefineTableColumnID">DefineTableColumnID</td>
+								<td class="DefineTableColumnDisplayOrder">DefineTableColumnDisplayOrder</td>
+								<td class="DefineTableColumnName">DefineTableColumnName</td>
+								<td><input type="checkbox" class="DefineTableColumnRequired" name="DefineTableColumnRequired" disabled="disabled"></td>
+								<td class="DefineTableColumnDbName">DefineTableColumnDbName</td>
+				</tr>
+
+			<tr class="template edit">
+			<td class="actionButtons">
+				<a href="#" class="save" title="Save">Save</a>
+				<a href="#" class="cancel" title="Cancel">Cancel</a>
+			</td>
+					<td>
+							<span class="DefineTableColumnID"></span>
+						</td>
+
+					<td>
+							<input type="text" class="DefineTableColumnDisplayOrder" name="DefineTableColumnDisplayOrder">
+						</td>
+					<td>
+							<input type="text" class="DefineTableColumnName" name="DefineTableColumnName">
+						</td>
+					<td>
+							<input type="checkbox" class="DefineTableColumnRequired" name="DefineTableColumnRequired">
+						</td>
+
+					<td>
+							<input type="text" class="DefineTableColumnDbName" name="DefineTableColumnDbName">
+						</td>
+				</tr>
+	</tbody>
+<tfoot>
+	<tr class='add'>
+		<td></td>
+		<td colspan="5">Add</td>
+
+	</tr>
+</tfoot>
+</table>
+
+<script type="text/javascript">
+	function paint_Columns() {
+		var tbody = $("#Columns").find("tbody");
+		
+		$(tbody).find("tr.data").remove();
+		var template = $(tbody).find('tr.template');
+		var rows = rows_DefineTableColumn;
+		if (rows != null) {
+			for ( var i = 0; i < rows.DATA.length; i++) {
+				addRow_Columns(tbody, template, rows.DATA[i].FIELDS);
+			}
+		}
+		
+		$(tbody).find("tr.data").dblclick(function() {
+			$(this).hide();
+			$(row).next("tr.edit").show();
+			return false;
+		});
+		
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(function() {
+			var row = $(this).parentsUntil('tbody')[1];
+			$(row).hide();
+			$(row).next("tr.edit").show();
+			return false;
+		});
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel").click(function() {
+			var row = $(this).parentsUntil('tbody')[1];
+			$(row).hide();
+			$(row).prev("tr.view").show();
+			return false;
+		});
+		
+		$(tbody).find("tr.edit").hide();
+		$(template).hide();
+	}
+	function addRow_Columns(tbody, template, row) {
+		var rowHTML = $(template).clone();
+		rowHTML.show();
+		rowHTML.addClass("data");
+		rowHTML.removeClass("template");
+																	$(rowHTML).find('td.DefineTableColumnID').html(row.DefineTableColumnID);
+																	$(rowHTML).find('input.DefineTableColumnTableID').val(row.DefineTableColumnTableID);
+												$(rowHTML).find('td.DefineTableColumnTableID').html(row.DefineTableColumnTableID);
+																	$(rowHTML).find('input.DefineTableColumnDisplayOrder').val(row.DefineTableColumnDisplayOrder);
+												$(rowHTML).find('td.DefineTableColumnDisplayOrder').html(row.DefineTableColumnDisplayOrder);
+																	$(rowHTML).find('input.DefineTableColumnName').val(row.DefineTableColumnName);
+												$(rowHTML).find('td.DefineTableColumnName').html(row.DefineTableColumnName);
+												$(rowHTML[1]).find('input.DefineTableColumnRequired').attr("checked",row.DefineTableColumnRequired==1 ? "checked" : "");
+																	$(rowHTML).find('input.DefineTableColumnDbName').val(row.DefineTableColumnDbName);
+												$(rowHTML).find('td.DefineTableColumnDbName').html(row.DefineTableColumnDbName);
+							tbody.append(rowHTML);
+	}
+</script>
+</div>
+</td>
+			<td><div id="Join" class="region BasicTable">
+<h2>Joins to children</h2>
+	<table class="basicTable">
+<thead>
+<tr>
+
+	<th></th>
+	<th><a href='#'>From table</a></th>
+	<th><a href='#'>To table</a></th>
+	<th><a href='#'>To table</a></th>
+</tr>
+</thead>
+<tbody>
+	<tr class='template view'>
+		<td class="actionButtons">
+
+							<a href="#" class="edit" title="Edit">Edit</a>
+										<a href="#" class="delete" title="Delete">Delete</a>
+					</td>
+						<td class="DefineTableJoinFromTableID">DefineTableJoinFromTableID</td>
+								<td class="DefineTableJoinToTableID">DefineTableJoinToTableID</td>
+								<td class="DefineTableJoinToTableName">DefineTableJoinToTableName</td>
+
+				</tr>
+			<tr class="template edit">
+			<td class="actionButtons">
+				<a href="#" class="save" title="Save">Save</a>
+				<a href="#" class="cancel" title="Cancel">Cancel</a>
+			</td>
+					<td>
+							<input type="text" class="DefineTableJoinFromTableID" name="DefineTableJoinFromTableID">
+
+						</td>
+					<td>
+							<input type="text" class="DefineTableJoinToTableID" name="DefineTableJoinToTableID">
+						</td>
+					<td>
+							<input type="text" class="DefineTableJoinToTableName" name="DefineTableJoinToTableName">
+						</td>
+				</tr>
+	</tbody>
+
+<tfoot>
+	<tr class='add'>
+		<td></td>
+		<td colspan="3">Add</td>
+	</tr>
+</tfoot>
+</table>
+
+<script type="text/javascript">
+	function paint_Join() {
+		var tbody = $("#Join").find("tbody");
+		
+		$(tbody).find("tr.data").remove();
+		var template = $(tbody).find('tr.template');
+		var rows = rows_DefineTableJoinParent;
+		if (rows != null) {
+			for ( var i = 0; i < rows.DATA.length; i++) {
+				addRow_Join(tbody, template, rows.DATA[i].FIELDS);
+			}
+		}
+		
+		$(tbody).find("tr.data").dblclick(function() {
+			$(this).hide();
+			$(row).next("tr.edit").show();
+			return false;
+		});
+		
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(function() {
+			var row = $(this).parentsUntil('tbody')[1];
+			$(row).hide();
+			$(row).next("tr.edit").show();
+			return false;
+		});
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel").click(function() {
+			var row = $(this).parentsUntil('tbody')[1];
+			$(row).hide();
+			$(row).prev("tr.view").show();
+			return false;
+		});
+		
+		$(tbody).find("tr.edit").hide();
+		$(template).hide();
+	}
+	function addRow_Join(tbody, template, row) {
+		var rowHTML = $(template).clone();
+		rowHTML.show();
+		rowHTML.addClass("data");
+		rowHTML.removeClass("template");
+														$(rowHTML).find('input.DefineTableJoinFromTableID').val(row.DefineTableJoinFromTableID);
+												$(rowHTML).find('td.DefineTableJoinFromTableID').html(row.DefineTableJoinFromTableID);
+																	$(rowHTML).find('input.DefineTableJoinJoinID').val(row.DefineTableJoinJoinID);
+												$(rowHTML).find('td.DefineTableJoinJoinID').html(row.DefineTableJoinJoinID);
+																	$(rowHTML).find('input.DefineTableJoinToTableID').val(row.DefineTableJoinToTableID);
+												$(rowHTML).find('td.DefineTableJoinToTableID').html(row.DefineTableJoinToTableID);
+																	$(rowHTML).find('input.DefineTableJoinToTableName').val(row.DefineTableJoinToTableName);
+												$(rowHTML).find('td.DefineTableJoinToTableName').html(row.DefineTableJoinToTableName);
+							tbody.append(rowHTML);
+	}
+</script>
+</div>
+</td>
+
+		</tr>
+	</table>
+</div>
+	</div>
+
+</body>
+</html>

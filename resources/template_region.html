@@ -1,4 +1,4 @@
-<div id="${region.name}" class="region">
+<div id="$region.name" class="region $region.regionType">
 #if( $region.label.length() > 0 )
 <h2>$region.label</h2>
 #end
@@ -8,7 +8,7 @@
 	#end
 #end
 #if( $region.regionType.horizontalContainer )
-	<table>
+	<table class="horizontalContainer">
 	<tr>
 	#foreach ( $region in $region.childRegions )
 		<td>#parse("template_region.html")</td>
@@ -17,62 +17,9 @@
 	</table>
 #end
 #if( $region.regionType.basicTable && $region.visibleFields.size() > 0 )
-	<table class="basicTable">
-	<thead>
-	<tr>
-	#foreach ($field in $region.visibleFields)
-		<th><a href='#'>$field.label</a></th>
-	#end
-		<th>Actions</th>
-	</tr>
-	</thead>
-	<tbody>
-		<tr class='template view'>
-		#foreach ($field in $region.visibleFields)
-			<td class="$field.name">$field.name</td>
-		#end
-			<td>
-				<a href="#" title="Edit">E</a>
-				<a href="#" title="Delete">D</a>
-			</td>
-		</tr>
-		<tr class='template edit'>
-		#foreach ($field in $region.visibleFields)
-			#if($field.editable)
-				<td><input type="text" class="$field.name" name="$field.name"></td>
-			#{else}
-				<td><span class="$field.name"></span></td>
-			#end
-		#end
-			<td>
-				<a href="#" title="Save">S</a>
-				<a href="#" title="Cancel">X</a>
-			</td>
-		</tr>
-		<tr class='add view'>
-			<td colspan="{$region.visibleFields.size()+1}">Add</td>
-		</tr>
-	</tbody>
-	</table>
+	#parse("template_region_BasicTable.html")
 #end
 #if( $region.regionType.formRegion && $region.visibleFields.size() > 0 )
-	#if( $region.showPreviousNextButtons )
-	<div id="${region.name}Navigation">
-		<button id="previous$region.view.name" onclick="return nav_${region.view.name}(-1);">Previous</button>
-		<button id="next$region.view.name" onclick="return nav_${region.view.name}(1);">Next</button>
-	</div>
-	#end
-	
-	<ul>
-	#foreach ($field in $region.visibleFields)
-		<li><label>$field.label:</label>
-		#if($field.editable)
-			<input type="text" class="$field.name" name="$field.name">
-		#{else}
-			<span class="$field.name"></span>
-		#end
-		</li>
-	#end
-	</ul>
+	#parse("template_region_FormRegion.html")
 #end
 </div>

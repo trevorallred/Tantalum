@@ -1,0 +1,116 @@
+<table class="basicTable">
+<thead>
+<tr>
+	<th></th>
+#foreach ($field in $region.visibleFields)
+	<th><a href='#'>$field.label</a></th>
+#end
+</tr>
+</thead>
+<tbody>
+	<tr class='template view'>
+		<td class="actionButtons">
+			#if($region.view.allowEdit)
+				<a href="#" class="edit" title="Edit">Edit</a>
+			#end
+			#if($region.view.allowDelete)
+				<a href="#" class="delete" title="Delete">Delete</a>
+			#end
+		</td>
+	#foreach ($field in $region.visibleFields)
+		#if($field.hasLink)
+			<td><a href="#" class="$field.name">$field.name</a></td>
+		#elseif($field.displayType.checkbox)
+			<td><input type="checkbox" class="$field.name" name="$field.name" disabled="disabled"></td>
+		#else
+			<td class="$field.name">$field.name</td>
+		#end
+	#end
+	</tr>
+	#if($region.view.allowAdd || $region.view.allowEdit)
+		<tr class="template edit">
+			<td class="actionButtons">
+				<a href="#" class="save" title="Save">Save</a>
+				<a href="#" class="cancel" title="Cancel">Cancel</a>
+			</td>
+		#foreach ($field in $region.visibleFields)
+			<td>
+			#if($field.displayType.checkbox)
+				<input type="checkbox" class="$field.name" name="$field.name">
+			#elseif(!$field.editable)
+				<span class="$field.name"></span>
+			#else
+				<input type="text" class="$field.name" name="$field.name">
+			#end
+			</td>
+		#end
+		</tr>
+	#end
+</tbody>
+#if($region.view.allowAdd)
+<tfoot>
+	<tr class='add'>
+		<td></td>
+		<td colspan="$region.visibleFields.size()">Add</td>
+	</tr>
+</tfoot>
+#end
+</table>
+
+<script type="text/javascript">
+	function paint_${region.name}() {
+		var tbody = $("#$region.name").find("tbody");
+		
+		$(tbody).find("tr.data").remove();
+		var template = $(tbody).find('tr.template');
+		var rows = rows_${region.view.name};
+		if (rows != null) {
+			for ( var i = 0; i < rows.DATA.length; i++) {
+				addRow_${region.name}(tbody, template, rows.DATA[i].FIELDS);
+			}
+		}
+		
+		$(tbody).find("tr.data").dblclick(function() {
+			$(this).hide();
+			$(row).next("tr.edit").show();
+			return false;
+		});
+		
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(function() {
+			var row = $(this).parentsUntil('tbody')[1];
+			$(row).hide();
+			$(row).next("tr.edit").show();
+			return false;
+		});
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel").click(function() {
+			var row = $(this).parentsUntil('tbody')[1];
+			$(row).hide();
+			$(row).prev("tr.view").show();
+			return false;
+		});
+		
+		$(tbody).find("tr.edit").hide();
+		$(template).hide();
+	}
+	function addRow_${region.name}(tbody, template, row) {
+		var rowHTML = $(template).clone();
+		rowHTML.show();
+		rowHTML.addClass("data");
+		rowHTML.removeClass("template");
+		#foreach ( $field in $region.fields )
+			#if($field.displayType.checkbox)
+				$(rowHTML[1]).find('input.${field.name}').attr("checked",row.${field.name}==1 ? "checked" : "");
+			#else
+				#if($field.editable)
+					$(rowHTML).find('input.${field.name}').val(row.${field.name});
+				#end
+				#if($field.hasLink)
+					$(rowHTML).find('a.${field.name}').html(row.${field.name});
+					$(rowHTML).find('a.${field.name}').attr("href", "$baseURL/t/${field.linkToField.view.page.name}/" + row.${field.linkFromField.name});
+				#end
+				$(rowHTML).find('td.${field.name}').html(row.${field.name});
+			#end
+		#end
+		tbody.append(rowHTML);
+	}
+</script>

@@ -1,0 +1,47 @@
+#if( $region.showPreviousNextButtons )
+<div id="${region.name}Navigation">
+	<button id="previous$region.view.name" onclick="return nav_${region.view.name}(-1);">Previous</button>
+	<button id="next$region.view.name" onclick="return nav_${region.view.name}(1);">Next</button>
+</div>
+#end
+
+<ul>
+#foreach ($field in $region.visibleFields)
+	<li><label>$field.label:</label>
+	#if($field.editable)
+		<input type="text" class="$field.name" name="$field.name">
+	#{else}
+		<span class="$field.name"></span>
+	#end
+	</li>
+#end
+</ul>
+
+<script type="text/javascript">
+#if( $region.regionType.formRegion )
+	function paintButtons_${region.name}() {
+		var rows = rows_${region.view.name};
+		if ($(rows).length > 0) {
+			$('#previous${region.view.name}').attr("disabled", (rows.POSITION == 0));
+			$('#next${region.view.name}').attr("disabled", (rows.POSITION == rows.DATA.length - 1));
+		} else {
+			$('#previous${region.view.name}').attr("disabled", true);
+			$('#next${region.view.name}').attr("disabled", true);
+		}
+	}
+
+	function paint_${region.name}() {
+		paintButtons_${region.name}();
+		
+		var row = rows_${region.view.name}.DATA[rows_${region.view.name}.POSITION];
+		
+		#foreach ( $field in $region.fields )
+			#if($field.editable)
+				$("#$region.name").find('.${field.name}').val(row.FIELDS.${field.name});
+			#{else}
+				$("#$region.name").find('.${field.name}').html(row.FIELDS.${field.name});
+			#end
+		#end
+	}
+#end
+</script>

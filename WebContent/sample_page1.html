@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Manage Tables</title>
+<link rel="stylesheet" href="/Tantalum/themes/default/style.css"
+	type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="/Tantalum/themes/default/print.css"
+	type="text/css" media="print">
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="/Tantalum/js/main.js"></script>
+<script type="text/javascript">
+	var json;
+
+	$(document).ready(function() {
+		jQuery.getJSON('/Tantalum/ws/ManageTables', function(jsonCallback) {
+			json = jsonCallback;
+			rows_ManageTables = json.ManageTables;
+			position_ManageTables();
+		});
+	});
+
+	var rows_ManageTables = null;
+	function nav_ManageTables(amount) {
+		if (rows_ManageTables == null)
+			return false;
+
+		var r = rows_ManageTables;
+		var maxPosition = r.DATA.length - 1;
+
+		r.POSITION += amount;
+		if (r.POSITION < 0)
+			r.POSITION = 0;
+		if (r.POSITION > maxPosition)
+			r.POSITION = maxPosition;
+
+		position_ManageTables(r);
+		return false;
+	}
+
+	function position_ManageTables() {
+		// first paint all child regions (not recursively), and then position all child views (recursively)
+		paint_ManageTables();
+
+		if (rows_ManageTables == undefined)
+			return;
+
+		var row = rows_ManageTables.DATA[rows_ManageTables.POSITION];
+
+	}
+</script>
+</head>
+<body>
+[
+<a href='/Tantalum/t/ManageTables'>Manage Tables</a>
+] [
+<a href='/Tantalum/t/WebpageList'>List Web Pages</a>
+]
+
+
+<h1>Manage Tables</h1>
+
+<div id="ManageTables" class="region BasicTable">
+<h2>Tables</h2>
+<table class="basicTable">
+	<thead>
+		<tr>
+			<th><a href='#'>ID</a></th>
+			<th><a href='#'>Table name</a></th>
+			<th><a href='#'>DB name</a></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class='template view'>
+			<td class="ManageTablesTableID">ManageTablesTableID</td>
+			<td><a href="#"
+				class="ManageTablesName">ManageTablesName</a></td>
+			<td class="ManageTablesDatabaseName">ManageTablesDatabaseName</td>
+		</tr>
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	function paint_ManageTables() {
+		var tbody = $("#ManageTables").find("tbody");
+
+		$(tbody).find("tr.data").remove();
+		var template = $(tbody).find('tr.template');
+		var rows = rows_ManageTables;
+		if (rows != null) {
+			for ( var i = 0; i < rows.DATA.length; i++) {
+				addRow_ManageTables(tbody, template, rows.DATA[i].FIELDS);
+			}
+		}
+
+		$(tbody).find("tr.data").dblclick(function() {
+			$(this).hide();
+			$(row).next("tr.edit").show();
+			return false;
+		});
+
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(
+				function() {
+					var row = $(this).parentsUntil('tbody')[1];
+					$(row).hide();
+					$(row).next("tr.edit").show();
+					return false;
+				});
+		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel")
+				.click(function() {
+					var row = $(this).parentsUntil('tbody')[1];
+					$(row).hide();
+					$(row).prev("tr.view").show();
+					return false;
+				});
+
+		$(tbody).find("tr.edit").hide();
+		$(template).hide();
+	}
+	function addRow_ManageTables(tbody, template, row) {
+		var rowHTML = $(template).clone();
+		rowHTML.show();
+		rowHTML.addClass("data");
+		rowHTML.removeClass("template");
+		$(rowHTML).find('.ManageTablesTableID').html(row.ManageTablesTableID);
+		$(rowHTML).find('.ManageTablesName').attr("href", "/Tantalum/t/DefineTable/"+row.ManageTablesTableID);
+		$(rowHTML).find('.ManageTablesName').html(row.ManageTablesName);
+		$(rowHTML).find('.ManageTablesDatabaseName').html(
+				row.ManageTablesDatabaseName);
+
+		tbody.append(rowHTML);
+	}
+</script></div>
+
+</body>
+</html>

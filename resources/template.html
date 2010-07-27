@@ -3,7 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>$page.label</title>
-<link href="$baseURL/themes/$theme/style.css" type=text/css rel=stylesheet>
+<link rel="stylesheet" href="$baseURL/themes/$theme/style.css" type="text/css" media="screen" charset="utf-8"/> 
+<link rel="stylesheet" href="$baseURL/themes/$theme/print.css" type="text/css" media="print"> 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="$baseURL/js/main.js"></script>
 <script type="text/javascript">
@@ -59,64 +60,6 @@ $(document).ready(function() {
 			position_${childView.name}();
 		#end
 	}
-#end
-
-#foreach ( $region in $page.regions )
-
-#if( $region.regionType.formRegion )
-	function paintButtons_${region.name}() {
-		var rows = rows_${region.view.name};
-		if ($(rows).length > 0) {
-			$('#previous${region.view.name}').attr("disabled", (rows.POSITION == 0));
-			$('#next${region.view.name}').attr("disabled", (rows.POSITION == rows.DATA.length - 1));
-		} else {
-			$('#previous${region.view.name}').attr("disabled", true);
-			$('#next${region.view.name}').attr("disabled", true);
-		}
-	}
-
-	function paint_${region.name}() {
-		paintButtons_${region.name}();
-		
-		var row = rows_${region.view.name}.DATA[rows_${region.view.name}.POSITION];
-		
-		#foreach ( $field in $region.fields )
-			#if($field.editable)
-				$("#$region.name").find('.${field.name}').val(row.FIELDS.${field.name});
-			#{else}
-				$("#$region.name").find('.${field.name}').html(row.FIELDS.${field.name});
-			#end
-		#end
-	}
-#end
-#if( $region.regionType.basicTable )
-	function paint_${region.name}() {
-		var tbody = $("#$region.name").find("tbody");
-		
-		$(tbody).find("tr.data").remove();
-		var template = $(tbody).find('tr.template');
-		var rows = rows_${region.view.name};
-		if (rows != null) {
-			for ( var i = 0; i < rows.DATA.length; i++) {
-				addRow_${region.name}(tbody, template, rows.DATA[i].FIELDS);
-			}
-		}
-		$(template).hide();
-	}
-	function addRow_${region.name}(tbody, template, row) {
-		var rowHTML = $(template).clone();
-		rowHTML.show();
-		rowHTML.addClass("data");
-		rowHTML.removeClass("template");
-		#foreach ( $field in $region.fields )
-			$(rowHTML[1]).find('.${field.name}').val(row.${field.name});
-			$(rowHTML).find('.${field.name}').html(row.${field.name});
-		#end
-		tbody.append(rowHTML);
-	}
-
-#end
-
 #end
 
 </script>
