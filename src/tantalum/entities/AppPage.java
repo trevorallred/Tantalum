@@ -78,7 +78,31 @@ public class AppPage extends BaseNamedTable {
 		return top;
 	}
 
-	/** Helper methods **/
+	// Helper methods //
+	
+	
+	public boolean isCanSave() {
+		for (AppView view : views) {
+			if (isCanSaveView(view))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isCanSaveView(AppView parentView) {
+		if (parentView.isAllowAdd())
+			return true;
+		if (parentView.isAllowEdit())
+			return true;
+		if (parentView.isAllowDelete())
+			return true;
+		for (AppView view : parentView.getChildViews()) {
+			if (isCanSaveView(view))
+				return true;
+		}
+		return false;
+	}
+	
 	public String printAll() {
 		String out = name + "(" + id + ")";
 		for (AppView view : views)

@@ -53,6 +53,7 @@ public class PageContentUtility {
 				dataArray.add(record);
 				
 				JSONObject recordFields = new JSONObject();
+				record.put("ACTION", null);
 				record.put("FIELDS", recordFields);
 				for (String fieldname : row.getFieldNames()) {
 					recordFields.put(fieldname, row.getString(fieldname));
