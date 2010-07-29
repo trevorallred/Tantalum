@@ -9,28 +9,28 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
-@javax.persistence.Table(name = "dd_reference")
-public class AppReference extends BaseTable {
+@javax.persistence.Table(name = "tan_reference")
+public class Reference extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "viewID")
-	private AppView view;
+	private View view;
 	@ManyToOne
 	@JoinColumn(name = "parentID")
-	private AppReference parent;
+	private Reference parent;
 	private String name;
 	@ManyToOne
 	@JoinColumn(name = "joinID")
-	private AppJoin join;
+	private Join join;
 	@Transient
 	private int alias;
 	@Transient
 	private Set<ReferenceJoinClause> referenceJoinClauses;
 
-	public AppReference getParent() {
+	public Reference getParent() {
 		return parent;
 	}
 
-	public void setParent(AppReference parent) {
+	public void setParent(Reference parent) {
 		this.parent = parent;
 	}
 
@@ -39,7 +39,7 @@ public class AppReference extends BaseTable {
 	 * 
 	 * @return
 	 */
-	public AppReference getRoot() {
+	public Reference getRoot() {
 		if (parent == null)
 			return this;
 		return parent.getRoot();
@@ -53,19 +53,19 @@ public class AppReference extends BaseTable {
 		this.name = name;
 	}
 
-	public AppView getView() {
+	public View getView() {
 		return view;
 	}
 
-	public void setView(AppView view) {
+	public void setView(View view) {
 		this.view = view;
 	}
 
-	public AppJoin getJoin() {
+	public Join getJoin() {
 		return join;
 	}
 
-	public void setJoin(AppJoin join) {
+	public void setJoin(Join join) {
 		this.join = join;
 	}
 
@@ -80,26 +80,26 @@ public class AppReference extends BaseTable {
 	public Set<ReferenceJoinClause> getReferenceJoinClauses() {
 		if (referenceJoinClauses == null) {
 			referenceJoinClauses = new HashSet<ReferenceJoinClause>();
-			for (AppJoinColumn jc : join.getJoinColumns()) {
+			for (JoinColumns jc : join.getJoinColumns()) {
 				ReferenceJoinClause rjc = new ReferenceJoinClause();
 				referenceJoinClauses.add(rjc);
 				rjc.setToColumn(jc.getToColumn());
 				rjc.setFromColumn(jc.getFromColumn());
-				for (AppField field : view.getParent().getFields()) {
+				for (Field field : view.getParent().getFields()) {
 					if (field.isBasisField()
 							&& field.getBasisColumn().equals(jc.getToColumn()))
 						rjc.setToField(field);
 				}
 				if (rjc.getToField() == null)
 					System.out.println("ERROR: unable to map toField ReferenceJoinClause for " + jc.getToColumn());
-				for (AppField field : view.getFields()) {
+				for (Field field : view.getFields()) {
 					if (field.isBasisField()
 							&& field.getBasisColumn().equals(jc.getFromColumn()))
 						rjc.setFromField(field);
 				}
 				if (rjc.getFromField() == null) {
 					System.out.println("ERROR - unable to map fromField ReferenceJoinClause. Looking for " + jc.getFromColumn() + " view contained fields:");
-					for (AppField field : view.getFields()) {
+					for (Field field : view.getFields()) {
 						System.out.println(field);
 					}
 				}
@@ -114,7 +114,7 @@ public class AppReference extends BaseTable {
 			out += "\n  Child of " + parent;
 		out += "from " + this.join.getFromTable() + " to "
 				+ this.join.getToTable() + " on ";
-		for (AppJoinColumn jc : this.join.getJoinColumns()) {
+		for (JoinColumns jc : this.join.getJoinColumns()) {
 			out += jc.toString();
 		}
 		return out;

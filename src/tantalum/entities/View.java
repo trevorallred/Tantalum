@@ -1,53 +1,53 @@
 package tantalum.entities;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import tantalum.util.Strings;
 
 @Entity
-@Table(name = "dd_view")
-public class AppView extends BaseTable {
+@javax.persistence.Table(name = "tan_view")
+public class View extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "pageID")
-	private AppPage page;
+	private Page page;
 	private String name;
 	private int resultsPerPage = 100;
 	@ManyToOne
 	@JoinColumn(name = "basisTableID")
-	private AppTable basisTable;
+	private Table basisTable;
 	@ManyToOne
 	@JoinColumn(name = "parentID")
-	private AppView parent;
+	private View parent;
 	@ManyToOne
 	@JoinColumn(name = "referenceID")
-	private AppReference reference;
+	private Reference reference;
 	private boolean allowAdd;
 	private boolean allowEdit;
 	private boolean allowDelete;
 
 	@OneToMany(mappedBy = "view")
-	private List<AppField> fields = new ArrayList<AppField>();
+	private List<Field> fields = new ArrayList<Field>();
 	@OneToMany(mappedBy = "view")
-	private List<AppReference> references = new ArrayList<AppReference>();
+	private List<Reference> references = new ArrayList<Reference>();
 	@OneToMany(mappedBy = "view")
-	private List<AppRegion> regions = new ArrayList<AppRegion>();
+	private List<Region> regions = new ArrayList<Region>();
 
 	@Transient
-	private List<AppView> childViews = null;
+	private List<View> childViews = null;
 
-	public AppPage getPage() {
+	public Page getPage() {
 		return page;
 	}
 
-	public void setPage(AppPage page) {
+	public void setPage(Page page) {
 		this.page = page;
 	}
 
@@ -67,19 +67,19 @@ public class AppView extends BaseTable {
 		this.resultsPerPage = resultsPerPage;
 	}
 
-	public AppTable getBasisTable() {
+	public Table getBasisTable() {
 		return basisTable;
 	}
 
-	public void setBasisTable(AppTable basisTable) {
+	public void setBasisTable(Table basisTable) {
 		this.basisTable = basisTable;
 	}
 
-	public AppView getParent() {
+	public View getParent() {
 		return parent;
 	}
 
-	public void setParent(AppView parent) {
+	public void setParent(View parent) {
 		this.parent = parent;
 	}
 
@@ -87,11 +87,11 @@ public class AppView extends BaseTable {
 		return parent == null;
 	}
 
-	public AppReference getReference() {
+	public Reference getReference() {
 		return reference;
 	}
 
-	public void setReference(AppReference reference) {
+	public void setReference(Reference reference) {
 		this.reference = reference;
 	}
 
@@ -119,36 +119,36 @@ public class AppView extends BaseTable {
 		this.allowDelete = allowDelete;
 	}
 
-	public List<AppField> getFields() {
+	public List<Field> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<AppField> fields) {
+	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
 
-	public List<AppReference> getReferences() {
+	public List<Reference> getReferences() {
 		return references;
 	}
 
-	public void setReferences(List<AppReference> references) {
+	public void setReferences(List<Reference> references) {
 		this.references = references;
 	}
 
-	public List<AppRegion> getRegions() {
+	public List<Region> getRegions() {
 		return regions;
 	}
 
-	public void setRegions(List<AppRegion> regions) {
+	public void setRegions(List<Region> regions) {
 		this.regions = regions;
 	}
 
 	/** Helper methods **/
 
-	public List<AppView> getChildViews() {
+	public List<View> getChildViews() {
 		if (childViews == null) {
-			childViews = new ArrayList<AppView>();
-			for (AppView childView : page.getViews()) {
+			childViews = new ArrayList<View>();
+			for (View childView : page.getViews()) {
 				if (this.equals(childView.getParent()))
 					childViews.add(childView);
 			}
@@ -156,29 +156,29 @@ public class AppView extends BaseTable {
 		return childViews;
 	}
 
-	public AppField getField(String name) {
+	public Field getField(String name) {
 		if (Strings.isEmpty(name))
 			return null;
-		for (AppField field : fields) {
+		for (Field field : fields) {
 			if (name.equals(field.getName()))
 				return field;
 		}
 		return null;
 	}
 
-	public AppField getField(int fieldID) {
-		for (AppField field : fields) {
+	public Field getField(int fieldID) {
+		for (Field field : fields) {
 			if (fieldID == field.getId())
 				return field;
 		}
 		return null;
 	}
 
-	public AppField getPrimaryKey() {
+	public Field getPrimaryKey() {
 		if (basisTable == null)
 			return null;
-		AppColumn primaryKey = basisTable.getPrimaryKey();
-		for (AppField field : fields) {
+		TableColumn primaryKey = basisTable.getPrimaryKey();
+		for (Field field : fields) {
 			if (primaryKey.equals(field.getBasisColumn()))
 				return field;
 		}
@@ -188,9 +188,9 @@ public class AppView extends BaseTable {
 	@Override
 	public String toString() {
 		String out = name + "(" + id + ")";
-		for (AppField field : fields)
+		for (Field field : fields)
 			out += "\n    F: " + field.toString();
-		for (AppReference reference : references)
+		for (Reference reference : references)
 			out += "\n    R: " + reference.toString();
 		return out;
 	}

@@ -16,9 +16,9 @@ import org.json.simple.JSONValue;
 import tantalum.data.DataReader;
 import tantalum.data.PageContent;
 import tantalum.data.PageContentUtility;
-import tantalum.entities.AppField;
-import tantalum.entities.AppPage;
-import tantalum.entities.AppView;
+import tantalum.entities.Field;
+import tantalum.entities.Page;
+import tantalum.entities.View;
 import tantalum.ui.PageDAO;
 import tantalum.util.UpdateSQL;
 import tantalum.util.UrlRequest;
@@ -27,7 +27,7 @@ import tantalum.util.UrlRequest;
 public class JsonServlet extends HttpServlet {
 	protected PrintWriter out;
 	private PageDAO pageDAO = new PageDAO();
-	private AppPage page = null;
+	private Page page = null;
 	private UrlRequest urlRequest = null;
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -57,7 +57,7 @@ public class JsonServlet extends HttpServlet {
 	    
 		JSONObject root = (JSONObject)JSONValue.parse(data);
 
-		for (AppView view : page.getViews()) {
+		for (View view : page.getViews()) {
 			parse(view, root.get(view.getName()));
 		}
 		
@@ -69,7 +69,7 @@ public class JsonServlet extends HttpServlet {
 		out.flush();
 	}
 	
-	private void parse(AppView view, Object raw) {
+	private void parse(View view, Object raw) {
 		if (raw == null)
 			return;
 		JSONObject json = (JSONObject)raw;
@@ -79,13 +79,13 @@ public class JsonServlet extends HttpServlet {
 			JSONObject rowData = (JSONObject)row.get("FIELDS");
 			// Now save or update this row Data
 			UpdateSQL sql = new UpdateSQL();
-			for (AppField field : view.getFields()) {
+			for (Field field : view.getFields()) {
 				if (rowData.containsKey(field.getName()))
 					sql.addField(field.getName(), rowData.get(field.getName()).toString());
 			}
 			
 			JSONObject children = (JSONObject)row.get("CHILDREN");
-			for (AppView childView : view.getChildViews()) {
+			for (View childView : view.getChildViews()) {
 				parse(childView, children.get(childView.getName()));
 			}
 		}

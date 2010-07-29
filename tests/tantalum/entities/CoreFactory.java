@@ -2,50 +2,51 @@ package tantalum.entities;
 
 public class CoreFactory {
 
-	public static AppView createInvoice() {
-		AppView view = createView("DefineInvoice");
-		AppTable invoice = createTable("Invoice");
-		addColumn(invoice, "InvoiceDate");
-		addColumn(invoice, "InvoiceTotal");
-		addColumn(invoice, "Description");
+	public static View createInvoice() {
+		View view = createView("DefineInvoice");
+		Table invoice = createTable("Invoice");
+		addColumn(invoice, "InvoiceDate", ColumnType.Date);
+		addColumn(invoice, "InvoiceTotal", ColumnType.Decimal);
+		addColumn(invoice, "Description", ColumnType.String);
 
-		AppTable account = createTable("Account");
-		AppColumn invoiceAccountID = addColumn(invoice, "AccountID");
+		Table account = createTable("Account");
+		TableColumn invoiceAccountID = addColumn(invoice, "AccountID", ColumnType.Integer);
 		addJoin(invoiceAccountID, account.getColumns().get(0));
 
 		view.setBasisTable(invoice);
 		return view;
 	}
 
-	public static AppView createView(String name) {
-		AppView view = new AppView();
+	public static View createView(String name) {
+		View view = new View();
 		view.setName(name);
 		return view;
 	}
 
-	public static AppTable createTable(String name) {
-		AppTable table = new AppTable();
+	public static Table createTable(String name) {
+		Table table = new Table();
 		table.setName(name);
 		table.setDbName(name.toLowerCase());
-		addColumn(table, name + "ID");
+		addColumn(table, name + "ID", ColumnType.Integer);
 		return table;
 	}
 
-	public static AppColumn addColumn(AppTable table, String name) {
-		AppColumn column = new AppColumn();
+	public static TableColumn addColumn(Table table, String name, ColumnType columnType) {
+		TableColumn column = new TableColumn();
 		column.setName(name);
 		column.setDbName(name.toLowerCase());
-		table.getColumns().add(column);
+		column.setColumnType(columnType);
 		column.setTable(table);
+		table.getColumns().add(column);
 		return column;
 	}
 
-	public static AppJoin addJoin(AppColumn fromColumn, AppColumn toColumn) {
-		AppJoin join = new AppJoin();
+	public static Join addJoin(TableColumn fromColumn, TableColumn toColumn) {
+		Join join = new Join();
 		join.setJoinType("OM");
 		join.setFromTable(fromColumn.getTable());
 		join.setToTable(toColumn.getTable());
-		AppJoinColumn joinColumn = new AppJoinColumn();
+		JoinColumns joinColumn = new JoinColumns();
 		joinColumn.setJoin(join);
 		join.getJoinColumns().add(joinColumn);
 

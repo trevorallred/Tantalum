@@ -9,11 +9,11 @@ import javax.persistence.ManyToOne;
 import tantalum.data.PageContentBean;
 
 @Entity
-@javax.persistence.Table(name = "dd_field")
-public class AppField extends BaseNamedTable {
+@javax.persistence.Table(name = "tan_field")
+public class Field extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "viewID")
-	private AppView view;
+	private View view;
 	private boolean visible = true;
 	private String displayOrder;
 	private boolean searchable = false;
@@ -22,27 +22,27 @@ public class AppField extends BaseNamedTable {
 	private FieldDisplayType displayType;
 	@ManyToOne
 	@JoinColumn(name = "regionID")
-	private AppRegion region;
+	private Region region;
 
 	@ManyToOne
 	@JoinColumn(name = "basisColumnID")
-	private AppColumn basisColumn;
+	private TableColumn basisColumn;
 	@ManyToOne
 	@JoinColumn(name = "referenceID")
-	private AppReference reference;
+	private Reference reference;
 
 	@ManyToOne
 	@JoinColumn(name = "linkToFieldID")
-	private AppField linkToField;
+	private Field linkToField;
 	@ManyToOne
 	@JoinColumn(name = "linkFromFieldID")
-	private AppField linkFromField;
+	private Field linkFromField;
 
-	public AppView getView() {
+	public View getView() {
 		return view;
 	}
 
-	public void setView(AppView view) {
+	public void setView(View view) {
 		this.view = view;
 	}
 
@@ -74,11 +74,11 @@ public class AppField extends BaseNamedTable {
 		this.editable = editable;
 	}
 
-	public AppColumn getBasisColumn() {
+	public TableColumn getBasisColumn() {
 		return basisColumn;
 	}
 
-	public void setBasisColumn(AppColumn basisColumn) {
+	public void setBasisColumn(TableColumn basisColumn) {
 		this.basisColumn = basisColumn;
 	}
 
@@ -98,11 +98,11 @@ public class AppField extends BaseNamedTable {
 		this.displayType = displayType;
 	}
 
-	public AppReference getReference() {
+	public Reference getReference() {
 		return reference;
 	}
 
-	public void setReference(AppReference reference) {
+	public void setReference(Reference reference) {
 		this.reference = reference;
 	}
 
@@ -110,29 +110,29 @@ public class AppField extends BaseNamedTable {
 		return linkToField != null;
 	}
 
-	public AppField getLinkFromField() {
+	public Field getLinkFromField() {
 		return linkFromField;
 	}
 
-	public void setLinkFromField(AppField linkFromField) {
+	public void setLinkFromField(Field linkFromField) {
 		this.linkFromField = linkFromField;
 	}
 
-	public AppField getLinkToField() {
+	public Field getLinkToField() {
 		return linkToField;
 	}
 
-	public void setLinkToField(AppField linkToField) {
+	public void setLinkToField(Field linkToField) {
 		this.linkToField = linkToField;
 	}
 
 	// Helper methods //
 
-	public AppRegion getRegion() {
+	public Region getRegion() {
 		return region;
 	}
 
-	public void setRegion(AppRegion region) {
+	public void setRegion(Region region) {
 		this.region = region;
 	}
 

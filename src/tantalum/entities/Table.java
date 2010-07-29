@@ -10,17 +10,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-@javax.persistence.Table(name = "dd_table")
-public class AppTable extends BaseTable {
+@javax.persistence.Table(name = "tan_table")
+public class Table extends BaseTable {
 	@Column(nullable = false)
 	private String name;
 	@Column(nullable = false)
 	private String dbName;
 	@ManyToOne
 	@JoinColumn(name = "databaseID")
-	private AppDatabase database;
+	private Database database;
 	@OneToMany(mappedBy = "table")
-	private List<AppColumn> columns = new ArrayList<AppColumn>();
+	private List<TableColumn> columns = new ArrayList<TableColumn>();
 
 	public String getName() {
 		return name;
@@ -38,29 +38,29 @@ public class AppTable extends BaseTable {
 		this.dbName = dbName;
 	}
 
-	public AppDatabase getDatabase() {
+	public Database getDatabase() {
 		return database;
 	}
 
-	public void setDatabase(AppDatabase database) {
+	public void setDatabase(Database database) {
 		this.database = database;
 	}
 
-	public List<AppColumn> getColumns() {
+	public List<TableColumn> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<AppColumn> columns) {
+	public void setColumns(List<TableColumn> columns) {
 		this.columns = columns;
 	}
 
 	/**
-	 * TODO store this value on dd_table. For now we can assume it's just "id"
+	 * TODO store this value on tan_table. For now we can assume it's just "id"
 	 * 
 	 * @return
 	 */
-	public AppColumn getPrimaryKey() {
-		for (AppColumn column : columns) {
+	public TableColumn getPrimaryKey() {
+		for (TableColumn column : columns) {
 			if (column.getDbName().equals("id"))
 				return column;
 		}

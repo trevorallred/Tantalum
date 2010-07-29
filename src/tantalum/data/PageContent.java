@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import tantalum.entities.AppView;
+import tantalum.entities.View;
 
 
 /**
@@ -27,7 +27,7 @@ public class PageContent {
 		return views.get(viewName);
 	}
 
-	public void addChildContent(AppView childView, PageContentBean childContent) {
+	public void addChildContent(View childView, PageContentBean childContent) {
 		if (!views.containsKey(childView.getName()))
 			views.put(childView.getName(), new ViewContent());
 		views.get(childView.getName()).getData().add(childContent);

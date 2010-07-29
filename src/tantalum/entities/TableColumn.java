@@ -5,22 +5,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-@javax.persistence.Table(name = "dd_column")
-public class AppColumn extends BaseNamedTable {
+@javax.persistence.Table(name = "tan_column")
+public class TableColumn extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "tableID")
-	private AppTable table;
+	private Table table;
 	private int displayOrder;
 	private String dbName;
 	private boolean required = false;
 	private ColumnType columnType;
 	private Integer size;
 
-	public AppTable getTable() {
+	public Table getTable() {
 		return table;
 	}
 
-	public void setTable(AppTable table) {
+	public void setTable(Table table) {
 		this.table = table;
 	}
 

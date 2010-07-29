@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 
-import tantalum.entities.AppField;
-import tantalum.entities.AppPage;
-import tantalum.entities.AppView;
+import tantalum.entities.Field;
+import tantalum.entities.Page;
+import tantalum.entities.View;
 import tantalum.entities.ReferenceJoinClause;
 import tantalum.util.DbConnection;
 import tantalum.util.SelectSQL;
@@ -22,10 +22,10 @@ import tantalum.util.UrlRequest;
 public class DataReader {
 	protected DbConnection db = new DbConnection();
 
-	private Map<AppView, List<PageContentBean>> viewData = new HashMap<AppView, List<PageContentBean>>();
+	private Map<View, List<PageContentBean>> viewData = new HashMap<View, List<PageContentBean>>();
 
-	public PageContent getContent(AppPage page, UrlRequest urlRequest) {
-		for (AppView view : page.getParentViews()) {
+	public PageContent getContent(Page page, UrlRequest urlRequest) {
+		for (View view : page.getParentViews()) {
 			String where = "";
 			if (!Strings.isEmpty(urlRequest.getPageId()))
 				// TODO injection on pageID, clean it up
@@ -37,7 +37,7 @@ public class DataReader {
 		}
 
 		PageContent content = new PageContent();
-		for (AppView view : page.getParentViews()) {
+		for (View view : page.getParentViews()) {
 			for (PageContentBean row : viewData.get(view)) {
 				content.addChildContent(view, row);
 				appendChildren(row, view);
@@ -53,7 +53,7 @@ public class DataReader {
 	 * @param view
 	 * @param where
 	 */
-	private void queryData(AppView view, String where) {
+	private void queryData(View view, String where) {
 		SelectSQL sql = QueryBuilder.buildSelect(view);
 		if (!Strings.isEmpty(where))
 			sql.addWhere(where);
@@ -61,7 +61,7 @@ public class DataReader {
 		viewData.put(view, data);
 		// We could just iterate all the views in a page, but this wouldn't
 		// ensure we have the parent data for the child in clause
-		for (AppView childView : view.getChildViews()) {
+		for (View childView : view.getChildViews()) {
 			StringBuilder childWhere = new StringBuilder();
 			for (ReferenceJoinClause rjc : childView.getReference()
 					.getReferenceJoinClauses()) {
@@ -81,8 +81,8 @@ public class DataReader {
 		}
 	}
 
-	private void appendChildren(PageContentBean parentContent, AppView view) {
-		for (AppView childView : view.getChildViews()) {
+	private void appendChildren(PageContentBean parentContent, View view) {
+		for (View childView : view.getChildViews()) {
 			List<String> parentKey = new ArrayList<String>();
 			for (ReferenceJoinClause rjc : childView.getReference()
 					.getReferenceJoinClauses()) {
@@ -105,7 +105,7 @@ public class DataReader {
 		}
 	}
 
-	public void saveRequest(AppPage page, UrlRequest urlRequest) {
+	public void saveRequest(Page page, UrlRequest urlRequest) {
 //		boolean dirty = false;
 //		UpdateSQL sql = new UpdateSQL();
 //		sql.setTable(view.getBasisTable().getDbName());

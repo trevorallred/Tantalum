@@ -16,33 +16,33 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name = "dd_region")
-public class AppRegion extends BaseNamedTable {
+@Table(name = "tan_region")
+public class Region extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "pageID")
-	private AppPage page;
+	private Page page;
 	@Enumerated(EnumType.STRING)
 	private RegionType regionType;
 
 	@ManyToOne
 	@JoinColumn(name = "parentID")
-	private AppRegion parent;
+	private Region parent;
 	@ManyToOne
 	@JoinColumn(name = "viewID")
-	private AppView view;
+	private View view;
 	private int displayOrder;
 
 	@OneToMany(mappedBy = "parent")
-	private List<AppRegion> childRegions;
+	private List<Region> childRegions;
 	@OneToMany(mappedBy = "region")
 	@OrderBy(value = "displayOrder")
-	private List<AppField> fields;
+	private List<Field> fields;
 
-	public AppPage getPage() {
+	public Page getPage() {
 		return page;
 	}
 
-	public void setPage(AppPage page) {
+	public void setPage(Page page) {
 		this.page = page;
 	}
 
@@ -54,11 +54,11 @@ public class AppRegion extends BaseNamedTable {
 		this.regionType = regionType;
 	}
 
-	public AppRegion getParent() {
+	public Region getParent() {
 		return parent;
 	}
 
-	public void setParent(AppRegion parent) {
+	public void setParent(Region parent) {
 		this.parent = parent;
 	}
 
@@ -66,11 +66,11 @@ public class AppRegion extends BaseNamedTable {
 		return parent == null;
 	}
 
-	public AppView getView() {
+	public View getView() {
 		return view;
 	}
 
-	public void setView(AppView view) {
+	public void setView(View view) {
 		this.view = view;
 	}
 
@@ -82,25 +82,25 @@ public class AppRegion extends BaseNamedTable {
 		this.displayOrder = displayOrder;
 	}
 
-	public List<AppRegion> getChildRegions() {
+	public List<Region> getChildRegions() {
 		return childRegions;
 	}
 
-	public void setChildRegions(List<AppRegion> childRegions) {
+	public void setChildRegions(List<Region> childRegions) {
 		this.childRegions = childRegions;
 	}
 
-	public List<AppField> getFields() {
+	public List<Field> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<AppField> fields) {
+	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
 
-	public List<AppField> getVisibleFields() {
-		List<AppField> visibleFields = new ArrayList<AppField>();
-		for (AppField field : fields) {
+	public List<Field> getVisibleFields() {
+		List<Field> visibleFields = new ArrayList<Field>();
+		for (Field field : fields) {
 			if (field.isVisible())
 				visibleFields.add(field);
 		}

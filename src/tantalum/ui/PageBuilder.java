@@ -10,7 +10,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
-import tantalum.entities.AppPage;
+import tantalum.entities.Page;
 import tantalum.util.UrlRequest;
 
 
@@ -33,7 +33,7 @@ public class PageBuilder {
 		}
 	}
 
-	public String draw(AppPage page, UrlRequest urlRequest) {
+	public String draw(Page page, UrlRequest urlRequest) {
 		StringWriter result = new StringWriter();
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("page", page);

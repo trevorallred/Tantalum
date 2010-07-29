@@ -1,19 +1,20 @@
 package tantalum.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import tantalum.data.DatabaseType;
 
 @Entity
-@javax.persistence.Table(name = "dd_database")
-public class AppDatabase extends BaseTable {
-	@Transient
-	private DatabaseType type = DatabaseType.MySQL;
-	private String server = "localhost";
-	private String database = "tenfold";
-	private String username = "tf_user";
-	private String password = "tf_password";
+@javax.persistence.Table(name = "tan_database")
+public class Database extends BaseTable {
+	@Enumerated(EnumType.STRING)
+	private DatabaseType type;
+	private String server;
+	private String database;
+	private String username;
+	private String password;
 
 	public DatabaseType getType() {
 		return type;

@@ -1,40 +1,40 @@
 package tantalum.entities;
 
 public class ReferenceJoinClause {
-	private AppColumn toColumn;
-	private AppField toField;
-	private AppColumn fromColumn;
-	private AppField fromField;
+	private TableColumn toColumn;
+	private Field toField;
+	private TableColumn fromColumn;
+	private Field fromField;
 
-	public AppColumn getToColumn() {
+	public TableColumn getToColumn() {
 		return toColumn;
 	}
 
-	public void setToColumn(AppColumn toColumn) {
+	public void setToColumn(TableColumn toColumn) {
 		this.toColumn = toColumn;
 	}
 
-	public AppField getToField() {
+	public Field getToField() {
 		return toField;
 	}
 
-	public void setToField(AppField toField) {
+	public void setToField(Field toField) {
 		this.toField = toField;
 	}
 
-	public AppColumn getFromColumn() {
+	public TableColumn getFromColumn() {
 		return fromColumn;
 	}
 
-	public void setFromColumn(AppColumn fromColumn) {
+	public void setFromColumn(TableColumn fromColumn) {
 		this.fromColumn = fromColumn;
 	}
 
-	public AppField getFromField() {
+	public Field getFromField() {
 		return fromField;
 	}
 
-	public void setFromField(AppField fromField) {
+	public void setFromField(Field fromField) {
 		this.fromField = fromField;
 	}
 

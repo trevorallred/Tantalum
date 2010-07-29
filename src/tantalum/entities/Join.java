@@ -9,20 +9,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-@javax.persistence.Table(name = "dd_join")
-public class AppJoin extends BaseTable {
+@javax.persistence.Table(name = "tan_join")
+public class Join extends BaseTable {
 	private String joinType;
 	@ManyToOne
 	@JoinColumn(name = "fromTableID")
-	private AppTable fromTable;
+	private Table fromTable;
 	private String childName;
 	@ManyToOne
 	@JoinColumn(name = "toTableID")
-	private AppTable toTable;
+	private Table toTable;
 	private String parentName;
 
 	@OneToMany(mappedBy = "join", fetch = FetchType.EAGER)
-	private List<AppJoinColumn> joinColumns;
+	private List<JoinColumns> joinColumns;
 
 	public String getJoinType() {
 		return joinType;
@@ -32,11 +32,11 @@ public class AppJoin extends BaseTable {
 		this.joinType = joinType;
 	}
 
-	public AppTable getFromTable() {
+	public Table getFromTable() {
 		return fromTable;
 	}
 
-	public void setFromTable(AppTable fromTable) {
+	public void setFromTable(Table fromTable) {
 		this.fromTable = fromTable;
 	}
 
@@ -48,11 +48,11 @@ public class AppJoin extends BaseTable {
 		this.childName = childName;
 	}
 
-	public AppTable getToTable() {
+	public Table getToTable() {
 		return toTable;
 	}
 
-	public void setToTable(AppTable toTable) {
+	public void setToTable(Table toTable) {
 		this.toTable = toTable;
 	}
 
@@ -64,11 +64,11 @@ public class AppJoin extends BaseTable {
 		this.parentName = parentName;
 	}
 
-	public List<AppJoinColumn> getJoinColumns() {
+	public List<JoinColumns> getJoinColumns() {
 		return joinColumns;
 	}
 
-	public void setJoinColumns(List<AppJoinColumn> joinColumns) {
+	public void setJoinColumns(List<JoinColumns> joinColumns) {
 		this.joinColumns = joinColumns;
 	}
 

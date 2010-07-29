@@ -5,17 +5,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-@javax.persistence.Table(name = "dd_menu")
-public class AppMenu extends BaseNamedTable {
+@javax.persistence.Table(name = "tan_menu")
+public class Menu extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "databaseID")
-	private AppDatabase database;
+	private Database database;
 
-	public AppDatabase getDatabase() {
+	public Database getDatabase() {
 		return database;
 	}
 
-	public void setDatabase(AppDatabase database) {
+	public void setDatabase(Database database) {
 		this.database = database;
 	}
 

@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import tantalum.DatabaseException;
-import tantalum.entities.AppField;
-import tantalum.entities.AppView;
+import tantalum.entities.Field;
+import tantalum.entities.View;
 import tantalum.util.Strings;
 
 /**
@@ -21,7 +21,7 @@ import tantalum.util.Strings;
  */
 public class PageContentBean extends PageContent {
 	private Map<String, Object> values = new HashMap<String, Object>();
-	private AppView view = null;
+	private View view = null;
 
 	public PageContentBean(ResultSet rs, Set<String> columnNames)
 			throws DatabaseException {
@@ -49,7 +49,7 @@ public class PageContentBean extends PageContent {
 		return Integer.parseInt(value);
 	}
 
-	public String getString(AppField field) {
+	public String getString(Field field) {
 		return getString(field.getName());
 	}
 
@@ -81,11 +81,11 @@ public class PageContentBean extends PageContent {
 		return false;
 	}
 
-	public AppView getView() {
+	public View getView() {
 		return view;
 	}
 
-	public void setView(AppView view) {
+	public void setView(View view) {
 		this.view = view;
 	}
 

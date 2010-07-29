@@ -8,23 +8,23 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 @Entity
-@javax.persistence.Table(name = "dd_page")
-public class AppPage extends BaseNamedTable {
+@javax.persistence.Table(name = "tan_page")
+public class Page extends BaseNamedTable {
 	@Transient
-	private AppField keyField = null;
+	private Field keyField = null;
 
 	@OneToMany(mappedBy = "page")
-	private List<AppView> views = new ArrayList<AppView>();
+	private List<View> views = new ArrayList<View>();
 	@OneToMany(mappedBy = "page")
-	private List<AppRegion> regions = new ArrayList<AppRegion>();
+	private List<Region> regions = new ArrayList<Region>();
 	@Transient
 	private List<Exception> exceptions = new ArrayList<Exception>();
 
-	public AppField getKeyField() {
+	public Field getKeyField() {
 		return keyField;
 	}
 
-	public void setKeyField(AppField keyField) {
+	public void setKeyField(Field keyField) {
 		this.keyField = keyField;
 	}
 
@@ -36,15 +36,15 @@ public class AppPage extends BaseNamedTable {
 		this.exceptions.add(exception);
 	}
 
-	public List<AppView> getViews() {
+	public List<View> getViews() {
 		return views;
 	}
 
-	public List<AppRegion> getRegions() {
+	public List<Region> getRegions() {
 		return regions;
 	}
 
-	public void setRegions(List<AppRegion> regions) {
+	public void setRegions(List<Region> regions) {
 		this.regions = regions;
 	}
 
@@ -53,9 +53,9 @@ public class AppPage extends BaseNamedTable {
 	 * 
 	 * @return
 	 */
-	public List<AppView> getParentViews() {
-		List<AppView> top = new ArrayList<AppView>();
-		for (AppView view : views) {
+	public List<View> getParentViews() {
+		List<View> top = new ArrayList<View>();
+		for (View view : views) {
 			if (view.getParent() == null) {
 				top.add(view);
 			}
@@ -68,9 +68,9 @@ public class AppPage extends BaseNamedTable {
 	 * 
 	 * @return
 	 */
-	public List<AppRegion> getParentRegions() {
-		List<AppRegion> top = new ArrayList<AppRegion>();
-		for (AppRegion view : regions) {
+	public List<Region> getParentRegions() {
+		List<Region> top = new ArrayList<Region>();
+		for (Region view : regions) {
 			if (view.getParent() == null) {
 				top.add(view);
 			}
@@ -82,21 +82,21 @@ public class AppPage extends BaseNamedTable {
 	
 	
 	public boolean isCanSave() {
-		for (AppView view : views) {
+		for (View view : views) {
 			if (isCanSaveView(view))
 				return true;
 		}
 		return false;
 	}
 	
-	public boolean isCanSaveView(AppView parentView) {
+	public boolean isCanSaveView(View parentView) {
 		if (parentView.isAllowAdd())
 			return true;
 		if (parentView.isAllowEdit())
 			return true;
 		if (parentView.isAllowDelete())
 			return true;
-		for (AppView view : parentView.getChildViews()) {
+		for (View view : parentView.getChildViews()) {
 			if (isCanSaveView(view))
 				return true;
 		}
@@ -105,7 +105,7 @@ public class AppPage extends BaseNamedTable {
 	
 	public String printAll() {
 		String out = name + "(" + id + ")";
-		for (AppView view : views)
+		for (View view : views)
 			out += "\n  V: " + view.toString();
 		return out;
 	}
