@@ -10,8 +10,8 @@ Contributing
 Our biggest need right now is a public server we can use to host the applications development effort. If you have a server we can use, then please contact Trevor Allred.
 
 There are two areas of work that need to be done.
-- Java Development - Trevor is looking for Java coders, experts in jQuery, and graphic designers to help build war file.
-- Applications Development - John Weymouth is leading the effort in building the new "TenFold Library."
+- Tantalum Core - Trevor is looking for Java coders, experts in jQuery, and graphic designers to help build war file.
+- Tantalum Tools - John Davenport and John Weymouth are leading the effort in building the new "TenFold Tools" for Tantalum.
 
 License
 -------
@@ -31,7 +31,7 @@ Installation
 			maxActive="60" maxIdle="30" maxWait="10000" removeAbandoned="true"
 			removeAbandonedTimeout="20" driverClassName="com.mysql.jdbc.Driver"
 			logAbandoned="true" username="root" password=""
-			url="jdbc:mysql://localhost:3306/tantalum_dict" />
+			url="jdbc:mysql://localhost:3306/tantalum_meta" />
 	</Context>
 
 Repository
