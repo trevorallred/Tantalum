@@ -1,5 +1,6 @@
 package tantalum.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -19,7 +20,7 @@ public class AppTable extends BaseTable {
 	@JoinColumn(name = "databaseID")
 	private AppDatabase database;
 	@OneToMany(mappedBy = "table")
-	private List<AppColumn> columns;
+	private List<AppColumn> columns = new ArrayList<AppColumn>();
 
 	public String getName() {
 		return name;

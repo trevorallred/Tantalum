@@ -54,7 +54,7 @@ public class DataSaver {
 	 * @param where
 	 */
 	private void queryData(AppView view, String where) {
-		SelectSQL sql = QueryBuilder.build(view);
+		SelectSQL sql = QueryBuilder.buildSelect(view);
 		if (!Strings.isEmpty(where))
 			sql.addWhere(where);
 		List<PageContentBean> data = db.select(sql.toString(), true);

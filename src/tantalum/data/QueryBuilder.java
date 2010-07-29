@@ -1,13 +1,19 @@
 package tantalum.data;
 
+import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import tantalum.entities.AppField;
 import tantalum.entities.AppJoinColumn;
 import tantalum.entities.AppReference;
 import tantalum.entities.AppView;
 import tantalum.util.SelectSQL;
+import tantalum.util.UpdateSQL;
 
 public class QueryBuilder {
-	static public SelectSQL build(AppView view) {
+	static public SelectSQL buildSelect(AppView view) {
 		SelectSQL sql = new SelectSQL(view.getBasisTable().getDbName()
 				+ " AS t0");
 		int aliasCounter = 0;
@@ -38,4 +44,28 @@ public class QueryBuilder {
 			sql.setLimit(view.getResultsPerPage());
 		return sql;
 	}
+	
+	static public List<UpdateSQL> buildUpdates(AppView view, Object raw) {
+		if (raw == null)
+			return null;
+		JSONObject json = (JSONObject)raw;
+		JSONArray data = (JSONArray)json.get("DATA");
+		for (Object o : data) {
+			JSONObject row = (JSONObject)o;
+			JSONObject rowData = (JSONObject)row.get("FIELDS");
+			// Now save or update this row Data
+			UpdateSQL sql = new UpdateSQL();
+			for (AppField field : view.getFields()) {
+				if (rowData.containsKey(field.getName()))
+					sql.addField(field.getName(), rowData.get(field.getName()).toString());
+			}
+			
+			JSONObject children = (JSONObject)row.get("CHILDREN");
+			for (AppView childView : view.getChildViews()) {
+				buildUpdates(childView, children.get(childView.getName()));
+			}
+		}
+		return null;
+	}
+
 }
