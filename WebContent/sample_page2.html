@@ -1,25 +1,38 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="generator" content="Tantalum 0.1"/>
 <title>Define Table</title>
-<link rel="stylesheet" href="/Tantalum/themes/default/style.css" type="text/css" media="screen" charset="utf-8"/> 
-<link rel="stylesheet" href="/Tantalum/themes/default/print.css" type="text/css" media="print"> 
+<link rel="stylesheet" type="text/css" href="/Tantalum/themes/default/style.css" media="all" /> 
+<style type="text/css">
+@charset "UTF-8";
+@import url(/Tantalum/yaml/core/base.css);
+@import url(/Tantalum/yaml/navigation/nav_shinybuttons.css);
+@import url(/Tantalum/yaml/screen/content_default.css);
+@import url(/Tantalum/yaml/screen/forms.css);
+@import url(/Tantalum/yaml/print/print_003_draft.css);
+</style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="/Tantalum/js/main.js"></script>
+<script type="text/javascript" src="/Tantalum/js/json2min.js"></script>
 <script type="text/javascript">
 
-var json;
+var json = {"DefineTable":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableTableID":"1","DefineTableName":"Table","DefineTableDatabaseName":"dd_table"},"CHILDREN":{"DefineTableColumn":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableColumnID":"1","DefineTableColumnTableID":"1","DefineTableColumnDisplayOrder":"10","DefineTableColumnDbName":"id","DefineTableColumnRequired":"1","DefineTableColumnName":"TableID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"2","DefineTableColumnTableID":"1","DefineTableColumnDisplayOrder":"20","DefineTableColumnDbName":"name","DefineTableColumnRequired":"1","DefineTableColumnName":"Name"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"3","DefineTableColumnTableID":"1","DefineTableColumnDisplayOrder":"30","DefineTableColumnDbName":"dbName","DefineTableColumnRequired":"1","DefineTableColumnName":"DatabaseName"},"CHILDREN":{},"ACTION":null}],"POSITION":0}},"ACTION":null},{"FIELDS":{"DefineTableTableID":"2","DefineTableName":"Column","DefineTableDatabaseName":"dd_column"},"CHILDREN":{"DefineTableJoinParent":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableJoinToTableName":"Table","DefineTableJoinToTableID":"1","DefineTableJoinFromTableID":"2","DefineTableJoinJoinID":"1"},"CHILDREN":{},"ACTION":null}],"POSITION":0},"DefineTableColumn":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableColumnID":"7","DefineTableColumnTableID":"2","DefineTableColumnDisplayOrder":"10","DefineTableColumnDbName":"name","DefineTableColumnRequired":"1","DefineTableColumnName":"Name"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"8","DefineTableColumnTableID":"2","DefineTableColumnDisplayOrder":"5","DefineTableColumnDbName":"id","DefineTableColumnRequired":"1","DefineTableColumnName":"ColumnID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"9","DefineTableColumnTableID":"2","DefineTableColumnDisplayOrder":"20","DefineTableColumnDbName":"tableID","DefineTableColumnRequired":"1","DefineTableColumnName":"TableID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"10","DefineTableColumnTableID":"2","DefineTableColumnDisplayOrder":"30","DefineTableColumnDbName":"required","DefineTableColumnRequired":"1","DefineTableColumnName":"Required"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"11","DefineTableColumnTableID":"2","DefineTableColumnDisplayOrder":"40","DefineTableColumnDbName":"displayOrder","DefineTableColumnRequired":"1","DefineTableColumnName":"DisplayOrder"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"18","DefineTableColumnTableID":"2","DefineTableColumnDisplayOrder":"50","DefineTableColumnDbName":"dbName","DefineTableColumnRequired":"0","DefineTableColumnName":"Database"},"CHILDREN":{},"ACTION":null}],"POSITION":0}},"ACTION":null},{"FIELDS":{"DefineTableTableID":"3","DefineTableName":"Join","DefineTableDatabaseName":"dd_join"},"CHILDREN":{"DefineTableJoinParent":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableJoinToTableName":"Table","DefineTableJoinToTableID":"1","DefineTableJoinFromTableID":"3","DefineTableJoinJoinID":"2"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableJoinToTableName":"Table","DefineTableJoinToTableID":"1","DefineTableJoinFromTableID":"3","DefineTableJoinJoinID":"5"},"CHILDREN":{},"ACTION":null}],"POSITION":0},"DefineTableColumn":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableColumnID":"14","DefineTableColumnTableID":"3","DefineTableColumnDisplayOrder":"10","DefineTableColumnDbName":"id","DefineTableColumnRequired":"1","DefineTableColumnName":"JoinID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"15","DefineTableColumnTableID":"3","DefineTableColumnDisplayOrder":"20","DefineTableColumnDbName":"fromTableID","DefineTableColumnRequired":"1","DefineTableColumnName":"FromTableID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"16","DefineTableColumnTableID":"3","DefineTableColumnDisplayOrder":"30","DefineTableColumnDbName":"toTableID","DefineTableColumnRequired":"1","DefineTableColumnName":"ToTableID"},"CHILDREN":{},"ACTION":null}],"POSITION":0}},"ACTION":null},{"FIELDS":{"DefineTableTableID":"4","DefineTableName":"WebPages","DefineTableDatabaseName":"dd_page"},"CHILDREN":{"DefineTableColumn":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableColumnID":"4","DefineTableColumnTableID":"4","DefineTableColumnDisplayOrder":"10","DefineTableColumnDbName":"id","DefineTableColumnRequired":"1","DefineTableColumnName":"PageID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"5","DefineTableColumnTableID":"4","DefineTableColumnDisplayOrder":"20","DefineTableColumnDbName":"name","DefineTableColumnRequired":"1","DefineTableColumnName":"Name"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"6","DefineTableColumnTableID":"4","DefineTableColumnDisplayOrder":"30","DefineTableColumnDbName":"label","DefineTableColumnRequired":"1","DefineTableColumnName":"Title"},"CHILDREN":{},"ACTION":null}],"POSITION":0}},"ACTION":null},{"FIELDS":{"DefineTableTableID":"5","DefineTableName":"Field","DefineTableDatabaseName":"dd_field"},"CHILDREN":{"DefineTableJoinParent":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableJoinToTableName":"View","DefineTableJoinToTableID":"6","DefineTableJoinFromTableID":"5","DefineTableJoinJoinID":"4"},"CHILDREN":{},"ACTION":null}],"POSITION":0}},"ACTION":null},{"FIELDS":{"DefineTableTableID":"6","DefineTableName":"View","DefineTableDatabaseName":"dd_view"},"CHILDREN":{"DefineTableJoinParent":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableJoinToTableName":"WebPages","DefineTableJoinToTableID":"4","DefineTableJoinFromTableID":"6","DefineTableJoinJoinID":"3"},"CHILDREN":{},"ACTION":null}],"POSITION":0},"DefineTableColumn":{"FULLY_LOADED":true,"DATA":[{"FIELDS":{"DefineTableColumnID":"12","DefineTableColumnTableID":"6","DefineTableColumnDisplayOrder":"10","DefineTableColumnDbName":"id","DefineTableColumnRequired":"1","DefineTableColumnName":"ViewID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"13","DefineTableColumnTableID":"6","DefineTableColumnDisplayOrder":"20","DefineTableColumnDbName":"pageID","DefineTableColumnRequired":"1","DefineTableColumnName":"PageID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"17","DefineTableColumnTableID":"6","DefineTableColumnDisplayOrder":"30","DefineTableColumnDbName":"resultsPerPage","DefineTableColumnRequired":"0","DefineTableColumnName":"ResultsPerPage"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"19","DefineTableColumnTableID":"6","DefineTableColumnDisplayOrder":"60","DefineTableColumnDbName":"basisTableID","DefineTableColumnRequired":"0","DefineTableColumnName":"BasisTableID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"20","DefineTableColumnTableID":"6","DefineTableColumnDisplayOrder":"70","DefineTableColumnDbName":"name","DefineTableColumnRequired":"1","DefineTableColumnName":"Name"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"21","DefineTableColumnTableID":"6","DefineTableColumnDisplayOrder":"80","DefineTableColumnDbName":"parentID","DefineTableColumnRequired":"0","DefineTableColumnName":"ParentID"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableColumnID":"22","DefineTableColumnTableID":"6","DefineTableColumnDisplayOrder":"90","DefineTableColumnDbName":"referenceID","DefineTableColumnRequired":"0","DefineTableColumnName":"ReferenceID"},"CHILDREN":{},"ACTION":null}],"POSITION":0}},"ACTION":null},{"FIELDS":{"DefineTableTableID":"8","DefineTableName":"SmartCodes","DefineTableDatabaseName":"dd_smart_codes"},"CHILDREN":{},"ACTION":null},{"FIELDS":{"DefineTableTableID":"9","DefineTableName":"User","DefineTableDatabaseName":"dd_user"},"CHILDREN":{},"ACTION":null}],"POSITION":0}};
 
 $(document).ready(function() {
-	jQuery.getJSON('/Tantalum/ws/DefineTable/',
-		function(jsonCallback) {
-			json = jsonCallback;
-						rows_DefineTable = json.DefineTable;
-			position_DefineTable();
-					}
-	);
+	rows_DefineTable = json.DefineTable;
+	position_DefineTable();
 });
+
+function save() {
+	var json2 = json;
+	jQuery.post('/Tantalum/ws/DefineTable/', json2,
+		function(data) {
+			alert(data);
+		}
+	);
+	$("#save").attr("disabled", true);
+}
 
 	var rows_DefineTable = null;
 	function nav_DefineTable(amount) {
@@ -53,7 +66,34 @@ $(document).ready(function() {
 					rows_DefineTableJoinParent = row.CHILDREN.DefineTableJoinParent;
 			position_DefineTableJoinParent();
 			}
-	var rows_DefineTableColumn = null;
+
+		function add_DefineTable() {
+		var r = rows_DefineTable;
+		r.POSITION = r.DATA.length;
+		r.DATA[r.POSITION] = {"FIELDS" : {},"CHILDREN" : {}, "ACTION" : "NEW_EDIT"};
+		position_DefineTable();
+	}
+	
+		function edit_DefineTable(row, value) {
+		var r = rows_DefineTable;
+		r.POSITION = row;
+		if (value)
+			r.DATA[row].ACTION = "EDIT";
+		else
+			r.DATA[row].ACTION = null;
+		position_DefineTable();
+	}
+		
+		function delete_DefineTable(row) {
+		var r = rows_DefineTable;
+		rows_DefineTable.DATA[row].ACTION = "DELETE";
+		if (r.POSITION == row) {
+			if (row >= r.DATA.length)
+				r.POSITION = r.DATA.length - 1;
+		}
+		position_DefineTable();
+	}
+		var rows_DefineTableColumn = null;
 	function nav_DefineTableColumn(amount) {
 		if (rows_DefineTableColumn == null)
 			return false;
@@ -74,14 +114,41 @@ $(document).ready(function() {
 	function position_DefineTableColumn() {
 		// first paint all child regions (not recursively), and then position all child views (recursively)
 									paint_Columns();
-												paint_Views();
-							
+												
 		if (rows_DefineTableColumn == undefined)
 			return;
 	
 		var row = rows_DefineTableColumn.DATA[rows_DefineTableColumn.POSITION];
 		
 			}
+
+		function add_DefineTableColumn() {
+		var r = rows_DefineTableColumn;
+		r.POSITION = r.DATA.length;
+		r.DATA[r.POSITION] = {"FIELDS" : {},"CHILDREN" : {}, "ACTION" : "NEW_EDIT"};
+		position_DefineTableColumn();
+	}
+	
+		function edit_DefineTableColumn(row, value) {
+		var r = rows_DefineTableColumn;
+		r.POSITION = row;
+		if (value)
+			r.DATA[row].ACTION = "EDIT";
+		else
+			r.DATA[row].ACTION = null;
+		position_DefineTableColumn();
+	}
+		
+		function delete_DefineTableColumn(row) {
+		var r = rows_DefineTableColumn;
+		rows_DefineTableColumn.DATA[row].ACTION = "DELETE";
+		if (r.POSITION == row) {
+			if (row >= r.DATA.length)
+				r.POSITION = r.DATA.length - 1;
+		}
+		position_DefineTableColumn();
+	}
+
 	var rows_DefineTableJoinParent = null;
 	function nav_DefineTableJoinParent(amount) {
 		if (rows_DefineTableJoinParent == null)
@@ -111,35 +178,82 @@ $(document).ready(function() {
 		
 			}
 
+		function add_DefineTableJoinParent() {
+		var r = rows_DefineTableJoinParent;
+		r.POSITION = r.DATA.length;
+		r.DATA[r.POSITION] = {"FIELDS" : {},"CHILDREN" : {}, "ACTION" : "NEW_EDIT"};
+		position_DefineTableJoinParent();
+	}
+	
+		function edit_DefineTableJoinParent(row, value) {
+		var r = rows_DefineTableJoinParent;
+		r.POSITION = row;
+		if (value)
+			r.DATA[row].ACTION = "EDIT";
+		else
+			r.DATA[row].ACTION = null;
+		position_DefineTableJoinParent();
+	}
+		
+		function delete_DefineTableJoinParent(row) {
+		var r = rows_DefineTableJoinParent;
+		rows_DefineTableJoinParent.DATA[row].ACTION = "DELETE";
+		if (r.POSITION == row) {
+			if (row >= r.DATA.length)
+				r.POSITION = r.DATA.length - 1;
+		}
+		position_DefineTableJoinParent();
+	}
+	
 </script>
 </head>
-<body>
-[<a href='/Tantalum/t/ManageTables'>Manage Tables</a>]
-[<a href='/Tantalum/t/WebpageList'>List Web Pages</a>]
 
+<body>
+
+<div class="hlist" >
+  <ul>
+    <li><a href="/Tantalum/t/ManageTables">Manage Tables</a></li>
+    <li><a href="/Tantalum/t/WebpageList">List Web Pages</a></li>
+  </ul>
+</div>
 
 <h1>Define Table</h1>
 
+<form class="yform">
+<fieldset>
+<div id="${region.name}Navigation" class="type-button">
+	<input type="button" value="Save" id="save" onclick="save();" />
+</div>
+</fieldset>
+</form>
+
 <div id="ManageTables" class="region VerticalContainer">
 			<div id="Tables" class="region FormRegion">
-<h2>Table</h2>
-	<div id="TablesNavigation">
-	<button id="previousDefineTable" onclick="return nav_DefineTable(-1);">Previous</button>
-	<button id="nextDefineTable" onclick="return nav_DefineTable(1);">Next</button>
+	<form method="post" action="" class="yform">
+<fieldset>
+<legend>Table</legend>
+
+<div id="TablesNavigation" class="type-button">
+	<input type="button" value="Previous" id="previousDefineTable" onclick="return nav_DefineTable(-1);" name="buttonPrevious" />
+	<input type="button" value="Next" id="nextDefineTable" onclick="return nav_DefineTable(1);" name="buttonNext" />
 </div>
 
-<ul>
-	<li><label>ID:</label>
-			<span class="DefineTableTableID"></span>
-		</li>
-	<li><label>Table name:</label>
-			<input type="text" class="DefineTableName" name="DefineTableName">
-		</li>
-	<li><label>DB name:</label>
+			<div class="type-text">
+			<label for="DefineTableTableID">ID</label>
+			<span id="DefineTableTableID"></span>
+		</div>
 
-			<input type="text" class="DefineTableDatabaseName" name="DefineTableDatabaseName">
-		</li>
-</ul>
+				<div class="type-text">
+			<label for="DefineTableName">Table name</label>
+			<input type="text" name="DefineTableName" id="DefineTableName" size="20" />
+		</div>
+				<div class="type-text">
+			<label for="DefineTableDatabaseName">DB name</label>
+			<input type="text" name="DefineTableDatabaseName" id="DefineTableDatabaseName" size="20" />
+		</div>
+
+	</fieldset>
+</form>
 
 <script type="text/javascript">
 	function paintButtons_Tables() {
@@ -158,9 +272,9 @@ $(document).ready(function() {
 		
 		var row = rows_DefineTable.DATA[rows_DefineTable.POSITION];
 		
-									$("#Tables").find('.DefineTableTableID').html(row.FIELDS.DefineTableTableID);
-												$("#Tables").find('.DefineTableName').val(row.FIELDS.DefineTableName);
-												$("#Tables").find('.DefineTableDatabaseName').val(row.FIELDS.DefineTableDatabaseName);
+									$("#Tables").find('#DefineTableTableID').html(row.FIELDS.DefineTableTableID);
+												$("#Tables").find('#DefineTableName').val(row.FIELDS.DefineTableName);
+												$("#Tables").find('#DefineTableDatabaseName').val(row.FIELDS.DefineTableDatabaseName);
 						}
 </script>
 </div>
@@ -168,39 +282,39 @@ $(document).ready(function() {
 	<table class="horizontalContainer">
 	<tr>
 			<td><div id="Columns" class="region BasicTable">
-
-<h2>Columns</h2>
 	<table class="basicTable">
-<thead>
-<tr>
-	<th></th>
-	<th><a href='#'>ID</a></th>
-	<th><a href='#'>Order</a></th>
-	<th><a href='#'>Name</a></th>
 
-	<th><a href='#'>Required</a></th>
-	<th><a href='#'>Database</a></th>
-</tr>
+<thead>
+	<tr>
+		<th colspan="6">Columns</th>
+	</tr>
 </thead>
 <tbody>
+	<tr>
+		<th scope="col"></th>
+			<th scope="col"><a href='#'>ID</a></th>
+			<th scope="col"><a href='#' onclick="return sort_DefineTableColumnDisplayOrder();">Order</a></th>
+			<th scope="col"><a href='#'>Name</a></th>
+			<th scope="col"><a href='#'>Required</a></th>
+			<th scope="col"><a href='#'>Database</a></th>
+		</tr>
 	<tr class='template view'>
-		<td class="actionButtons">
+		<th scope="row" class="actionButtons">
+
 							<a href="#" class="edit" title="Edit">Edit</a>
 										<a href="#" class="delete" title="Delete">Delete</a>
+					</th>
+						<td class="DefineTableColumnID"></td>
+								<td class="DefineTableColumnDisplayOrder"></td>
+								<td class="DefineTableColumnName"></td>
+								<td><input type="checkbox" class="DefineTableColumnRequired" name="DefineTableColumnRequired" disabled="disabled" /></td>
+								<td class="DefineTableColumnDbName"></td>
 
-					</td>
-						<td class="DefineTableColumnID">DefineTableColumnID</td>
-								<td class="DefineTableColumnDisplayOrder">DefineTableColumnDisplayOrder</td>
-								<td class="DefineTableColumnName">DefineTableColumnName</td>
-								<td><input type="checkbox" class="DefineTableColumnRequired" name="DefineTableColumnRequired" disabled="disabled"></td>
-								<td class="DefineTableColumnDbName">DefineTableColumnDbName</td>
 				</tr>
-
 			<tr class="template edit">
-			<td class="actionButtons">
-				<a href="#" class="save" title="Save">Save</a>
+			<th scope="row" class="actionButtons">
 				<a href="#" class="cancel" title="Cancel">Cancel</a>
-			</td>
+			</th>
 					<td>
 							<span class="DefineTableColumnID"></span>
 						</td>
@@ -221,15 +335,34 @@ $(document).ready(function() {
 				</tr>
 	</tbody>
 <tfoot>
-	<tr class='add'>
-		<td></td>
-		<td colspan="5">Add</td>
+	<tr>
+		<th class="actionButtons">
+			<a href="#" class="add" onclick="add_DefineTableColumn(); return false;" id="addDefineTableColumn">Add</a>
 
+		</th>
+		<td colspan="5" />
 	</tr>
 </tfoot>
 </table>
 
 <script type="text/javascript">
+	var sortDirection_DefineTableColumnDisplayOrder = null;
+	function sort_DefineTableColumnDisplayOrder() {
+		if (sortDirection_DefineTableColumnDisplayOrder)
+			rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnDisplayOrderDESC);
+		else
+			rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnDisplayOrderASC);
+		sortDirection_DefineTableColumnDisplayOrder = !sortDirection_DefineTableColumnDisplayOrder;
+		paint_Columns();
+		return false;
+	}
+	function sortFunction_DefineTableColumnDisplayOrderASC(a, b) {
+		return a.FIELDS.DefineTableColumnDisplayOrder - b.FIELDS.DefineTableColumnDisplayOrder;
+	}
+	function sortFunction_DefineTableColumnDisplayOrderDESC(b, a) {
+		return a.FIELDS.DefineTableColumnDisplayOrder - b.FIELDS.DefineTableColumnDisplayOrder;
+	}
+
 	function paint_Columns() {
 		var tbody = $("#Columns").find("tbody");
 		
@@ -238,98 +371,101 @@ $(document).ready(function() {
 		var rows = rows_DefineTableColumn;
 		if (rows != null) {
 			for ( var i = 0; i < rows.DATA.length; i++) {
-				addRow_Columns(tbody, template, rows.DATA[i].FIELDS);
+				addRow_Columns(tbody, template, rows.DATA[i], i);
 			}
 		}
-		
-		$(tbody).find("tr.data").dblclick(function() {
-			$(this).hide();
-			$(row).next("tr.edit").show();
-			return false;
-		});
-		
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(function() {
-			var row = $(this).parentsUntil('tbody')[1];
-			$(row).hide();
-			$(row).next("tr.edit").show();
-			return false;
-		});
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel").click(function() {
-			var row = $(this).parentsUntil('tbody')[1];
-			$(row).hide();
-			$(row).prev("tr.view").show();
-			return false;
-		});
-		
-		$(tbody).find("tr.edit").hide();
 		$(template).hide();
 	}
-	function addRow_Columns(tbody, template, row) {
+	function addRow_Columns(tbody, template, data, i) {
+		if (data.ACTION == "DELETE")
+			return;
+		var row = data.FIELDS;
 		var rowHTML = $(template).clone();
 		rowHTML.show();
 		rowHTML.addClass("data");
 		rowHTML.removeClass("template");
-																	$(rowHTML).find('td.DefineTableColumnID').html(row.DefineTableColumnID);
-																	$(rowHTML).find('input.DefineTableColumnTableID').val(row.DefineTableColumnTableID);
-												$(rowHTML).find('td.DefineTableColumnTableID').html(row.DefineTableColumnTableID);
-																	$(rowHTML).find('input.DefineTableColumnDisplayOrder').val(row.DefineTableColumnDisplayOrder);
-												$(rowHTML).find('td.DefineTableColumnDisplayOrder').html(row.DefineTableColumnDisplayOrder);
-																	$(rowHTML).find('input.DefineTableColumnName').val(row.DefineTableColumnName);
-												$(rowHTML).find('td.DefineTableColumnName').html(row.DefineTableColumnName);
-												$(rowHTML[1]).find('input.DefineTableColumnRequired').attr("checked",row.DefineTableColumnRequired==1 ? "checked" : "");
-																	$(rowHTML).find('input.DefineTableColumnDbName').val(row.DefineTableColumnDbName);
-												$(rowHTML).find('td.DefineTableColumnDbName').html(row.DefineTableColumnDbName);
-							tbody.append(rowHTML);
+									$(rowHTML).find('.DefineTableColumnID').html(row.DefineTableColumnID);
+																				$(rowHTML).find('.DefineTableColumnTableID').html(row.DefineTableColumnTableID);
+									$(rowHTML).find('input.DefineTableColumnTableID').val(row.DefineTableColumnTableID);
+					$(rowHTML).find('input.DefineTableColumnTableID').attr("onchange", "rows_DefineTableColumn[" + i + "].FIELDS.DefineTableColumnTableID = this.val()");
+																				$(rowHTML).find('.DefineTableColumnDisplayOrder').html(row.DefineTableColumnDisplayOrder);
+									$(rowHTML).find('input.DefineTableColumnDisplayOrder').val(row.DefineTableColumnDisplayOrder);
+					$(rowHTML).find('input.DefineTableColumnDisplayOrder').attr("onchange", "rows_DefineTableColumn[" + i + "].FIELDS.DefineTableColumnDisplayOrder = this.val()");
+																				$(rowHTML).find('.DefineTableColumnName').html(row.DefineTableColumnName);
+									$(rowHTML).find('input.DefineTableColumnName').val(row.DefineTableColumnName);
+					$(rowHTML).find('input.DefineTableColumnName').attr("onchange", "rows_DefineTableColumn[" + i + "].FIELDS.DefineTableColumnName = this.val()");
+																				$(rowHTML).find('input.DefineTableColumnRequired').attr("checked",row.DefineTableColumnRequired==1 ? "checked" : "");
+												$(rowHTML).find('.DefineTableColumnDbName').html(row.DefineTableColumnDbName);
+									$(rowHTML).find('input.DefineTableColumnDbName').val(row.DefineTableColumnDbName);
+					$(rowHTML).find('input.DefineTableColumnDbName').attr("onchange", "rows_DefineTableColumn[" + i + "].FIELDS.DefineTableColumnDbName = this.val()");
+													
+				$(rowHTML).find('a.delete').attr("onclick", "delete_DefineTableColumn(" + i + "); return false;");
+						$(rowHTML).find('a.edit').attr("onclick", "edit_DefineTableColumn(" + i + ", true); return false;");
+		$(rowHTML).attr("dblclick", "edit_DefineTableColumn(" + i + ", true); return false;");
+				$(rowHTML).find('a.cancel').attr("onclick", "edit_DefineTableColumn(" + i + ", false); return false;");
+
+		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {
+			$(rowHTML[0]).hide(); // tr.view
+			$(rowHTML[1]).show(); // tr.edit
+		} else {
+			$(rowHTML[0]).show(); // tr.view
+			$(rowHTML[1]).hide(); // tr.edit
+		}
+		tbody.append(rowHTML);
 	}
 </script>
 </div>
 </td>
 			<td><div id="Join" class="region BasicTable">
-<h2>Joins to children</h2>
 	<table class="basicTable">
-<thead>
-<tr>
 
-	<th></th>
-	<th><a href='#'>From table</a></th>
-	<th><a href='#'>To table</a></th>
-	<th><a href='#'>To table</a></th>
-</tr>
+<thead>
+	<tr>
+		<th colspan="4">Joins to children</th>
+	</tr>
 </thead>
 <tbody>
-	<tr class='template view'>
-		<td class="actionButtons">
+	<tr>
+		<th scope="col"></th>
+			<th scope="col"><a href='#'>From table</a></th>
 
+			<th scope="col"><a href='#'>To table</a></th>
+			<th scope="col"><a href='#'>To table</a></th>
+		</tr>
+	<tr class='template view'>
+		<th scope="row" class="actionButtons">
 							<a href="#" class="edit" title="Edit">Edit</a>
 										<a href="#" class="delete" title="Delete">Delete</a>
-					</td>
-						<td class="DefineTableJoinFromTableID">DefineTableJoinFromTableID</td>
-								<td class="DefineTableJoinToTableID">DefineTableJoinToTableID</td>
-								<td class="DefineTableJoinToTableName">DefineTableJoinToTableName</td>
 
+					</th>
+						<td class="DefineTableJoinFromTableID"></td>
+								<td class="DefineTableJoinToTableID"></td>
+								<td class="DefineTableJoinToTableName"></td>
 				</tr>
 			<tr class="template edit">
-			<td class="actionButtons">
-				<a href="#" class="save" title="Save">Save</a>
+			<th scope="row" class="actionButtons">
 				<a href="#" class="cancel" title="Cancel">Cancel</a>
-			</td>
+
+			</th>
 					<td>
 							<input type="text" class="DefineTableJoinFromTableID" name="DefineTableJoinFromTableID">
-
 						</td>
 					<td>
 							<input type="text" class="DefineTableJoinToTableID" name="DefineTableJoinToTableID">
 						</td>
 					<td>
 							<input type="text" class="DefineTableJoinToTableName" name="DefineTableJoinToTableName">
+
 						</td>
 				</tr>
 	</tbody>
-
 <tfoot>
-	<tr class='add'>
-		<td></td>
-		<td colspan="3">Add</td>
+	<tr>
+		<th class="actionButtons">
+			<a href="#" class="add" onclick="add_DefineTableJoinParent(); return false;" id="addDefineTableJoinParent">Add</a>
+		</th>
+		<td colspan="3" />
+
 	</tr>
 </tfoot>
 </table>
@@ -343,51 +479,49 @@ $(document).ready(function() {
 		var rows = rows_DefineTableJoinParent;
 		if (rows != null) {
 			for ( var i = 0; i < rows.DATA.length; i++) {
-				addRow_Join(tbody, template, rows.DATA[i].FIELDS);
+				addRow_Join(tbody, template, rows.DATA[i], i);
 			}
 		}
-		
-		$(tbody).find("tr.data").dblclick(function() {
-			$(this).hide();
-			$(row).next("tr.edit").show();
-			return false;
-		});
-		
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(function() {
-			var row = $(this).parentsUntil('tbody')[1];
-			$(row).hide();
-			$(row).next("tr.edit").show();
-			return false;
-		});
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel").click(function() {
-			var row = $(this).parentsUntil('tbody')[1];
-			$(row).hide();
-			$(row).prev("tr.view").show();
-			return false;
-		});
-		
-		$(tbody).find("tr.edit").hide();
 		$(template).hide();
 	}
-	function addRow_Join(tbody, template, row) {
+	function addRow_Join(tbody, template, data, i) {
+		if (data.ACTION == "DELETE")
+			return;
+		var row = data.FIELDS;
 		var rowHTML = $(template).clone();
 		rowHTML.show();
 		rowHTML.addClass("data");
 		rowHTML.removeClass("template");
-														$(rowHTML).find('input.DefineTableJoinFromTableID').val(row.DefineTableJoinFromTableID);
-												$(rowHTML).find('td.DefineTableJoinFromTableID').html(row.DefineTableJoinFromTableID);
-																	$(rowHTML).find('input.DefineTableJoinJoinID').val(row.DefineTableJoinJoinID);
-												$(rowHTML).find('td.DefineTableJoinJoinID').html(row.DefineTableJoinJoinID);
-																	$(rowHTML).find('input.DefineTableJoinToTableID').val(row.DefineTableJoinToTableID);
-												$(rowHTML).find('td.DefineTableJoinToTableID').html(row.DefineTableJoinToTableID);
-																	$(rowHTML).find('input.DefineTableJoinToTableName').val(row.DefineTableJoinToTableName);
-												$(rowHTML).find('td.DefineTableJoinToTableName').html(row.DefineTableJoinToTableName);
-							tbody.append(rowHTML);
+									$(rowHTML).find('.DefineTableJoinFromTableID').html(row.DefineTableJoinFromTableID);
+									$(rowHTML).find('input.DefineTableJoinFromTableID').val(row.DefineTableJoinFromTableID);
+					$(rowHTML).find('input.DefineTableJoinFromTableID').attr("onchange", "rows_DefineTableJoinParent[" + i + "].FIELDS.DefineTableJoinFromTableID = this.val()");
+																				$(rowHTML).find('.DefineTableJoinJoinID').html(row.DefineTableJoinJoinID);
+									$(rowHTML).find('input.DefineTableJoinJoinID').val(row.DefineTableJoinJoinID);
+					$(rowHTML).find('input.DefineTableJoinJoinID').attr("onchange", "rows_DefineTableJoinParent[" + i + "].FIELDS.DefineTableJoinJoinID = this.val()");
+																				$(rowHTML).find('.DefineTableJoinToTableID').html(row.DefineTableJoinToTableID);
+									$(rowHTML).find('input.DefineTableJoinToTableID').val(row.DefineTableJoinToTableID);
+					$(rowHTML).find('input.DefineTableJoinToTableID').attr("onchange", "rows_DefineTableJoinParent[" + i + "].FIELDS.DefineTableJoinToTableID = this.val()");
+																				$(rowHTML).find('.DefineTableJoinToTableName').html(row.DefineTableJoinToTableName);
+									$(rowHTML).find('input.DefineTableJoinToTableName').val(row.DefineTableJoinToTableName);
+					$(rowHTML).find('input.DefineTableJoinToTableName').attr("onchange", "rows_DefineTableJoinParent[" + i + "].FIELDS.DefineTableJoinToTableName = this.val()");
+													
+				$(rowHTML).find('a.delete').attr("onclick", "delete_DefineTableJoinParent(" + i + "); return false;");
+						$(rowHTML).find('a.edit').attr("onclick", "edit_DefineTableJoinParent(" + i + ", true); return false;");
+		$(rowHTML).attr("dblclick", "edit_DefineTableJoinParent(" + i + ", true); return false;");
+				$(rowHTML).find('a.cancel').attr("onclick", "edit_DefineTableJoinParent(" + i + ", false); return false;");
+
+		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {
+			$(rowHTML[0]).hide(); // tr.view
+			$(rowHTML[1]).show(); // tr.edit
+		} else {
+			$(rowHTML[0]).show(); // tr.view
+			$(rowHTML[1]).hide(); // tr.edit
+		}
+		tbody.append(rowHTML);
 	}
 </script>
 </div>
 </td>
-
 		</tr>
 	</table>
 </div>
