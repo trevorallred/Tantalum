@@ -1,15 +1,19 @@
 package tantalum.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import tantalum.data.PageContentBean;
 
 @Entity
-@javax.persistence.Table(name = "tan_field")
+@Table(name = "tan_field")
 public class Field extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "viewID")
@@ -26,17 +30,17 @@ public class Field extends BaseNamedTable {
 
 	@ManyToOne
 	@JoinColumn(name = "basisColumnID")
-	private TableColumn basisColumn;
+	private MetaColumn basisColumn;
+
 	@ManyToOne
 	@JoinColumn(name = "referenceID")
 	private Reference reference;
 
+	@OneToMany(mappedBy = "field")
+	private List<FieldAction> fieldActions;
 	@ManyToOne
-	@JoinColumn(name = "linkToFieldID")
-	private Field linkToField;
-	@ManyToOne
-	@JoinColumn(name = "linkFromFieldID")
-	private Field linkFromField;
+	@JoinColumn(name = "defaultActionID")
+	private FieldAction defaultAction;
 
 	public View getView() {
 		return view;
@@ -74,11 +78,11 @@ public class Field extends BaseNamedTable {
 		this.editable = editable;
 	}
 
-	public TableColumn getBasisColumn() {
+	public MetaColumn getBasisColumn() {
 		return basisColumn;
 	}
 
-	public void setBasisColumn(TableColumn basisColumn) {
+	public void setBasisColumn(MetaColumn basisColumn) {
 		this.basisColumn = basisColumn;
 	}
 
@@ -107,26 +111,24 @@ public class Field extends BaseNamedTable {
 	}
 
 	public boolean isHasLink() {
-		return linkToField != null;
+		return defaultAction != null;
 	}
 
-	public Field getLinkFromField() {
-		return linkFromField;
+	public FieldAction getDefaultAction() {
+		return defaultAction;
 	}
 
-	public void setLinkFromField(Field linkFromField) {
-		this.linkFromField = linkFromField;
+	public void setDefaultAction(FieldAction defaultAction) {
+		this.defaultAction = defaultAction;
 	}
 
-	public Field getLinkToField() {
-		return linkToField;
+	public List<FieldAction> getFieldActions() {
+		return fieldActions;
 	}
 
-	public void setLinkToField(Field linkToField) {
-		this.linkToField = linkToField;
+	public void setFieldActions(List<FieldAction> fieldActions) {
+		this.fieldActions = fieldActions;
 	}
-
-	// Helper methods //
 
 	public Region getRegion() {
 		return region;
@@ -135,6 +137,8 @@ public class Field extends BaseNamedTable {
 	public void setRegion(Region region) {
 		this.region = region;
 	}
+
+	// Helper methods //
 
 	/**
 	 * Is this field based on a column from the view's basis table
