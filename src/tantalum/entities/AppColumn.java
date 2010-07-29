@@ -13,7 +13,7 @@ public class AppColumn extends BaseNamedTable {
 	private int displayOrder;
 	private String dbName;
 	private boolean required = false;
-	private String columnType;
+	private ColumnType columnType;
 	private Integer size;
 
 	public AppTable getTable() {
@@ -48,11 +48,11 @@ public class AppColumn extends BaseNamedTable {
 		this.required = required;
 	}
 
-	public String getColumnType() {
+	public ColumnType getColumnType() {
 		return columnType;
 	}
 
-	public void setColumnType(String columnType) {
+	public void setColumnType(ColumnType columnType) {
 		this.columnType = columnType;
 	}
 
