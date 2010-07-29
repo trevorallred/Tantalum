@@ -6,10 +6,11 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@javax.persistence.Table(name = "tan_reference")
+@Table(name = "tan_reference")
 public class Reference extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "viewID")

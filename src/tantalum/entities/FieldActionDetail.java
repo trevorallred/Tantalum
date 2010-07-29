@@ -3,9 +3,10 @@ package tantalum.entities;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
-@javax.persistence.Table(name = "tan_button")
+@Table(name = "tan_button")
 public class FieldActionDetail extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "fieldActionID")

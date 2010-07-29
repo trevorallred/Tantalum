@@ -3,24 +3,25 @@ package tantalum.entities;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
-@javax.persistence.Table(name = "tan_column")
-public class TableColumn extends BaseNamedTable {
+@Table(name = "tan_column")
+public class MetaColumn extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "tableID")
-	private Table table;
+	private MetaTable table;
 	private int displayOrder;
 	private String dbName;
 	private boolean required = false;
 	private ColumnType columnType;
 	private Integer size;
 
-	public Table getTable() {
+	public MetaTable getTable() {
 		return table;
 	}
 
-	public void setTable(Table table) {
+	public void setTable(MetaTable table) {
 		this.table = table;
 	}
 

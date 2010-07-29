@@ -8,12 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import tantalum.util.Strings;
 
 @Entity
-@javax.persistence.Table(name = "tan_view")
+@Table(name = "tan_view")
 public class View extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "pageID")
@@ -22,7 +23,7 @@ public class View extends BaseTable {
 	private int resultsPerPage = 100;
 	@ManyToOne
 	@JoinColumn(name = "basisTableID")
-	private Table basisTable;
+	private MetaTable basisTable;
 	@ManyToOne
 	@JoinColumn(name = "parentID")
 	private View parent;
@@ -67,11 +68,11 @@ public class View extends BaseTable {
 		this.resultsPerPage = resultsPerPage;
 	}
 
-	public Table getBasisTable() {
+	public MetaTable getBasisTable() {
 		return basisTable;
 	}
 
-	public void setBasisTable(Table basisTable) {
+	public void setBasisTable(MetaTable basisTable) {
 		this.basisTable = basisTable;
 	}
 
@@ -177,7 +178,7 @@ public class View extends BaseTable {
 	public Field getPrimaryKey() {
 		if (basisTable == null)
 			return null;
-		TableColumn primaryKey = basisTable.getPrimaryKey();
+		MetaColumn primaryKey = basisTable.getPrimaryKey();
 		for (Field field : fields) {
 			if (primaryKey.equals(field.getBasisColumn()))
 				return field;

@@ -7,18 +7,19 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
-@javax.persistence.Table(name = "tan_join")
+@Table(name = "tan_join")
 public class Join extends BaseTable {
 	private String joinType;
 	@ManyToOne
 	@JoinColumn(name = "fromTableID")
-	private Table fromTable;
+	private MetaTable fromTable;
 	private String childName;
 	@ManyToOne
 	@JoinColumn(name = "toTableID")
-	private Table toTable;
+	private MetaTable toTable;
 	private String parentName;
 
 	@OneToMany(mappedBy = "join", fetch = FetchType.EAGER)
@@ -32,11 +33,11 @@ public class Join extends BaseTable {
 		this.joinType = joinType;
 	}
 
-	public Table getFromTable() {
+	public MetaTable getFromTable() {
 		return fromTable;
 	}
 
-	public void setFromTable(Table fromTable) {
+	public void setFromTable(MetaTable fromTable) {
 		this.fromTable = fromTable;
 	}
 
@@ -48,11 +49,11 @@ public class Join extends BaseTable {
 		this.childName = childName;
 	}
 
-	public Table getToTable() {
+	public MetaTable getToTable() {
 		return toTable;
 	}
 
-	public void setToTable(Table toTable) {
+	public void setToTable(MetaTable toTable) {
 		this.toTable = toTable;
 	}
 

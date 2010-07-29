@@ -3,19 +3,20 @@ package tantalum.entities;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
-@javax.persistence.Table(name = "tan_join_column")
+@Table(name = "tan_join_column")
 public class JoinColumns extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "joinID")
 	private Join join;
 	@ManyToOne
 	@JoinColumn(name = "fromColumnID")
-	private TableColumn fromColumn;
+	private MetaColumn fromColumn;
 	@ManyToOne
 	@JoinColumn(name = "toColumnID")
-	private TableColumn toColumn;
+	private MetaColumn toColumn;
 
 	public Join getJoin() {
 		return join;
@@ -25,19 +26,19 @@ public class JoinColumns extends BaseTable {
 		this.join = join;
 	}
 
-	public TableColumn getFromColumn() {
+	public MetaColumn getFromColumn() {
 		return fromColumn;
 	}
 
-	public void setFromColumn(TableColumn fromColumn) {
+	public void setFromColumn(MetaColumn fromColumn) {
 		this.fromColumn = fromColumn;
 	}
 
-	public TableColumn getToColumn() {
+	public MetaColumn getToColumn() {
 		return toColumn;
 	}
 
-	public void setToColumn(TableColumn toColumn) {
+	public void setToColumn(MetaColumn toColumn) {
 		this.toColumn = toColumn;
 	}
 

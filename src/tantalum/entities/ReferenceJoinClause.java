@@ -1,16 +1,16 @@
 package tantalum.entities;
 
 public class ReferenceJoinClause {
-	private TableColumn toColumn;
+	private MetaColumn toColumn;
 	private Field toField;
-	private TableColumn fromColumn;
+	private MetaColumn fromColumn;
 	private Field fromField;
 
-	public TableColumn getToColumn() {
+	public MetaColumn getToColumn() {
 		return toColumn;
 	}
 
-	public void setToColumn(TableColumn toColumn) {
+	public void setToColumn(MetaColumn toColumn) {
 		this.toColumn = toColumn;
 	}
 
@@ -22,11 +22,11 @@ public class ReferenceJoinClause {
 		this.toField = toField;
 	}
 
-	public TableColumn getFromColumn() {
+	public MetaColumn getFromColumn() {
 		return fromColumn;
 	}
 
-	public void setFromColumn(TableColumn fromColumn) {
+	public void setFromColumn(MetaColumn fromColumn) {
 		this.fromColumn = fromColumn;
 	}
 

@@ -8,10 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
-@javax.persistence.Table(name = "tan_table")
-public class Table extends BaseTable {
+@Table(name = "tan_table")
+public class MetaTable extends BaseTable {
 	@Column(nullable = false)
 	private String name;
 	@Column(nullable = false)
@@ -20,7 +21,7 @@ public class Table extends BaseTable {
 	@JoinColumn(name = "databaseID")
 	private Database database;
 	@OneToMany(mappedBy = "table")
-	private List<TableColumn> columns = new ArrayList<TableColumn>();
+	private List<MetaColumn> columns = new ArrayList<MetaColumn>();
 
 	public String getName() {
 		return name;
@@ -46,11 +47,11 @@ public class Table extends BaseTable {
 		this.database = database;
 	}
 
-	public List<TableColumn> getColumns() {
+	public List<MetaColumn> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<TableColumn> columns) {
+	public void setColumns(List<MetaColumn> columns) {
 		this.columns = columns;
 	}
 
@@ -59,8 +60,8 @@ public class Table extends BaseTable {
 	 * 
 	 * @return
 	 */
-	public TableColumn getPrimaryKey() {
-		for (TableColumn column : columns) {
+	public MetaColumn getPrimaryKey() {
+		for (MetaColumn column : columns) {
 			if (column.getDbName().equals("id"))
 				return column;
 		}

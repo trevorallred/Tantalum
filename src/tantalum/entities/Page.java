@@ -5,10 +5,11 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@javax.persistence.Table(name = "tan_page")
+@Table(name = "tan_page")
 public class Page extends BaseNamedTable {
 	@Transient
 	private Field keyField = null;

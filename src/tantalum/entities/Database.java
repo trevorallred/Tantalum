@@ -3,11 +3,12 @@ package tantalum.entities;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 
 import tantalum.data.DatabaseType;
 
 @Entity
-@javax.persistence.Table(name = "tan_database")
+@Table(name = "tan_database")
 public class Database extends BaseTable {
 	@Enumerated(EnumType.STRING)
 	private DatabaseType type;

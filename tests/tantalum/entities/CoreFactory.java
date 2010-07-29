@@ -4,13 +4,13 @@ public class CoreFactory {
 
 	public static View createInvoice() {
 		View view = createView("DefineInvoice");
-		Table invoice = createTable("Invoice");
+		MetaTable invoice = createTable("Invoice");
 		addColumn(invoice, "InvoiceDate", ColumnType.Date);
 		addColumn(invoice, "InvoiceTotal", ColumnType.Decimal);
 		addColumn(invoice, "Description", ColumnType.String);
 
-		Table account = createTable("Account");
-		TableColumn invoiceAccountID = addColumn(invoice, "AccountID", ColumnType.Integer);
+		MetaTable account = createTable("Account");
+		MetaColumn invoiceAccountID = addColumn(invoice, "AccountID", ColumnType.Integer);
 		addJoin(invoiceAccountID, account.getColumns().get(0));
 
 		view.setBasisTable(invoice);
@@ -23,16 +23,16 @@ public class CoreFactory {
 		return view;
 	}
 
-	public static Table createTable(String name) {
-		Table table = new Table();
+	public static MetaTable createTable(String name) {
+		MetaTable table = new MetaTable();
 		table.setName(name);
 		table.setDbName(name.toLowerCase());
 		addColumn(table, name + "ID", ColumnType.Integer);
 		return table;
 	}
 
-	public static TableColumn addColumn(Table table, String name, ColumnType columnType) {
-		TableColumn column = new TableColumn();
+	public static MetaColumn addColumn(MetaTable table, String name, ColumnType columnType) {
+		MetaColumn column = new MetaColumn();
 		column.setName(name);
 		column.setDbName(name.toLowerCase());
 		column.setColumnType(columnType);
@@ -41,7 +41,7 @@ public class CoreFactory {
 		return column;
 	}
 
-	public static Join addJoin(TableColumn fromColumn, TableColumn toColumn) {
+	public static Join addJoin(MetaColumn fromColumn, MetaColumn toColumn) {
 		Join join = new Join();
 		join.setJoinType("OM");
 		join.setFromTable(fromColumn.getTable());
