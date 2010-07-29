@@ -1,21 +1,29 @@
+<form method="post" action="" class="yform">
+<fieldset>
+<legend>$region.label</legend>
+
 #if( $region.showPreviousNextButtons )
-<div id="${region.name}Navigation">
-	<button id="previous$region.view.name" onclick="return nav_${region.view.name}(-1);">Previous</button>
-	<button id="next$region.view.name" onclick="return nav_${region.view.name}(1);">Next</button>
+<div id="${region.name}Navigation" class="type-button">
+	<input type="button" value="Previous" id="previous$region.view.name" onclick="return nav_${region.view.name}(-1);" name="buttonPrevious" />
+	<input type="button" value="Next" id="next$region.view.name" onclick="return nav_${region.view.name}(1);" name="buttonNext" />
 </div>
 #end
 
-<ul>
 #foreach ($field in $region.visibleFields)
-	<li><label>$field.label:</label>
 	#if($field.editable)
-		<input type="text" class="$field.name" name="$field.name">
+		<div class="type-text">
+			<label for="$field.name">$field.label</label>
+			<input type="text" name="$field.name" id="$field.name" size="20" />
+		</div>
 	#{else}
-		<span class="$field.name"></span>
+		<div class="type-text">
+			<label for="$field.name">$field.label</label>
+			<span id="$field.name"></span>
+		</div>
 	#end
-	</li>
 #end
-</ul>
+</fieldset>
+</form>
 
 <script type="text/javascript">
 #if( $region.regionType.formRegion )
@@ -37,9 +45,9 @@
 		
 		#foreach ( $field in $region.fields )
 			#if($field.editable)
-				$("#$region.name").find('.${field.name}').val(row.FIELDS.${field.name});
+				$("#$region.name").find('#${field.name}').val(row.FIELDS.${field.name});
 			#{else}
-				$("#$region.name").find('.${field.name}').html(row.FIELDS.${field.name});
+				$("#$region.name").find('#${field.name}').html(row.FIELDS.${field.name});
 			#end
 		#end
 	}

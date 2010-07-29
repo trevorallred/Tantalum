@@ -1,12 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="generator" content="Tantalum 0.1"/>
 <title>$page.label</title>
-<link rel="stylesheet" href="$baseURL/themes/$theme/style.css" type="text/css" media="screen" charset="utf-8"/> 
-<link rel="stylesheet" href="$baseURL/themes/$theme/print.css" type="text/css" media="print"> 
+<link rel="stylesheet" type="text/css" href="$baseURL/themes/$theme/style.css" media="all" /> 
+<style type="text/css">
+@charset "UTF-8";
+@import url($baseURL/yaml/core/base.css);
+@import url($baseURL/yaml/navigation/nav_shinybuttons.css);
+@import url($baseURL/yaml/screen/content_default.css);
+@import url($baseURL/yaml/screen/forms.css);
+@import url($baseURL/yaml/print/print_003_draft.css);
+</style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="$baseURL/js/main.js"></script>
+<script type="text/javascript" src="$baseURL/js/json2min.js"></script>
 <script type="text/javascript">
 
 var json;
@@ -22,6 +30,18 @@ $(document).ready(function() {
 		}
 	);
 });
+
+#if($page.canSave)
+function save() {
+	var json2 = json;
+	jQuery.post('$baseURL/ws/$page.name#if($urlRequest.pageId)/$urlRequest.pageId#{end}', json2,
+		function(data) {
+			alert(data);
+		}
+	);
+	$("#save").attr("disabled", true);
+}
+#end
 
 #foreach ( $view in $page.views )
 	var rows_${view.name} = null;
@@ -45,7 +65,7 @@ $(document).ready(function() {
 	function position_${view.name}() {
 		// first paint all child regions (not recursively), and then position all child views (recursively)
 		#foreach ( $region in $view.regions )
-			#if( $region.regionType.hasFields )
+			#if( $region.visibleFields.size() > 0 )
 				paint_${region.name}();
 			#end
 		#end
@@ -60,15 +80,64 @@ $(document).ready(function() {
 			position_${childView.name}();
 		#end
 	}
+
+	#if($view.allowAdd)
+	function add_${view.name}() {
+		var r = rows_${view.name};
+		r.POSITION = r.DATA.length;
+		r.DATA[r.POSITION] = {"FIELDS" : {},"CHILDREN" : {}, "ACTION" : "NEW_EDIT"};
+		position_${view.name}();
+	}
+	#end
+
+	#if($view.allowEdit)
+	function edit_${view.name}(row, value) {
+		var r = rows_${view.name};
+		r.POSITION = row;
+		if (value)
+			r.DATA[row].ACTION = "EDIT";
+		else
+			r.DATA[row].ACTION = null;
+		position_${view.name}();
+	}
+	#end
+	
+	#if($view.allowDelete)
+	function delete_${view.name}(row) {
+		var r = rows_${view.name};
+		rows_${view.name}.DATA[row].ACTION = "DELETE";
+		if (r.POSITION == row) {
+			if (row >= r.DATA.length)
+				r.POSITION = r.DATA.length - 1;
+		}
+		position_${view.name}();
+	}
+	#end
+
 #end
 
 </script>
 </head>
 <body>
-[<a href='$baseURL/t/ManageTables'>Manage Tables</a>]
-[<a href='$baseURL/t/WebpageList'>List Web Pages</a>]
+
+<div class="hlist" >
+  <ul>
+    <li><a href="$baseURL/t/ManageTables">Manage Tables</a></li>
+    <li><a href="$baseURL/t/WebpageList">List Web Pages</a></li>
+  </ul>
+</div>
 
 <h1>$page.label</h1>
+
+#if($page.canSave)
+<form class="yform">
+<fieldset>
+<div id="${region.name}Navigation" class="type-button">
+	<input type="button" value="Save" id="save" onclick="save();" />
+</div>
+</fieldset>
+</form>
+#end
 
 #foreach ( $region in $page.parentRegions )
 #parse("template_region.html")

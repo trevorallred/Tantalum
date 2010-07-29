@@ -1,46 +1,49 @@
+#set ($columnCount = $region.visibleFields.size() + 1 )
 <table class="basicTable">
 <thead>
-<tr>
-	<th></th>
-#foreach ($field in $region.visibleFields)
-	<th><a href='#'>$field.label</a></th>
-#end
-</tr>
+	<tr>
+		<th colspan="$columnCount">$region.label</th>
+	</tr>
 </thead>
 <tbody>
+	<tr>
+		<th scope="col"></th>
+	#foreach ($field in $region.visibleFields)
+		<th scope="col" onclick="sort_${field.name}(this)">$field.label</th>
+	#end
+	</tr>
 	<tr class='template view'>
-		<td class="actionButtons">
+		<th scope="row" class="actionButtons">
 			#if($region.view.allowEdit)
 				<a href="#" class="edit" title="Edit">Edit</a>
 			#end
 			#if($region.view.allowDelete)
 				<a href="#" class="delete" title="Delete">Delete</a>
 			#end
-		</td>
+		</th>
 	#foreach ($field in $region.visibleFields)
 		#if($field.hasLink)
 			<td><a href="#" class="$field.name">$field.name</a></td>
 		#elseif($field.displayType.checkbox)
 			<td><input type="checkbox" class="$field.name" name="$field.name" disabled="disabled"></td>
 		#else
-			<td class="$field.name">$field.name</td>
+			<td class="$field.name"></td>
 		#end
 	#end
 	</tr>
 	#if($region.view.allowAdd || $region.view.allowEdit)
 		<tr class="template edit">
-			<td class="actionButtons">
-				<a href="#" class="save" title="Save">Save</a>
+			<th scope="row" class="actionButtons">
 				<a href="#" class="cancel" title="Cancel">Cancel</a>
-			</td>
+			</th>
 		#foreach ($field in $region.visibleFields)
 			<td>
 			#if($field.displayType.checkbox)
-				<input type="checkbox" class="$field.name" name="$field.name">
+				<input type="checkbox" class="$field.name" name="$field.name" />
 			#elseif(!$field.editable)
 				<span class="$field.name"></span>
 			#else
-				<input type="text" class="$field.name" name="$field.name">
+				<input type="text" class="$field.name" name="$field.name" />
 			#end
 			</td>
 		#end
@@ -49,9 +52,11 @@
 </tbody>
 #if($region.view.allowAdd)
 <tfoot>
-	<tr class='add'>
-		<td></td>
-		<td colspan="$region.visibleFields.size()">Add</td>
+	<tr>
+		<th class="actionButtons">
+			<a href="#" class="add" onclick="add_${region.view.name}(); return false;" id="add$region.view.name">Add</a>
+		</th>
+		<td colspan="$region.visibleFields.size()" />
 	</tr>
 </tfoot>
 #end
@@ -66,51 +71,92 @@
 		var rows = rows_${region.view.name};
 		if (rows != null) {
 			for ( var i = 0; i < rows.DATA.length; i++) {
-				addRow_${region.name}(tbody, template, rows.DATA[i].FIELDS);
+				addRow_${region.name}(tbody, template, rows.DATA[i], i);
 			}
 		}
-		
-		$(tbody).find("tr.data").dblclick(function() {
-			$(this).hide();
-			$(row).next("tr.edit").show();
-			return false;
-		});
-		
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(function() {
-			var row = $(this).parentsUntil('tbody')[1];
-			$(row).hide();
-			$(row).next("tr.edit").show();
-			return false;
-		});
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel").click(function() {
-			var row = $(this).parentsUntil('tbody')[1];
-			$(row).hide();
-			$(row).prev("tr.view").show();
-			return false;
-		});
-		
-		$(tbody).find("tr.edit").hide();
 		$(template).hide();
 	}
-	function addRow_${region.name}(tbody, template, row) {
+	function addRow_${region.name}(tbody, template, data, i) {
+		if (data.ACTION == "DELETE")
+			return;
+		var row = data.FIELDS;
 		var rowHTML = $(template).clone();
 		rowHTML.show();
 		rowHTML.addClass("data");
 		rowHTML.removeClass("template");
 		#foreach ( $field in $region.fields )
 			#if($field.displayType.checkbox)
-				$(rowHTML[1]).find('input.${field.name}').attr("checked",row.${field.name}==1 ? "checked" : "");
+				$(rowHTML).find('input.${field.name}').attr("checked",row.${field.name}==1 ? "checked" : "");
+				$(rowHTML).find('input.${field.name}').attr("onchange", "rows_${region.view.name}.DATA[" + i + "].FIELDS.${field.name} = ($(this).attr('checked') == 'checked' ? 1 : 0)");
 			#else
+				$(rowHTML).find('.${field.name}').html(row.${field.name});
 				#if($field.editable)
 					$(rowHTML).find('input.${field.name}').val(row.${field.name});
+					$(rowHTML).find('input.${field.name}').attr("onchange", "rows_${region.view.name}.DATA[" + i + "].FIELDS.${field.name} = $(this).val()");
 				#end
 				#if($field.hasLink)
 					$(rowHTML).find('a.${field.name}').html(row.${field.name});
 					$(rowHTML).find('a.${field.name}').attr("href", "$baseURL/t/${field.linkToField.view.page.name}/" + row.${field.linkFromField.name});
 				#end
-				$(rowHTML).find('td.${field.name}').html(row.${field.name});
 			#end
 		#end
+
+		#if($region.view.allowDelete)
+		$(rowHTML).find('a.delete').attr("onclick", "delete_${region.view.name}(" + i + "); return false;");
+		#end
+		#if($region.view.allowEdit)
+		$(rowHTML).find('a.edit').attr("onclick", "edit_${region.view.name}(" + i + ", true); return false;");
+		$(rowHTML).attr("dblclick", "edit_${region.view.name}(" + i + ", true); return false;");
+		#end
+		$(rowHTML).find('a.cancel').attr("onclick", "edit_${region.view.name}(" + i + ", false); return false;");
+
+		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {
+			$(rowHTML[0]).hide(); // tr.view
+			$(rowHTML[1]).show(); // tr.edit
+		} else {
+			$(rowHTML[0]).show(); // tr.view
+			$(rowHTML[1]).hide(); // tr.edit
+		}
 		tbody.append(rowHTML);
 	}
+
+	#foreach ( $field in $region.visibleFields )
+		var sortDirection_${field.name} = null;
+		function sort_${field.name}(header) {
+			if (sortDirection_$field.name)
+				rows_${field.view.name}.DATA.sort(sortFunction_${field.name}DESC);
+			else
+				rows_${field.view.name}.DATA.sort(sortFunction_${field.name}ASC);
+			sortDirection_${field.name} = !sortDirection_${field.name};
+			//$(header).attr("style", "background-color: red");
+			paint_${region.name}();
+			return false;
+		}
+		#if( $field.basisColumn.columnType == "int")
+			function sortFunction_${field.name}ASC(a, b) {
+				return a.FIELDS.${field.name} - b.FIELDS.${field.name};
+			}
+			function sortFunction_${field.name}DESC(b, a) {
+				return a.FIELDS.${field.name} - b.FIELDS.${field.name};
+			}
+		#else
+			function sortFunction_${field.name}ASC(a, b) {
+				var nameA=a.FIELDS.${field.name}.toLowerCase(), nameB=b.FIELDS.${field.name}.toLowerCase();
+				if (nameA < nameB)
+					return -1;
+				if (nameA > nameB)
+					return 1;
+				return 0;
+			}
+			function sortFunction_${field.name}DESC(b, a) {
+				var nameA=a.FIELDS.${field.name}.toLowerCase(), nameB=b.FIELDS.${field.name}.toLowerCase();
+				if (nameA < nameB)
+					return -1;
+				if (nameA > nameB)
+					return 1;
+				return 0;
+			}
+		#end
+		 
+	#end
 </script>
