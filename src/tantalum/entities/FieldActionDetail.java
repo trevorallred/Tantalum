@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tan_button")
+@Table(name = "tan_field_action_detail")
 public class FieldActionDetail extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "fieldActionID")

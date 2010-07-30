@@ -13,14 +13,13 @@ import javax.persistence.Table;
 @Table(name = "tan_join")
 public class Join extends BaseTable {
 	private String joinType;
+	private String name;
 	@ManyToOne
 	@JoinColumn(name = "fromTableID")
 	private MetaTable fromTable;
-	private String childName;
 	@ManyToOne
 	@JoinColumn(name = "toTableID")
 	private MetaTable toTable;
-	private String parentName;
 
 	@OneToMany(mappedBy = "join", fetch = FetchType.EAGER)
 	private List<JoinColumns> joinColumns;
@@ -33,6 +32,14 @@ public class Join extends BaseTable {
 		this.joinType = joinType;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public MetaTable getFromTable() {
 		return fromTable;
 	}
@@ -41,28 +48,12 @@ public class Join extends BaseTable {
 		this.fromTable = fromTable;
 	}
 
-	public String getChildName() {
-		return childName;
-	}
-
-	public void setChildName(String childName) {
-		this.childName = childName;
-	}
-
 	public MetaTable getToTable() {
 		return toTable;
 	}
 
 	public void setToTable(MetaTable toTable) {
 		this.toTable = toTable;
-	}
-
-	public String getParentName() {
-		return parentName;
-	}
-
-	public void setParentName(String parentName) {
-		this.parentName = parentName;
 	}
 
 	public List<JoinColumns> getJoinColumns() {

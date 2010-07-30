@@ -21,9 +21,14 @@ public class Field extends BaseNamedTable {
 	private boolean visible = true;
 	private String displayOrder;
 	private boolean searchable = false;
-	private boolean editable = false;
+	private boolean editable = true;
+	private boolean addable = true;
 	@Enumerated(EnumType.STRING)
 	private FieldDisplayType displayType;
+	private int size;
+	private boolean forceDefault;
+	private String defaultValue;
+	private String defaultScript;
 	@ManyToOne
 	@JoinColumn(name = "regionID")
 	private Region region;
@@ -78,6 +83,14 @@ public class Field extends BaseNamedTable {
 		this.editable = editable;
 	}
 
+	public boolean isAddable() {
+		return addable;
+	}
+
+	public void setAddable(boolean addable) {
+		this.addable = addable;
+	}
+
 	public MetaColumn getBasisColumn() {
 		return basisColumn;
 	}
@@ -100,6 +113,14 @@ public class Field extends BaseNamedTable {
 
 	public void setDisplayType(FieldDisplayType displayType) {
 		this.displayType = displayType;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 	public Reference getReference() {
@@ -138,7 +159,29 @@ public class Field extends BaseNamedTable {
 		this.region = region;
 	}
 
-	// Helper methods //
+	public boolean isForceDefault() {
+		return forceDefault;
+	}
+
+	public void setForceDefault(boolean forceDefault) {
+		this.forceDefault = forceDefault;
+	}
+
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
+	public String getDefaultScript() {
+		return defaultScript;
+	}
+
+	public void setDefaultScript(String defaultScript) {
+		this.defaultScript = defaultScript;
+	}
 
 	/**
 	 * Is this field based on a column from the view's basis table

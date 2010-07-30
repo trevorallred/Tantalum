@@ -1,6 +1,8 @@
 package tantalum.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -14,6 +16,7 @@ public class MetaColumn extends BaseNamedTable {
 	private int displayOrder;
 	private String dbName;
 	private boolean required = false;
+	@Enumerated(EnumType.STRING)
 	private ColumnType columnType;
 	private Integer size;
 
