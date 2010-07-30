@@ -25,7 +25,7 @@
 		#if($field.hasLink)
 			<td><a href="#" class="$field.name">$field.name</a></td>
 		#elseif($field.displayType.checkbox)
-			<td><input type="checkbox" class="$field.name" name="$field.name" disabled="disabled"></td>
+			<td><input type="checkbox" class="$field.name" name="$field.name" disabled="disabled" /></td>
 		#else
 			<td class="$field.name"></td>
 		#end
@@ -102,13 +102,13 @@
 		#end
 
 		#if($region.view.allowDelete)
-		$(rowHTML).find('a.delete').attr("onclick", "delete_${region.view.name}(" + i + "); return false;");
+		$(rowHTML).find('a.delete').click(function(){delete_${region.view.name}(i); return false;});
 		#end
 		#if($region.view.allowEdit)
-		$(rowHTML).find('a.edit').attr("onclick", "edit_${region.view.name}(" + i + ", true); return false;");
-		$(rowHTML).attr("dblclick", "edit_${region.view.name}(" + i + ", true); return false;");
+		$(rowHTML).find('a.edit').click(function(){edit_${region.view.name}(i, true); return false;});
+		$(rowHTML).dblclick(function(){edit_${region.view.name}(i, true); return false;});
 		#end
-		$(rowHTML).find('a.cancel').attr("onclick", "edit_${region.view.name}(" + i + ", false); return false;");
+		$(rowHTML).find('a.cancel').click(function(){edit_${region.view.name}(i, false); return false;});
 
 		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {
 			$(rowHTML[0]).hide(); // tr.view
