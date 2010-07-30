@@ -32,14 +32,14 @@ $(document).ready(function() {
 });
 
 #if($page.canSave)
-function save() {
-	var json2 = json;
+function savePage() {
+	var json2 = JSON.stringify(json);
 	jQuery.post('$baseURL/ws/$page.name#if($urlRequest.pageId)/$urlRequest.pageId#{end}', json2,
 		function(data) {
-			alert(data);
+			//alert(data);
 		}
 	);
-	$("#save").attr("disabled", true);
+	//$("#save").attr("disabled", true);
 }
 #end
 
@@ -132,8 +132,8 @@ function save() {
 #if($page.canSave)
 <form class="yform">
 <fieldset>
-<div id="${region.name}Navigation" class="type-button">
-	<input type="button" value="Save" id="save" onclick="save();" />
+<div class="type-button">
+	<input type="button" value="Save" id="save" onclick="savePage();" />
 </div>
 </fieldset>
 </form>
