@@ -107,8 +107,7 @@ public class DataSaver {
 
 	public void saveRequest(View view, UrlRequest urlRequest) {
 		boolean dirty = false;
-		UpdateSQL sql = new UpdateSQL();
-		sql.setTable(view.getBasisTable().getDbName());
+		UpdateSQL sql = new UpdateSQL(view.getBasisTable().getDbName());
 		for (String param : urlRequest.getParameters().keySet()) {
 			if (!param.equalsIgnoreCase("button")) {
 				Field field = view.getField(param);

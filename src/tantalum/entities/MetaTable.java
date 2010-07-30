@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -22,6 +23,9 @@ public class MetaTable extends BaseTable {
 	private Database database;
 	@OneToMany(mappedBy = "table")
 	private List<MetaColumn> columns = new ArrayList<MetaColumn>();
+	@OneToMany(mappedBy = "table")
+	@OrderBy(value = "displayOrder")
+	private List<MetaIndex> indexes = new ArrayList<MetaIndex>();
 
 	public String getName() {
 		return name;
@@ -55,15 +59,26 @@ public class MetaTable extends BaseTable {
 		this.columns = columns;
 	}
 
+	public List<MetaIndex> getIndexes() {
+		return indexes;
+	}
+
+	public void setIndexes(List<MetaIndex> indexes) {
+		this.indexes = indexes;
+	}
+
 	/**
 	 * TODO store this value on tan_table. For now we can assume it's just "id"
 	 * 
 	 * @return
 	 */
 	public MetaColumn getPrimaryKey() {
-		for (MetaColumn column : columns) {
-			if (column.getDbName().equals("id"))
-				return column;
+		if (indexes == null)
+			return null;
+		for (MetaIndex index : indexes) {
+			if (index.isUnique()) {
+				return index.getColumns().get(0).getColumn();
+			}
 		}
 		return null;
 	}

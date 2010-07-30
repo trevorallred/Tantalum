@@ -1,5 +1,6 @@
 package tantalum.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ public class MetaIndex extends BaseTable {
 	private boolean unique;
 
 	@OneToMany(mappedBy = "index")
-	private List<MetaIndexColumn> columns;
+	private List<MetaIndexColumn> columns = new ArrayList<MetaIndexColumn>();
 
 	public MetaTable getTable() {
 		return table;

@@ -78,7 +78,7 @@ public class JsonServlet extends HttpServlet {
 			JSONObject row = (JSONObject)o;
 			JSONObject rowData = (JSONObject)row.get("FIELDS");
 			// Now save or update this row Data
-			UpdateSQL sql = new UpdateSQL();
+			UpdateSQL sql = new UpdateSQL("");
 			for (Field field : view.getFields()) {
 				if (rowData.containsKey(field.getName()))
 					sql.addField(field.getName(), rowData.get(field.getName()).toString());

@@ -14,6 +14,10 @@ public class UpdateSQL {
 	protected int limit = -1;
 	protected boolean insert = false;
 
+	public UpdateSQL(String dbName) {
+		setTable(dbName);
+	}
+
 	/**
 	 * Return the sql clause in this format:<br>
 	 * <br>

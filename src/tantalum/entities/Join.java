@@ -1,5 +1,6 @@
 package tantalum.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ public class Join extends BaseTable {
 	private MetaTable toTable;
 
 	@OneToMany(mappedBy = "join", fetch = FetchType.EAGER)
-	private List<JoinColumns> joinColumns;
+	private List<JoinColumns> joinColumns = new ArrayList<JoinColumns>();
 
 	public String getJoinType() {
 		return joinType;

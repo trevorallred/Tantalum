@@ -1,7 +1,6 @@
 package tantalum.entities;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -9,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import tantalum.util.Strings;
 
@@ -41,8 +39,8 @@ public class View extends BaseTable {
 	@OneToMany(mappedBy = "view")
 	private List<Region> regions = new ArrayList<Region>();
 
-	@Transient
-	private List<View> childViews = null;
+	@OneToMany(mappedBy = "parent")
+	private List<View> childViews = new ArrayList<View>();
 
 	public Page getPage() {
 		return page;
@@ -144,18 +142,15 @@ public class View extends BaseTable {
 		this.regions = regions;
 	}
 
-	/** Helper methods **/
-
 	public List<View> getChildViews() {
-		if (childViews == null) {
-			childViews = new ArrayList<View>();
-			for (View childView : page.getViews()) {
-				if (this.equals(childView.getParent()))
-					childViews.add(childView);
-			}
-		}
 		return childViews;
 	}
+
+	public void setChildViews(List<View> childViews) {
+		this.childViews = childViews;
+	}
+
+	/** Helper methods **/
 
 	public Field getField(String name) {
 		if (Strings.isEmpty(name))
