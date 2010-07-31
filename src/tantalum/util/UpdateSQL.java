@@ -54,11 +54,14 @@ public class UpdateSQL {
 
 		if (!insert) {
 			if (whereClause.size() > 0) {
-				sql.append("\nWHERE 1");
+				sql.append("\nWHERE ");
+				first = true;
 				for (String whereSQL : this.whereClause) {
-					sql.append("\n AND (");
-					sql.append(whereSQL);
-					sql.append(") ");
+					if (!first)
+						sql.append("\n AND ");
+					first = false;
+					
+					sql.append("(").append(whereSQL).append(")");
 				}
 			}
 

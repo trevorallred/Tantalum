@@ -26,6 +26,10 @@ public class Instance extends PageContent {
 	private View view = null;
 	private boolean dirty = false;
 	private boolean delete = false;
+	private Instance parent;
+
+	public Instance() {
+	}
 
 	public Instance(ResultSet rs, Set<String> columnNames)
 			throws DatabaseException {
@@ -113,6 +117,14 @@ public class Instance extends PageContent {
 
 	public void setDelete(boolean delete) {
 		this.delete = delete;
+	}
+
+	public Instance getParent() {
+		return parent;
+	}
+
+	public void setParent(Instance parent) {
+		this.parent = parent;
 	}
 
 }
