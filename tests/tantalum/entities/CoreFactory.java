@@ -81,7 +81,7 @@ public class CoreFactory {
 		index.getColumns().add(indexColumn);
 		index.setTable(column.getTable());
 		column.getTable().getIndexes().add(index);
-		index.setUnique(true);
+		index.setUniqueIndex(true);
 	}
 
 	public static Field addField(View view, MetaColumn column) {
