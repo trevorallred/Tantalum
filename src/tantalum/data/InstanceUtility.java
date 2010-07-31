@@ -84,14 +84,15 @@ public class InstanceUtility {
 			list.getData().add(instance);
 
 			JSONObject children = (JSONObject) row.get("CHILDREN");
-			for (Object childView : children.keySet()) {
-				String childViewName = childView.toString();
-				InstanceList childContent = convertFromJSON((JSONObject) children
-						.get(childViewName));
-				instance.addChildContent(childViewName, childContent);
+			if (children != null) {
+				for (Object childView : children.keySet()) {
+					String childViewName = childView.toString();
+					InstanceList childContent = convertFromJSON((JSONObject) children
+							.get(childViewName));
+					instance.addChildContent(childViewName, childContent);
+				}
 			}
 		}
 		return list;
 	}
-
 }

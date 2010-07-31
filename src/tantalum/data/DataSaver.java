@@ -24,8 +24,13 @@ import tantalum.util.UpdateSQL;
 
 public class DataSaver {
 	private Connection conn = null;
+	private boolean testing = false;
 
 	private void open() throws NamingException, SQLException {
+		if (testing) {
+			conn = new MockConnection();
+			return;
+		}
 		conn = DbConnection.getConnection();
 	}
 
@@ -165,4 +170,7 @@ public class DataSaver {
 		}
 	}
 
+	public void setTesting(boolean testing) {
+		this.testing = testing;
+	}
 }

@@ -1,12 +1,13 @@
 package tantalum.entities;
 
-import org.json.simple.JSONObject;
 
 public class CoreFactory {
 
-	MetaTable account;
-	MetaTable invoice;
-	MetaTable invoiceItem;
+	private MetaTable account;
+	private MetaTable invoice;
+	private MetaTable invoiceItem;
+	private Join invoiceAccountJoin;
+	private Join itemInvoiceJoin;
 
 	public void setupModel() {
 		account = createTable("Account");
@@ -14,14 +15,14 @@ public class CoreFactory {
 
 		invoice = createTable("Invoice");
 		addColumn(invoice, "AccountID", ColumnType.Integer);
-		addJoin(invoice.getColumns().get(1), account.getColumns().get(0));
+		invoiceAccountJoin = addJoin(invoice.getColumns().get(1), account.getColumns().get(0));
 		addColumn(invoice, "InvoiceDate", ColumnType.Date);
 		addColumn(invoice, "InvoiceTotal", ColumnType.Decimal);
 		addColumn(invoice, "Description", ColumnType.String);
 
 		invoiceItem = createTable("InvoiceItem");
 		addColumn(invoiceItem, "InvoiceID", ColumnType.Integer);
-		addJoin(invoiceItem.getColumns().get(1), invoice.getColumns().get(0));
+		itemInvoiceJoin = addJoin(invoiceItem.getColumns().get(1), invoice.getColumns().get(0));
 		addColumn(invoiceItem, "Description", ColumnType.String);
 		addColumn(invoiceItem, "SubTotal", ColumnType.Decimal);
 	}
@@ -33,6 +34,27 @@ public class CoreFactory {
 		for (MetaColumn column : invoice.getColumns()) {
 			addField(view, column);
 		}
+		return view;
+	}
+
+	public View createInvoiceWithItemsView() {
+		setupModel();
+		View view = createView("Invoice");
+		view.setBasisTable(invoice);
+		for (MetaColumn column : invoice.getColumns()) {
+			addField(view, column);
+		}
+		View itemView = createView("Item");
+		view.getChildViews().add(itemView);
+		itemView.setBasisTable(invoiceItem);
+		for (MetaColumn column : invoiceItem.getColumns()) {
+			addField(itemView, column);
+		}
+		itemView.getFields().get(1).setDefaultField(view.getFields().get(0));
+		Reference itemInvoiceReference = new Reference();
+		itemInvoiceReference.setView(itemView);
+		itemInvoiceReference.setJoin(itemInvoiceJoin);
+		itemView.setReference(itemInvoiceReference);
 		return view;
 	}
 
@@ -91,18 +113,5 @@ public class CoreFactory {
 		field.setBasisColumn(column);
 		field.setName(view.getName() + column.getName());
 		return field;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static JSONObject createInvoiceInstance(String invoiceID,
-			String accountID, String invoiceDate, String invoiceTotal,
-			String description) {
-		JSONObject row = new JSONObject();
-		row.put("DefineInvoiceInvoiceID", invoiceID);
-		row.put("DefineInvoiceAccountID", accountID);
-		row.put("DefineInvoiceInvoiceDate", invoiceDate);
-		row.put("DefineInvoiceInvoiceTotal", invoiceTotal);
-		row.put("DefineInvoiceDescription", description);
-		return row;
 	}
 }
