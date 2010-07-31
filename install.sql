@@ -63,7 +63,7 @@ CREATE TABLE `tan_column` (
 
 /*Data for the table `tan_column` */
 
-insert  into `tan_column`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`tableID`,`name`,`required`,`displayOrder`,`columnType`,`size`,`precision`,`dbName`,`label`) values (1,NULL,NULL,NULL,NULL,NULL,1,'TableID',1,10,'Integer',11,NULL,'id',NULL),(2,NULL,NULL,NULL,NULL,NULL,1,'Name',1,20,'String',50,NULL,'name',NULL),(3,NULL,NULL,NULL,NULL,NULL,1,'DatabaseName',1,30,'String',50,NULL,'dbName',NULL),(4,NULL,NULL,NULL,NULL,NULL,4,'PageID',1,10,'Integer',11,NULL,'id',''),(5,NULL,NULL,NULL,NULL,NULL,4,'Name',1,20,'String',50,NULL,'name',NULL),(6,NULL,NULL,NULL,NULL,NULL,4,'Title',1,30,'String',50,NULL,'label',NULL),(7,NULL,NULL,NULL,NULL,NULL,2,'Name',1,10,'String',50,NULL,'name',NULL),(8,NULL,NULL,NULL,NULL,NULL,2,'ColumnID',1,5,'Integer',11,NULL,'id',NULL),(9,NULL,NULL,NULL,NULL,NULL,2,'TableID',1,20,'Integer',11,NULL,'tableID',NULL),(10,NULL,NULL,NULL,NULL,NULL,2,'Required',1,30,'Integer',NULL,NULL,'required',NULL),(11,NULL,NULL,NULL,NULL,NULL,2,'DisplayOrder',1,40,'Integer',11,NULL,'displayOrder',NULL),(12,NULL,NULL,NULL,NULL,NULL,6,'ViewID',1,10,'Integer',11,NULL,'id',NULL),(13,NULL,NULL,NULL,NULL,NULL,6,'PageID',1,20,'Integer',11,NULL,'pageID',NULL),(14,NULL,NULL,NULL,NULL,NULL,3,'JoinID',1,10,'Integer',11,NULL,'id',NULL),(15,NULL,NULL,NULL,NULL,NULL,3,'FromTableID',1,20,'Integer',11,NULL,'fromTableID',NULL),(16,NULL,NULL,NULL,NULL,NULL,3,'ToTableID',1,30,'Integer',11,NULL,'toTableID',NULL),(17,NULL,NULL,NULL,NULL,NULL,6,'ResultsPerPage',0,30,'Integer',NULL,NULL,'resultsPerPage',NULL),(18,NULL,NULL,NULL,NULL,NULL,2,'Database',0,50,'String',50,NULL,'dbName',NULL),(19,NULL,NULL,NULL,NULL,NULL,6,'BasisTableID',0,60,'Integer',11,NULL,'basisTableID',NULL),(20,NULL,NULL,NULL,NULL,NULL,6,'Name',1,70,'String',50,NULL,'name',NULL),(21,NULL,NULL,NULL,NULL,NULL,6,'ParentID',0,80,'Integer',11,NULL,'parentID',NULL),(22,NULL,NULL,NULL,NULL,NULL,6,'ReferenceID',0,90,'Integer',11,NULL,'referenceID',NULL);
+insert  into `tan_column`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`tableID`,`name`,`required`,`displayOrder`,`columnType`,`size`,`precision`,`dbName`,`label`) values (1,NULL,NULL,NULL,NULL,NULL,1,'TableID',1,10,'Integer',11,NULL,'id',NULL),(2,NULL,NULL,NULL,NULL,NULL,1,'Name',1,20,'String',50,NULL,'name',NULL),(3,NULL,NULL,NULL,NULL,NULL,1,'DatabaseName',1,30,'String',50,NULL,'dbName',NULL),(4,NULL,NULL,NULL,NULL,NULL,4,'PageID',1,10,'Integer',11,NULL,'id',''),(5,NULL,NULL,NULL,NULL,NULL,4,'Name',1,20,'String',50,NULL,'name',NULL),(6,NULL,NULL,NULL,NULL,NULL,4,'Title',1,30,'String',50,NULL,'label',NULL),(7,NULL,NULL,NULL,NULL,NULL,2,'Name',1,10,'String',50,NULL,'name',NULL),(8,NULL,NULL,NULL,NULL,NULL,2,'ColumnID',1,5,'Integer',11,NULL,'id',NULL),(9,NULL,NULL,NULL,NULL,NULL,2,'TableID',1,25,'Integer',11,NULL,'tableID',NULL),(10,NULL,NULL,NULL,NULL,NULL,2,'Required',1,30,'Integer',NULL,NULL,'required',NULL),(11,NULL,NULL,NULL,NULL,NULL,2,'DisplayOrder',1,40,'Integer',11,NULL,'displayOrder',NULL),(12,NULL,NULL,NULL,NULL,NULL,6,'ViewID',1,10,'Integer',11,NULL,'id',NULL),(13,NULL,NULL,NULL,NULL,NULL,6,'PageID',1,20,'Integer',11,NULL,'pageID',NULL),(14,NULL,NULL,NULL,NULL,NULL,3,'JoinID',1,10,'Integer',11,NULL,'id',NULL),(15,NULL,NULL,NULL,NULL,NULL,3,'FromTableID',1,20,'Integer',11,NULL,'fromTableID',NULL),(16,NULL,NULL,NULL,NULL,NULL,3,'ToTableID',1,30,'Integer',11,NULL,'toTableID',NULL),(17,NULL,NULL,NULL,NULL,NULL,6,'ResultsPerPage',0,30,'Integer',NULL,NULL,'resultsPerPage',NULL),(18,NULL,NULL,NULL,NULL,NULL,2,'Database',0,50,'String',50,NULL,'dbName',NULL),(19,NULL,NULL,NULL,NULL,NULL,6,'BasisTableID',0,60,'Integer',11,NULL,'basisTableID',NULL),(20,NULL,NULL,NULL,NULL,NULL,6,'Name',1,70,'String',50,NULL,'name',NULL),(21,NULL,NULL,NULL,NULL,NULL,6,'ParentID',0,80,'Integer',11,NULL,'parentID',NULL),(22,NULL,NULL,NULL,NULL,NULL,6,'ReferenceID',0,90,'Integer',11,NULL,'referenceID',NULL);
 
 /*Table structure for table `tan_database` */
 
@@ -120,7 +120,7 @@ CREATE TABLE `tan_field` (
 
 /*Data for the table `tan_field` */
 
-insert  into `tan_field`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`viewID`,`name`,`basisColumnID`,`referenceID`,`visible`,`label`,`displayOrder`,`displayType`,`regionID`,`size`,`addable`,`editable`,`searchable`,`defaultActionID`,`forceDefault`,`defaultValue`,`defaultScript`) values (1,NULL,NULL,NULL,NULL,NULL,1,'ManageTablesTableID',1,NULL,1,'ID',10,'Text',1,0,1,0,0,NULL,0,NULL,NULL),(2,NULL,NULL,NULL,NULL,NULL,1,'ManageTablesName',2,NULL,1,'Table name',20,'Text',1,0,1,1,1,NULL,0,NULL,NULL),(3,NULL,NULL,NULL,NULL,NULL,1,'ManageTablesDatabaseName',3,NULL,1,'DB name',30,'Text',1,0,1,1,1,NULL,0,NULL,NULL),(4,NULL,NULL,NULL,NULL,NULL,2,'DefineTableTableID',1,NULL,1,'ID',10,'Text',2,0,1,0,0,NULL,0,NULL,NULL),(5,NULL,NULL,NULL,NULL,NULL,2,'DefineTableName',2,NULL,1,'Table name',20,'Text',2,0,1,1,0,NULL,0,NULL,NULL),(6,NULL,NULL,NULL,NULL,NULL,2,'DefineTableDatabaseName',3,NULL,1,'DB name',30,'Text',2,0,1,1,0,NULL,0,NULL,NULL),(7,NULL,NULL,NULL,NULL,NULL,3,'WebpageListID',4,NULL,0,'ID',10,'Text',NULL,0,1,1,0,NULL,0,NULL,NULL),(8,NULL,NULL,NULL,NULL,NULL,3,'WebpageListName',5,NULL,1,'Name',10,'Text',NULL,0,1,1,1,NULL,0,NULL,NULL),(9,NULL,NULL,NULL,NULL,NULL,3,'WebpageListUrl',6,NULL,0,'URL',10,'Text',NULL,0,1,1,1,NULL,0,NULL,NULL),(10,NULL,NULL,NULL,NULL,NULL,4,'DefineWebpagePageID',4,NULL,1,'ID',10,'Text',4,0,1,0,0,NULL,0,NULL,NULL),(11,NULL,NULL,NULL,NULL,NULL,4,'DefineWebpageName',5,NULL,1,'Webpage name',10,'Text',4,0,1,1,0,NULL,0,NULL,NULL),(12,NULL,NULL,NULL,NULL,NULL,4,'DefineWebpageURL',6,NULL,1,'URL',10,'Text',4,0,1,1,0,NULL,0,NULL,NULL),(13,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnName',7,NULL,1,'Name',20,'Text',5,0,1,1,0,NULL,0,NULL,NULL),(14,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnID',8,NULL,1,'ID',10,'Text',5,0,1,0,0,NULL,0,NULL,NULL),(15,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnRequired',10,NULL,1,'Required',30,'Checkbox',5,0,1,1,0,NULL,0,NULL,NULL),(16,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnDisplayOrder',11,NULL,1,'Order',15,'Text',5,0,1,1,0,NULL,0,NULL,NULL),(17,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinFromTableID',15,NULL,1,'From table',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(18,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinJoinID',14,NULL,0,'Join ID',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(19,NULL,NULL,NULL,NULL,NULL,9,'DefineWebpageViewViewID',12,NULL,1,'View ID',10,'Text',NULL,0,1,1,0,NULL,0,NULL,NULL),(20,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinToTableID',16,NULL,1,'To table',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(21,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinToTableName',2,3,1,'To table',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(22,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnDbName',18,NULL,1,'Database',40,'Text',5,0,1,1,0,NULL,0,NULL,NULL),(23,NULL,NULL,NULL,NULL,NULL,9,'DefineWebpageViewName',20,NULL,1,'Name',20,'Text',NULL,0,1,1,0,NULL,0,NULL,NULL),(24,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnTableID',9,NULL,0,'TableID',10,'Text',5,0,1,1,0,NULL,0,NULL,NULL);
+insert  into `tan_field`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`viewID`,`name`,`basisColumnID`,`referenceID`,`visible`,`label`,`displayOrder`,`displayType`,`regionID`,`size`,`addable`,`editable`,`searchable`,`defaultActionID`,`forceDefault`,`defaultValue`,`defaultScript`) values (1,NULL,NULL,NULL,NULL,NULL,1,'ManageTablesTableID',1,NULL,1,'ID',10,'Text',1,0,1,0,0,NULL,0,NULL,NULL),(2,NULL,NULL,NULL,NULL,NULL,1,'ManageTablesName',2,NULL,1,'Table name',20,'Text',1,0,1,1,1,1,0,NULL,NULL),(3,NULL,NULL,NULL,NULL,NULL,1,'ManageTablesDatabaseName',3,NULL,1,'DB name',30,'Text',1,0,1,1,1,NULL,0,NULL,NULL),(4,NULL,NULL,NULL,NULL,NULL,2,'DefineTableTableID',1,NULL,1,'ID',10,'Text',2,0,1,0,0,NULL,0,NULL,NULL),(5,NULL,NULL,NULL,NULL,NULL,2,'DefineTableName',2,NULL,1,'Table name',20,'Text',2,0,1,1,0,NULL,0,NULL,NULL),(6,NULL,NULL,NULL,NULL,NULL,2,'DefineTableDatabaseName',3,NULL,1,'DB name',30,'Text',2,0,1,1,0,NULL,0,NULL,NULL),(7,NULL,NULL,NULL,NULL,NULL,3,'WebpageListID',4,NULL,0,'ID',10,'Text',NULL,0,1,1,0,NULL,0,NULL,NULL),(8,NULL,NULL,NULL,NULL,NULL,3,'WebpageListName',5,NULL,1,'Name',10,'Text',NULL,0,1,1,1,NULL,0,NULL,NULL),(9,NULL,NULL,NULL,NULL,NULL,3,'WebpageListUrl',6,NULL,0,'URL',10,'Text',NULL,0,1,1,1,NULL,0,NULL,NULL),(10,NULL,NULL,NULL,NULL,NULL,4,'DefineWebpagePageID',4,NULL,1,'ID',10,'Text',4,0,1,0,0,NULL,0,NULL,NULL),(11,NULL,NULL,NULL,NULL,NULL,4,'DefineWebpageName',5,NULL,1,'Webpage name',10,'Text',4,0,1,1,0,NULL,0,NULL,NULL),(12,NULL,NULL,NULL,NULL,NULL,4,'DefineWebpageURL',6,NULL,1,'URL',10,'Text',4,0,1,1,0,NULL,0,NULL,NULL),(13,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnName',7,NULL,1,'Name',20,'Text',5,0,1,1,0,NULL,0,NULL,NULL),(14,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnID',8,NULL,1,'ID',10,'Text',5,0,1,0,0,NULL,0,NULL,NULL),(15,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnRequired',10,NULL,1,'Required',30,'Checkbox',5,0,1,1,0,NULL,0,NULL,NULL),(16,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnDisplayOrder',11,NULL,1,'Order',15,'Text',5,0,1,1,0,NULL,0,NULL,NULL),(17,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinFromTableID',15,NULL,1,'From table',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(18,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinJoinID',14,NULL,0,'Join ID',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(19,NULL,NULL,NULL,NULL,NULL,9,'DefineWebpageViewViewID',12,NULL,1,'View ID',10,'Text',NULL,0,1,1,0,NULL,0,NULL,NULL),(20,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinToTableID',16,NULL,1,'To table',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(21,NULL,NULL,NULL,NULL,NULL,10,'DefineTableJoinToTableName',2,3,1,'To table',10,'Text',6,0,1,1,0,NULL,0,NULL,NULL),(22,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnDbName',18,NULL,1,'Database',40,'Text',5,0,1,1,0,NULL,0,NULL,NULL),(23,NULL,NULL,NULL,NULL,NULL,9,'DefineWebpageViewName',20,NULL,1,'Name',20,'Text',NULL,0,1,1,0,NULL,0,NULL,NULL),(24,NULL,NULL,NULL,NULL,NULL,8,'DefineTableColumnTableID',9,NULL,0,'TableID',10,'Text',5,0,1,1,0,NULL,0,NULL,NULL);
 
 /*Table structure for table `tan_field_action` */
 
@@ -138,9 +138,11 @@ CREATE TABLE `tan_field_action` (
   `fieldID` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tableName` (`fieldID`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tan_field_action` */
+
+insert  into `tan_field_action`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`name`,`label`,`fieldID`) values (1,NULL,NULL,NULL,NULL,NULL,'DefineTable','DefineTable',2);
 
 /*Table structure for table `tan_field_action_detail` */
 
@@ -155,12 +157,57 @@ CREATE TABLE `tan_field_action_detail` (
   `updateProcess` varchar(100) DEFAULT NULL,
   `fieldActionID` int(11) unsigned NOT NULL,
   `fromFieldID` int(11) unsigned NOT NULL,
-  `toField` int(11) unsigned NOT NULL,
+  `toFieldID` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fieldActionID` (`fieldActionID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tan_field_action_detail` */
+
+insert  into `tan_field_action_detail`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`fieldActionID`,`fromFieldID`,`toFieldID`) values (1,NULL,NULL,NULL,NULL,NULL,1,1,4);
+
+/*Table structure for table `tan_index` */
+
+DROP TABLE IF EXISTS `tan_index`;
+
+CREATE TABLE `tan_index` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `updateProcess` varchar(100) DEFAULT NULL,
+  `tableID` int(11) unsigned NOT NULL,
+  `displayOrder` tinyint(4) unsigned NOT NULL DEFAULT '1',
+  `uniqueIndex` tinyint(4) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `tableID` (`tableID`,`displayOrder`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+/*Data for the table `tan_index` */
+
+insert  into `tan_index`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`tableID`,`displayOrder`,`uniqueIndex`) values (1,NULL,NULL,NULL,NULL,NULL,1,1,1),(2,NULL,NULL,NULL,NULL,NULL,2,1,1),(3,NULL,NULL,NULL,NULL,NULL,3,1,1);
+
+/*Table structure for table `tan_index_column` */
+
+DROP TABLE IF EXISTS `tan_index_column`;
+
+CREATE TABLE `tan_index_column` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdBy` int(11) unsigned DEFAULT NULL,
+  `updatedBy` int(11) unsigned DEFAULT NULL,
+  `creationDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `updateProcess` varchar(100) DEFAULT NULL,
+  `indexID` int(11) unsigned NOT NULL,
+  `columnID` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `indexID` (`indexID`,`columnID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+/*Data for the table `tan_index_column` */
+
+insert  into `tan_index_column`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`indexID`,`columnID`) values (1,NULL,NULL,NULL,NULL,NULL,1,1),(2,NULL,NULL,NULL,NULL,NULL,2,8),(3,NULL,NULL,NULL,NULL,NULL,3,14);
 
 /*Table structure for table `tan_join` */
 
@@ -361,7 +408,7 @@ CREATE TABLE `tan_table` (
   `projectID` int(11) unsigned DEFAULT NULL,
   `databaseID` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tan_table` */
 
@@ -414,7 +461,7 @@ CREATE TABLE `tan_view` (
 
 /*Data for the table `tan_view` */
 
-insert  into `tan_view`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`pageID`,`resultsPerPage`,`basisTableID`,`name`,`parentID`,`referenceID`,`queryOrder`,`label`,`allowAdd`,`allowEdit`,`allowDelete`) values (1,NULL,NULL,NULL,NULL,NULL,1,100,1,'ManageTables',NULL,NULL,0,NULL,0,1,0),(2,NULL,NULL,NULL,NULL,NULL,2,10,1,'DefineTable',NULL,NULL,0,NULL,1,1,1),(3,NULL,NULL,NULL,NULL,NULL,3,100,4,'WebpageList',NULL,NULL,0,NULL,1,1,1),(4,NULL,NULL,NULL,NULL,NULL,4,1,4,'DefineWebpage',NULL,NULL,0,NULL,1,1,1),(8,NULL,NULL,NULL,NULL,NULL,2,0,2,'DefineTableColumn',2,1,0,NULL,1,1,1),(9,NULL,NULL,NULL,NULL,NULL,4,0,6,'DefineWebpageView',4,2,0,NULL,1,1,1),(10,NULL,NULL,NULL,NULL,NULL,2,0,3,'DefineTableJoinParent',2,4,0,NULL,1,1,1),(11,NULL,NULL,NULL,NULL,NULL,22,0,3,'DefineTableJoinChild',2,3,0,NULL,1,1,1);
+insert  into `tan_view`(`id`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`updateProcess`,`pageID`,`resultsPerPage`,`basisTableID`,`name`,`parentID`,`referenceID`,`queryOrder`,`label`,`allowAdd`,`allowEdit`,`allowDelete`) values (1,NULL,NULL,NULL,NULL,NULL,1,100,1,'ManageTables',NULL,NULL,0,NULL,1,1,1),(2,NULL,NULL,NULL,NULL,NULL,2,10,1,'DefineTable',NULL,NULL,0,NULL,1,1,1),(3,NULL,NULL,NULL,NULL,NULL,3,100,4,'WebpageList',NULL,NULL,0,NULL,1,1,1),(4,NULL,NULL,NULL,NULL,NULL,4,1,4,'DefineWebpage',NULL,NULL,0,NULL,1,1,1),(8,NULL,NULL,NULL,NULL,NULL,2,0,2,'DefineTableColumn',2,1,0,NULL,1,1,1),(9,NULL,NULL,NULL,NULL,NULL,4,0,6,'DefineWebpageView',4,2,0,NULL,1,1,1),(10,NULL,NULL,NULL,NULL,NULL,2,0,3,'DefineTableJoinParent',2,4,0,NULL,1,1,1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

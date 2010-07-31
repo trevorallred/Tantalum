@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import tantalum.data.PageContentBean;
+import tantalum.data.Instance;
 
 @Entity
 @Table(name = "tan_field")
@@ -194,7 +194,7 @@ public class Field extends BaseNamedTable {
 		return view.getBasisTable().equals(basisColumn.getTable());
 	}
 
-	public String getValue(PageContentBean row) {
+	public String getValue(Instance row) {
 		return row.getString(name);
 		// if (object == null)
 		// return "";

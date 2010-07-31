@@ -11,6 +11,8 @@ public class MetaIndexColumn extends BaseTable {
 	@ManyToOne
 	@JoinColumn(name = "indexID")
 	private MetaIndex index;
+	@ManyToOne
+	@JoinColumn(name = "columnID")
 	private MetaColumn column;
 
 	public MetaIndex getIndex() {

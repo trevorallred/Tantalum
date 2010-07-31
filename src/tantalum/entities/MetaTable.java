@@ -22,6 +22,7 @@ public class MetaTable extends BaseTable {
 	@JoinColumn(name = "databaseID")
 	private Database database;
 	@OneToMany(mappedBy = "table")
+	@OrderBy(value = "displayOrder")
 	private List<MetaColumn> columns = new ArrayList<MetaColumn>();
 	@OneToMany(mappedBy = "table")
 	@OrderBy(value = "displayOrder")
@@ -76,7 +77,7 @@ public class MetaTable extends BaseTable {
 		if (indexes == null)
 			return null;
 		for (MetaIndex index : indexes) {
-			if (index.isUnique()) {
+			if (index.isUniqueIndex()) {
 				return index.getColumns().get(0).getColumn();
 			}
 		}

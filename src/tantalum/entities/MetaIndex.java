@@ -16,7 +16,7 @@ public class MetaIndex extends BaseTable {
 	@JoinColumn(name = "tableID")
 	private MetaTable table;
 	private int displayOrder;
-	private boolean unique;
+	private boolean uniqueIndex;
 
 	@OneToMany(mappedBy = "index")
 	private List<MetaIndexColumn> columns = new ArrayList<MetaIndexColumn>();
@@ -37,12 +37,12 @@ public class MetaIndex extends BaseTable {
 		this.displayOrder = displayOrder;
 	}
 
-	public boolean isUnique() {
-		return unique;
+	public boolean isUniqueIndex() {
+		return uniqueIndex;
 	}
 
-	public void setUnique(boolean unique) {
-		this.unique = unique;
+	public void setUniqueIndex(boolean unique) {
+		this.uniqueIndex = unique;
 	}
 
 	public List<MetaIndexColumn> getColumns() {
