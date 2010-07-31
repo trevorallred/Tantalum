@@ -7,22 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-import tantalum.entities.Field;
 import tantalum.entities.Page;
-import tantalum.entities.View;
 import tantalum.entities.ReferenceJoinClause;
+import tantalum.entities.View;
 import tantalum.util.DbConnection;
 import tantalum.util.SelectSQL;
 import tantalum.util.Strings;
-import tantalum.util.UpdateSQL;
 import tantalum.util.UrlRequest;
-
 
 public class DataReader {
 	protected DbConnection db = new DbConnection();
 
-	private Map<View, List<PageContentBean>> viewData = new HashMap<View, List<PageContentBean>>();
+	private Map<View, List<Instance>> viewData = new HashMap<View, List<Instance>>();
 
 	public PageContent getContent(Page page, UrlRequest urlRequest) {
 		for (View view : page.getParentViews()) {
@@ -38,7 +34,7 @@ public class DataReader {
 
 		PageContent content = new PageContent();
 		for (View view : page.getParentViews()) {
-			for (PageContentBean row : viewData.get(view)) {
+			for (Instance row : viewData.get(view)) {
 				content.addChildContent(view, row);
 				appendChildren(row, view);
 			}
@@ -57,7 +53,7 @@ public class DataReader {
 		SelectSQL sql = QueryBuilder.buildSelect(view);
 		if (!Strings.isEmpty(where))
 			sql.addWhere(where);
-		List<PageContentBean> data = db.select(sql.toString(), true);
+		List<Instance> data = db.select(sql.toString(), true);
 		viewData.put(view, data);
 		// We could just iterate all the views in a page, but this wouldn't
 		// ensure we have the parent data for the child in clause
@@ -70,9 +66,9 @@ public class DataReader {
 				childWhere.append("t0.")
 						.append(rjc.getFromColumn().getDbName())
 						.append(" IN (");
-				Set<String> parentIDs = new HashSet<String>();
-				for (PageContentBean parentRow : data) {
-					parentIDs.add(parentRow.getString(rjc.getToField()
+				Set<Integer> parentIDs = new HashSet<Integer>();
+				for (Instance parentRow : data) {
+					parentIDs.add(parentRow.getInteger(rjc.getToField()
 							.getName()));
 				}
 				childWhere.append(Strings.joinForDB(parentIDs)).append(")");
@@ -81,14 +77,14 @@ public class DataReader {
 		}
 	}
 
-	private void appendChildren(PageContentBean parentContent, View view) {
+	private void appendChildren(Instance parentContent, View view) {
 		for (View childView : view.getChildViews()) {
 			List<String> parentKey = new ArrayList<String>();
 			for (ReferenceJoinClause rjc : childView.getReference()
 					.getReferenceJoinClauses()) {
 				parentKey.add(parentContent.getString(rjc.getToField()));
 			}
-			for (PageContentBean childContent : viewData.get(childView)) {
+			for (Instance childContent : viewData.get(childView)) {
 				// TODO We should consider storing this childKey on the
 				// PageContentBean
 				List<String> childKey = new ArrayList<String>();
@@ -103,29 +99,6 @@ public class DataReader {
 				}
 			}
 		}
-	}
-
-	public void saveRequest(Page page, UrlRequest urlRequest) {
-//		boolean dirty = false;
-//		UpdateSQL sql = new UpdateSQL();
-//		sql.setTable(view.getBasisTable().getDbName());
-//		for (String param : urlRequest.getParameters().keySet()) {
-//			if (!param.equalsIgnoreCase("button")) {
-//				AppField field = page.getField(param);
-//				if (field != null) {
-//					dirty = true;
-//					sql.addField(field.getBasisColumn().getDbName(), urlRequest
-//							.getParameters().get(param)[0]);
-//				}
-//			}
-//		}
-//		String id = urlRequest.getPageId();
-//		sql.setInsert(Strings.isEmpty(id));
-//		if (!sql.isInsert())
-//			sql.addWhere("id = '" + urlRequest.getPageId() + "'");
-//
-//		if (dirty)
-//			db.execute(sql);
 	}
 
 }

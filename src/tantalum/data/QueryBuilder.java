@@ -1,19 +1,10 @@
 package tantalum.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import tantalum.entities.Field;
 import tantalum.entities.JoinColumns;
-import tantalum.entities.MetaIndex;
-import tantalum.entities.MetaIndexColumn;
 import tantalum.entities.Reference;
 import tantalum.entities.View;
 import tantalum.util.SelectSQL;
-import tantalum.util.UpdateSQL;
 
 public class QueryBuilder {
 	static public SelectSQL buildSelect(View view) {
@@ -47,58 +38,4 @@ public class QueryBuilder {
 			sql.setLimit(view.getResultsPerPage());
 		return sql;
 	}
-
-	static public List<UpdateSQL> buildUpdates(View view, Object raw) {
-		List<UpdateSQL> list = new ArrayList<UpdateSQL>();
-		JSONObject json = (JSONObject) raw;
-		if (json != null) {
-			JSONArray data = (JSONArray) json.get("DATA");
-			if (data != null) {
-				for (Object o : data) {
-					JSONObject row = (JSONObject) o;
-					JSONObject rowData = (JSONObject) row.get("FIELDS");
-					// Now save or update this row Data
-					UpdateSQL sql = new UpdateSQL(view.getBasisTable()
-							.getDbName());
-					list.add(sql);
-					for (Field field : view.getFields()) {
-						if (rowData.containsKey(field.getName())) {
-							boolean primaryKey = false;
-							for (MetaIndex index : field.getBasisColumn()
-									.getTable().getIndexes()) {
-								if (index.isUnique()) {
-									for (MetaIndexColumn indexColumn : index
-											.getColumns()) {
-										if (indexColumn.getColumn() == field
-												.getBasisColumn())
-											primaryKey = true;
-									}
-								}
-							}
-							if (primaryKey) {
-								sql.addWhere(field.getBasisColumn().getDbName()
-										+ " = "
-										+ rowData.get(field.getName())
-												.toString());
-							} else if (field.isEditable()) {
-								sql
-										.addField(field.getBasisColumn()
-												.getDbName(), rowData.get(
-												field.getName()).toString());
-							}
-						}
-					}
-
-					JSONObject children = (JSONObject) row.get("CHILDREN");
-					for (View childView : view.getChildViews()) {
-						buildUpdates(childView, children.get(childView
-								.getName()));
-					}
-
-				}
-			}
-		}
-		return list;
-	}
-
 }

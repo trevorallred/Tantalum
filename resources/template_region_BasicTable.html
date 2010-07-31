@@ -92,11 +92,13 @@
 				$(rowHTML).find('.${field.name}').html(row.${field.name});
 				#if($field.editable)
 					$(rowHTML).find('input.${field.name}').val(row.${field.name});
-					$(rowHTML).find('input.${field.name}').attr("onchange", "rows_${region.view.name}.DATA[" + i + "].FIELDS.${field.name} = $(this).val()");
+					$(rowHTML).find('input.${field.name}').attr("onchange", "rows_${region.view.name}.DATA[" + i + "].FIELDS.${field.name} = $(this).val(); rows_${region.view.name}.DATA[" + i + "].DIRTY = true;");
 				#end
 				#if($field.hasLink)
 					$(rowHTML).find('a.${field.name}').html(row.${field.name});
-					$(rowHTML).find('a.${field.name}').attr("href", "$baseURL/t/${field.linkToField.view.page.name}/" + row.${field.linkFromField.name});
+					#foreach($actionDetail in $field.defaultAction.columns)
+						$(rowHTML).find('a.${field.name}').attr("href", "$baseURL/t/${actionDetail.toField.view.page.name}/" + row.${actionDetail.fromField.name});
+					#end
 				#end
 			#end
 		#end

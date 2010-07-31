@@ -1,5 +1,9 @@
 package tantalum.data;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,124 +11,158 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.NamingException;
 
 import tantalum.entities.Field;
-import tantalum.entities.Page;
+import tantalum.entities.MetaIndex;
+import tantalum.entities.MetaIndexColumn;
 import tantalum.entities.View;
-import tantalum.entities.ReferenceJoinClause;
 import tantalum.util.DbConnection;
-import tantalum.util.SelectSQL;
+import tantalum.util.InsertSQL;
 import tantalum.util.Strings;
 import tantalum.util.UpdateSQL;
-import tantalum.util.UrlRequest;
-
 
 public class DataSaver {
-	protected DbConnection db = new DbConnection();
+	private Connection conn = null;
 
-	private Map<View, List<PageContentBean>> viewData = new HashMap<View, List<PageContentBean>>();
-
-	public PageContent getContent(Page page, UrlRequest urlRequest) {
-		for (View view : page.getParentViews()) {
-			String where = "";
-			if (!Strings.isEmpty(urlRequest.getPageId()))
-				// TODO injection on pageID, clean it up
-				where = "t0."
-						+ view.getPrimaryKey().getBasisColumn().getDbName()
-						+ " = '" + Strings.escapeQuotes(urlRequest.getPageId())
-						+ "'";
-			queryData(view, where);
-		}
-
-		PageContent content = new PageContent();
-		for (View view : page.getParentViews()) {
-			for (PageContentBean row : viewData.get(view)) {
-				content.addChildContent(view, row);
-				appendChildren(row, view);
-			}
-		}
-		return content;
+	private void open() throws NamingException, SQLException {
+		conn = DbConnection.getConnection();
 	}
 
-	/**
-	 * Query each views data and put into a list. Later we'll organize it by
-	 * PageContentBean
-	 * 
-	 * @param view
-	 * @param where
-	 */
-	private void queryData(View view, String where) {
-		SelectSQL sql = QueryBuilder.buildSelect(view);
-		if (!Strings.isEmpty(where))
-			sql.addWhere(where);
-		List<PageContentBean> data = db.select(sql.toString(), true);
-		viewData.put(view, data);
-		// We could just iterate all the views in a page, but this wouldn't
-		// ensure we have the parent data for the child in clause
-		for (View childView : view.getChildViews()) {
-			StringBuilder childWhere = new StringBuilder();
-			for (ReferenceJoinClause rjc : childView.getReference()
-					.getReferenceJoinClauses()) {
-				if (childWhere.length() > 0)
-					childWhere.append(" AND ");
-				childWhere.append("t0.")
-						.append(rjc.getFromColumn().getDbName())
-						.append(" IN (");
-				Set<String> parentIDs = new HashSet<String>();
-				for (PageContentBean parentRow : data) {
-					parentIDs.add(parentRow.getString(rjc.getToField()
+	public void save(View view, InstanceList list) throws NamingException,
+			SQLException {
+		open();
+		try {
+			conn.setAutoCommit(false);
+			saveView(view, list);
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				if (conn != null)
+					conn.rollback();
+			} catch (SQLException e1) {
+				System.out.println("Failed to do rollback");
+			}
+		} finally {
+			if (conn == null)
+				return;
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				System.out.println("Failed to do close connection");
+			}
+		}
+	}
+
+	private void saveView(View view, InstanceList list) throws SQLException {
+		Field primaryKeyField = null;
+		for (Field field : view.getFields()) {
+			if (field.getReference() == null
+					&& view.getBasisTable().getPrimaryKey() == field
+							.getBasisColumn()) {
+				primaryKeyField = field;
+				break;
+			}
+		}
+		if (primaryKeyField == null) {
+			System.out.println("Failed to find a primaryKeyField for "
+					+ view.getBasisTable() + " on " + view);
+		}
+		{
+			Set<Integer> idsToDelete = new HashSet<Integer>();
+			for (Instance instance : list.getData()) {
+				if (instance.isDelete()) {
+					idsToDelete.add(instance.getInteger(primaryKeyField
 							.getName()));
+					instance.setDirty(false);
 				}
-				childWhere.append(Strings.joinForDB(parentIDs)).append(")");
 			}
-			queryData(childView, childWhere.toString());
-		}
-	}
-
-	private void appendChildren(PageContentBean parentContent, View view) {
-		for (View childView : view.getChildViews()) {
-			List<String> parentKey = new ArrayList<String>();
-			for (ReferenceJoinClause rjc : childView.getReference()
-					.getReferenceJoinClauses()) {
-				parentKey.add(parentContent.getString(rjc.getToField()));
-			}
-			for (PageContentBean childContent : viewData.get(childView)) {
-				// TODO We should consider storing this childKey on the
-				// PageContentBean
-				List<String> childKey = new ArrayList<String>();
-				for (ReferenceJoinClause rjc : childView.getReference()
-						.getReferenceJoinClauses()) {
-					childKey.add(childContent.getString(rjc.getFromField()));
-				}
-				if (parentKey.equals(childKey)) {
-					// This child row "belongs" to this parent
-					parentContent.addChildContent(childView, childContent);
-					appendChildren(childContent, childView);
-				}
+			if (idsToDelete.size() > 0) {
+				String deleteSql = "DELETE FROM "
+						+ view.getBasisTable().getDbName() + " WHERE "
+						+ primaryKeyField.getBasisColumn().getDbName()
+						+ " IN (" + Strings.joinForDB(idsToDelete) + ")";
+				Statement stmt = conn.createStatement();
+				System.out.println("Running: " + deleteSql.toString());
+				stmt.executeUpdate(deleteSql.toString());
+				stmt.close();
 			}
 		}
-	}
-
-	public void saveRequest(View view, UrlRequest urlRequest) {
-		boolean dirty = false;
-		UpdateSQL sql = new UpdateSQL(view.getBasisTable().getDbName());
-		for (String param : urlRequest.getParameters().keySet()) {
-			if (!param.equalsIgnoreCase("button")) {
-				Field field = view.getField(param);
-				if (field != null) {
-					dirty = true;
-					sql.addField(field.getBasisColumn().getDbName(), urlRequest
-							.getParameters().get(param)[0]);
+		{
+			InsertSQL insertSql = new InsertSQL(view.getBasisTable()
+					.getDbName());
+			List<Instance> instancesToInsert = new ArrayList<Instance>();
+			for (Instance instance : list.getData()) {
+				if (instance.isDirty() && !instance.isDelete()
+						&& Strings.isEmpty(instance.getString(primaryKeyField))) {
+					Map<String, String> insertData = new HashMap<String, String>();
+					for (Field field : view.getFields()) {
+						insertData.put(field.getBasisColumn().getDbName(),
+								instance.getString(field));
+					}
+					insertSql.addRow(insertData);
+					instancesToInsert.add(instance);
+					instance.setDirty(false);
 				}
 			}
+			if (instancesToInsert.size() > 0) {
+				Statement stmt = conn.createStatement();
+				System.out.println("Running: " + insertSql.toString());
+				stmt.executeUpdate(insertSql.toString(),
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet keyRs = stmt.getGeneratedKeys();
+				int i = 0;
+				while (keyRs.next()) {
+					instancesToInsert.get(i).setValue(
+							primaryKeyField.getName(), keyRs.getString(1));
+					i++;
+				}
+				stmt.close();
+			}
 		}
-		String id = urlRequest.getPageId();
-		sql.setInsert(Strings.isEmpty(id));
-		if (!sql.isInsert())
-			sql.addWhere("id = '" + urlRequest.getPageId() + "'");
-
-		if (dirty)
-			db.execute(sql);
+		for (Instance instance : list.getData()) {
+			if (instance.isDirty()) {
+				UpdateSQL updateSql = new UpdateSQL(view.getBasisTable()
+						.getDbName());
+				for (Field field : view.getFields()) {
+					if (field.getReference() == null
+							&& instance.getFieldNames().contains(
+									field.getName())) {
+						boolean primaryKey = false;
+						for (MetaIndex index : field.getBasisColumn()
+								.getTable().getIndexes()) {
+							if (index.isUniqueIndex()) {
+								for (MetaIndexColumn indexColumn : index
+										.getColumns()) {
+									if (indexColumn.getColumn() == field
+											.getBasisColumn())
+										primaryKey = true;
+								}
+							}
+						}
+						if (primaryKey) {
+							updateSql.addWhere(field.getBasisColumn()
+									.getDbName()
+									+ " = " + instance.getString(field));
+						} else if (field.isEditable()) {
+							updateSql.addField(field.getBasisColumn()
+									.getDbName(), instance.getString(field));
+						}
+					}
+				}
+				if (updateSql.getFieldSize() > 0
+						&& updateSql.getWhereSize() > 0) {
+					Statement stmt = conn.createStatement();
+					System.out.println("Running: " + updateSql.toString());
+					stmt.executeUpdate(updateSql.toString());
+					stmt.close();
+				}
+			}
+			for (View childView : view.getChildViews()) {
+				saveView(childView, instance
+						.getViewContent(childView.getName()));
+			}
+		}
 	}
 
 }

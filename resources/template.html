@@ -36,7 +36,11 @@ function savePage() {
 	var json2 = JSON.stringify(json);
 	jQuery.post('$baseURL/ws/$page.name#if($urlRequest.pageId)/$urlRequest.pageId#{end}', json2,
 		function(data) {
-			//alert(data);
+			json = data;
+			#foreach ( $view in $page.parentViews )
+			rows_${view.name} = json.${view.name};
+			position_${view.name}();
+			#end
 		}
 	);
 	//$("#save").attr("disabled", true);

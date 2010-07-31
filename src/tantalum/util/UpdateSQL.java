@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
 public class UpdateSQL {
 	protected String table;
 	protected List<String> whereClause = new ArrayList<String>();
@@ -43,7 +41,7 @@ public class UpdateSQL {
 				first = false;
 			else
 				sql.append(", ");
-			
+
 			String value = fields.get(field);
 			sql.append("\n").append(field).append(" = ");
 			if (value == null)
@@ -91,6 +89,14 @@ public class UpdateSQL {
 		if (Strings.isEmpty(field))
 			return;
 		this.fields.put(field, value);
+	}
+
+	public int getFieldSize() {
+		return fields.size();
+	}
+
+	public int getWhereSize() {
+		return whereClause.size();
 	}
 
 	public int getLimit() {

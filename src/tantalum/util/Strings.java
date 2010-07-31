@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 
 public class Strings {
 	
-	public static String joinForDB(Iterable<?> parts) {
+	public static String joinForDB(Iterable<Integer> parts) {
 		return Joiner.on(",").join(parts);
 	}
 	

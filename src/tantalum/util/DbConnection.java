@@ -14,8 +14,8 @@ import javax.sql.DataSource;
 
 import tantalum.DatabaseException;
 import tantalum.NoResultFoundException;
-import tantalum.data.PageContentBean;
-import tantalum.data.PageContentUtility;
+import tantalum.data.Instance;
+import tantalum.data.InstanceUtility;
 
 
 public class DbConnection {
@@ -30,15 +30,15 @@ public class DbConnection {
 		return ds.getConnection();
 	}
 
-	public List<PageContentBean> select(SelectSQL sql) throws DatabaseException {
+	public List<Instance> select(SelectSQL sql) throws DatabaseException {
 		return select(sql.toString(), false);
 	}
 
-	public List<PageContentBean> select(String sql) throws DatabaseException {
+	public List<Instance> select(String sql) throws DatabaseException {
 		return select(sql, false);
 	}
 
-	public List<PageContentBean> select(String sql, boolean countRows)
+	public List<Instance> select(String sql, boolean countRows)
 			throws DatabaseException {
 		Connection conn = null;
 		Statement stmt = null; // Or PreparedStatement if needed
@@ -48,7 +48,7 @@ public class DbConnection {
 			stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(sql);
-			List<PageContentBean> list = PageContentUtility.parseResultSet(rs);
+			List<Instance> list = InstanceUtility.parseResultSet(rs);
 			rs.close();
 			rs = null;
 
@@ -96,14 +96,14 @@ public class DbConnection {
 		}
 	}
 
-	public PageContentBean selectSingle(SelectSQL sql)
+	public Instance selectSingle(SelectSQL sql)
 			throws NoResultFoundException {
 		return selectSingle(sql.toString());
 	}
 
-	public PageContentBean selectSingle(String sql)
+	public Instance selectSingle(String sql)
 			throws NoResultFoundException {
-		List<PageContentBean> result = select(sql);
+		List<Instance> result = select(sql);
 		if (result.size() == 0)
 			throw new NoResultFoundException();
 		return result.get(0);

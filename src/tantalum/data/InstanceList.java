@@ -5,16 +5,16 @@ import java.util.List;
 
 /**
  * The result of a single query. This contains a list of rows and some
- * information about those records.
+ * information about those records. This is the same as a "View"
  */
-public class ViewContent {
+public class InstanceList {
 	private int totalRecords = -1;
-	private List<PageContentBean> data = new ArrayList<PageContentBean>();
+	private List<Instance> data = new ArrayList<Instance>();
 
-	public ViewContent() {
+	public InstanceList() {
 	}
 
-	public ViewContent(List<PageContentBean> list) {
+	public InstanceList(List<Instance> list) {
 		data = list;
 	}
 
@@ -28,7 +28,7 @@ public class ViewContent {
 		return totalRecords;
 	}
 
-	public List<PageContentBean> getData() {
+	public List<Instance> getData() {
 		return data;
 	}
 
