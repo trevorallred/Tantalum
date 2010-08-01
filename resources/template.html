@@ -47,6 +47,14 @@ function savePage() {
 }
 #end
 
+function initializeList() {
+	var list = new Object;
+	list.DATA = [];
+	list.POSITION = -1;
+	list.FULLY_LOADED = true;
+	return list;
+}
+
 #foreach ( $view in $page.views )
 	var rows_${view.name} = null;
 	function nav_${view.name}(amount) {
@@ -80,6 +88,9 @@ function savePage() {
 		var row = rows_${view.name}.DATA[rows_${view.name}.POSITION];
 		
 		#foreach ( $childView in $view.childViews )
+			if (row.CHILDREN.${childView.name} == undefined) {
+				row.CHILDREN.${childView.name} = initializeList();
+			}
 			rows_${childView.name} = row.CHILDREN.${childView.name};
 			position_${childView.name}();
 		#end
@@ -89,7 +100,22 @@ function savePage() {
 	function add_${view.name}() {
 		var r = rows_${view.name};
 		r.POSITION = r.DATA.length;
-		r.DATA[r.POSITION] = {"FIELDS" : {},"CHILDREN" : {}, "ACTION" : "NEW_EDIT"};
+		var o = new Object();
+		o.CHILDREN = new Object();
+		o.FIELDS = new Object();
+#foreach($field in $view.fields)
+	#if($field.defaultValue.length() > 0)
+		// TODO make this save for quotes
+		o.FIELDS.$field.name = "$field.defaultValue";
+	#end
+	#if($field.defaultScript.length() > 0)
+		// TODO make this save for quotes
+		o.FIELDS.$field.name = default_${field.name}(r.POSITION);
+	#end
+#end
+		o.ACTION = "NEW_EDIT";
+		o.DIRTY = false;
+		r.DATA[r.POSITION] = o;
 		position_${view.name}();
 	}
 	#end
@@ -100,8 +126,12 @@ function savePage() {
 		r.POSITION = row;
 		if (value)
 			r.DATA[row].ACTION = "EDIT";
-		else
-			r.DATA[row].ACTION = null;
+		else {
+			if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
+				r.DATA.splice(row,1);
+			} else
+				r.DATA[row].ACTION = null;
+		}
 		position_${view.name}();
 	}
 	#end
@@ -118,6 +148,13 @@ function savePage() {
 	}
 	#end
 
+	#foreach($field in $view.fields)
+		#if($field.defaultScript.length() > 0)
+			function default_${field.name}(row) {
+				$field.defaultScript
+			}
+		#end
+	#end
 #end
 
 </script>

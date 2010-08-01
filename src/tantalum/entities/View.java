@@ -184,6 +184,7 @@ public class View extends BaseTable {
 	@Override
 	public String toString() {
 		String out = name + "(" + id + ")";
+		out += "\n    T: " + basisTable.toString();
 		for (Field field : fields)
 			out += "\n    F: " + field.toString();
 		for (Reference reference : references)

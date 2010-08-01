@@ -87,7 +87,7 @@
 		#foreach ( $field in $region.fields )
 			#if($field.displayType.checkbox)
 				$(rowHTML).find('input.${field.name}').attr("checked",row.${field.name}==1 ? "checked" : "");
-				$(rowHTML).find('input.${field.name}').attr("onchange", "rows_${region.view.name}.DATA[" + i + "].FIELDS.${field.name} = ($(this).attr('checked') == 'checked' ? 1 : 0)");
+				$(rowHTML).find('input.${field.name}').attr("onchange", "rows_${region.view.name}.DATA[" + i + "].FIELDS.${field.name} = $(this).attr('checked'); rows_${region.view.name}.DATA[" + i + "].DIRTY = true;");
 			#else
 				$(rowHTML).find('.${field.name}').html(row.${field.name});
 				#if($field.editable)

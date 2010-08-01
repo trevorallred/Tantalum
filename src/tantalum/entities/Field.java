@@ -30,7 +30,7 @@ public class Field extends BaseNamedTable {
 	private SortDirection sortDirection;
 	private int size;
 	@ManyToOne
-	@JoinColumn(name = "fieldID")
+	@JoinColumn(name = "defaultFieldID")
 	private Field defaultField;
 	@Enumerated(EnumType.STRING)
 	private FieldDefaultType defaultFieldType;

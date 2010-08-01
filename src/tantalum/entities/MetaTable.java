@@ -86,6 +86,11 @@ public class MetaTable extends BaseTable {
 
 	@Override
 	public String toString() {
-		return name + "(" + id + ")";
+		String out = name + "(" + id + ")";
+		for (MetaIndex index : indexes)
+			out += "\n      I: " + index.toString();
+		for (MetaColumn column : columns)
+			out += "\n      C: " + column.toString();
+		return out;
 	}
 }

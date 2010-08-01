@@ -20,5 +20,8 @@
 #end
 #if( $region.regionType.formRegion && $region.visibleFields.size() > 0 )
 	#parse("template_region_FormRegion.html")
+	#foreach ( $region in $region.childRegions )
+		#parse("template_region.html")
+	#end
 #end
 </div>

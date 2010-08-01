@@ -70,6 +70,8 @@ public class CoreFactory {
 		table.setDbName(name.toLowerCase());
 		MetaColumn id = addColumn(table, name + "ID", ColumnType.Integer);
 		setPrimaryIndex(id);
+		addColumn(table, "createdBy", ColumnType.CreatedBy);
+		addColumn(table, "updatedBy", ColumnType.UpdatedBy);
 		return table;
 	}
 
@@ -86,7 +88,6 @@ public class CoreFactory {
 
 	public static Join addJoin(MetaColumn fromColumn, MetaColumn toColumn) {
 		Join join = new Join();
-		join.setJoinType("OM");
 		join.setFromTable(fromColumn.getTable());
 		join.setToTable(toColumn.getTable());
 		JoinColumns joinColumn = new JoinColumns();

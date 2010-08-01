@@ -1,5 +1,8 @@
 package tantalum.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.google.common.base.Joiner;
 
 public class Strings {
@@ -41,4 +44,8 @@ public class Strings {
 		return strval.toString();
 	}
 
+	public static String formatDateTime(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return formatter.format(date);
+	}
 }

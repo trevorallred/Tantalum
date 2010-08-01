@@ -53,4 +53,10 @@ public class MetaIndex extends BaseTable {
 		this.columns = columns;
 	}
 
+	public String toString() {
+		String out = "" + uniqueIndex;
+		for (MetaIndexColumn column : columns)
+			out += " " + column.getColumn().toString();
+		return out;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,7 +14,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tan_join")
 public class Join extends BaseTable {
-	private String joinType;
+	@Enumerated
+	private JoinType joinType = JoinType.ManyToOne;
 	private String name;
 	@ManyToOne
 	@JoinColumn(name = "fromTableID")
@@ -25,11 +27,11 @@ public class Join extends BaseTable {
 	@OneToMany(mappedBy = "join", fetch = FetchType.EAGER)
 	private List<JoinColumns> joinColumns = new ArrayList<JoinColumns>();
 
-	public String getJoinType() {
+	public JoinType getJoinType() {
 		return joinType;
 	}
 
-	public void setJoinType(String joinType) {
+	public void setJoinType(JoinType joinType) {
 		this.joinType = joinType;
 	}
 

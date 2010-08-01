@@ -108,6 +108,8 @@ public class Page extends BaseNamedTable {
 		String out = name + "(" + id + ")";
 		for (View view : views)
 			out += "\n  V: " + view.toString();
+		for (Region region : regions)
+			out += "\n  R: " + region.toString();
 		return out;
 	}
 

@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import tantalum.entities.ColumnType;
 import tantalum.entities.Field;
 import tantalum.entities.MetaIndex;
 import tantalum.entities.MetaIndexColumn;
@@ -25,6 +27,9 @@ import tantalum.util.UpdateSQL;
 public class DataSaver {
 	private Connection conn = null;
 	private boolean testing = false;
+	private Date now = new Date();
+	private Integer currentUserID = null;
+	private String currentProcess = null;
 
 	private void open() throws NamingException, SQLException {
 		if (testing) {
@@ -48,6 +53,7 @@ public class DataSaver {
 			} catch (SQLException e1) {
 				System.out.println("Failed to do rollback");
 			}
+			throw e;
 		} finally {
 			if (conn == null)
 				return;
@@ -102,8 +108,54 @@ public class DataSaver {
 						&& Strings.isEmpty(instance.getString(primaryKeyField))) {
 					Map<String, String> insertData = new HashMap<String, String>();
 					for (Field field : view.getFields()) {
-						insertData.put(field.getBasisColumn().getDbName(),
-								instance.getString(field));
+						if (field.getBasisColumn() != null) {
+							String value = null;
+							boolean saveField = true;
+							if (field.getDefaultField() != null) {
+								// We may need to consider this:
+								// field.getDefaultFieldType()
+								value = instance.getParent().getString(
+										field.getDefaultField());
+							} else if (field.getBasisColumn().getColumnType()
+									.isWho()) {
+								switch (field.getBasisColumn().getColumnType()) {
+								case CreatedBy:
+								case UpdatedBy:
+									if (currentUserID == null) {
+										System.out
+												.println("WARNING: Remember to setCurrentUserID() before calling save");
+										value = null;
+									} else {
+										value = currentUserID.toString();
+									}
+									break;
+								case CreationDate:
+								case UpdateDate:
+									value = Strings.formatDateTime(now);
+									break;
+								default:
+									if (currentProcess == null) {
+										System.out
+												.println("WARNING: Remember to setCurrentProcess() before calling save");
+										value = "UNKNOWN";
+									} else {
+										value = currentProcess;
+									}
+								}
+							} else if (field.getBasisColumn().getColumnType() == ColumnType.AutoIncrement) {
+								// TODO If using a sequence number, include it
+								// here
+								// don't bother including the AutoIncrement
+								// columns
+								saveField = false;
+							} else {
+								value = instance.getStringForDB(field);
+							}
+							if (saveField) {
+								insertData.put(field.getBasisColumn()
+										.getDbName(), value);
+							}
+						}
 					}
 					insertSql.addRow(insertData);
 					instancesToInsert.add(instance);
@@ -130,28 +182,73 @@ public class DataSaver {
 				UpdateSQL updateSql = new UpdateSQL(view.getBasisTable()
 						.getDbName());
 				for (Field field : view.getFields()) {
-					if (field.getReference() == null
-							&& instance.getFieldNames().contains(
-									field.getName())) {
-						boolean primaryKey = false;
-						for (MetaIndex index : field.getBasisColumn()
-								.getTable().getIndexes()) {
-							if (index.isUniqueIndex()) {
-								for (MetaIndexColumn indexColumn : index
-										.getColumns()) {
-									if (indexColumn.getColumn() == field
-											.getBasisColumn())
-										primaryKey = true;
+					if (field.getBasisColumn() != null) {
+						if (field.getReference() == null
+								&& instance.getFieldNames().contains(
+										field.getName())) {
+							boolean primaryKey = false;
+							for (MetaIndex index : field.getBasisColumn()
+									.getTable().getIndexes()) {
+								if (index.isUniqueIndex()) {
+									for (MetaIndexColumn indexColumn : index
+											.getColumns()) {
+										if (indexColumn.getColumn() == field
+												.getBasisColumn())
+											primaryKey = true;
+									}
 								}
 							}
-						}
-						if (primaryKey) {
-							updateSql.addWhere(field.getBasisColumn()
-									.getDbName()
-									+ " = " + instance.getString(field));
-						} else if (field.isEditable()) {
-							updateSql.addField(field.getBasisColumn()
-									.getDbName(), instance.getString(field));
+							if (primaryKey) {
+								updateSql.addWhere(field.getBasisColumn()
+										.getDbName()
+										+ " = " + instance.getString(field));
+							} else if (field.isEditable()) {
+								String value = null;
+								boolean saveField = true;
+								if (field.getDefaultField() != null && field.getDefaultFieldType().isHard()) {
+									value = instance.getParent().getString(
+											field.getDefaultField());
+								} else if (field.getBasisColumn().getColumnType()
+										.isWho()) {
+									switch (field.getBasisColumn().getColumnType()) {
+									case CreatedBy:
+										saveField = false;
+										break;
+									case UpdatedBy:
+										if (currentUserID == null) {
+											System.out
+													.println("WARNING: Remember to setCurrentUserID() before calling save");
+											value = null;
+										} else {
+											value = currentUserID.toString();
+										}
+										break;
+									case CreationDate:
+										saveField = false;
+										break;
+									case UpdateDate:
+										value = Strings.formatDateTime(now);
+										break;
+									default:
+										if (currentProcess == null) {
+											System.out
+													.println("WARNING: Remember to setCurrentProcess() before calling save");
+											value = "UNKNOWN";
+										} else {
+											value = currentProcess;
+										}
+									}
+								} else if (field.getBasisColumn().getColumnType() == ColumnType.AutoIncrement) {
+									saveField = false;
+								} else {
+									value = instance.getStringForDB(field);
+								}
+								if (saveField) {
+									updateSql
+									.addField(field.getBasisColumn()
+											.getDbName(), value);
+								}
+							}
 						}
 					}
 				}
@@ -173,4 +270,13 @@ public class DataSaver {
 	public void setTesting(boolean testing) {
 		this.testing = testing;
 	}
+
+	public Date getNow() {
+		return now;
+	}
+
+	public void setNow(Date now) {
+		this.now = now;
+	}
+
 }

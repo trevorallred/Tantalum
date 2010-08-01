@@ -58,6 +58,9 @@ public class DataReader {
 		// We could just iterate all the views in a page, but this wouldn't
 		// ensure we have the parent data for the child in clause
 		for (View childView : view.getChildViews()) {
+			System.out.println("Reading data for " + childView.getName()
+					+ " child of " + view.getName() + " with reference "
+					+ childView.getReference());
 			StringBuilder childWhere = new StringBuilder();
 			for (ReferenceJoinClause rjc : childView.getReference()
 					.getReferenceJoinClauses()) {

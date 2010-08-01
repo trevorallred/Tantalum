@@ -57,6 +57,7 @@ public class QueryBuilder {
 		public Field field;
 
 		public OrderByClause(Field field) {
+			this.field = field;
 			order = field.getSortOrder();
 		}
 

@@ -89,6 +89,9 @@ public class InstanceUtility {
 					String childViewName = childView.toString();
 					InstanceList childContent = convertFromJSON((JSONObject) children
 							.get(childViewName));
+					for (Instance childInstance : childContent.getData()) {
+						childInstance.setParent(instance);
+					}
 					instance.addChildContent(childViewName, childContent);
 				}
 			}

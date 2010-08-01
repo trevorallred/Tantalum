@@ -44,7 +44,11 @@ public class Instance extends PageContent {
 
 	public Instance(JSONObject json) {
 		for (Object key : json.keySet()) {
-			values.put(key.toString(), json.get(key).toString());
+			Object o = json.get(key);
+			if (o == null)
+				values.put(key.toString(), null);
+			else
+				values.put(key.toString(), o.toString());
 		}
 	}
 
@@ -64,6 +68,19 @@ public class Instance extends PageContent {
 	}
 
 	public String getString(Field field) {
+		return getString(field.getName());
+	}
+
+	public String getStringForDB(Field field) {
+		switch (field.getBasisColumn().getColumnType()) {
+		case Integer:
+			return getInteger(field.getName()).toString();
+		case AutoIncrement:
+			return getInteger(field.getName()).toString();
+		case Boolean:
+			// Remember to support Y/N as well somehow
+			return getBoolean(field.getName()) ? "1" : "0";
+		}
 		return getString(field.getName());
 	}
 
