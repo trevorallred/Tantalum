@@ -1,6 +1,6 @@
 package tantalum.entities;
 
-public enum RegionType {
+public enum ViewType {
 	BasicTable, FormRegion, VerticalContainer, HorizontalContainer;
 
 	public boolean isBasicTable() {

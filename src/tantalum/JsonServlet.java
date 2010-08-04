@@ -17,10 +17,9 @@ import org.json.simple.JSONValue;
 import tantalum.data.DataReader;
 import tantalum.data.DataSaver;
 import tantalum.data.InstanceList;
-import tantalum.data.PageContent;
 import tantalum.data.InstanceUtility;
-import tantalum.entities.Page;
-import tantalum.entities.View;
+import tantalum.data.PageContent;
+import tantalum.entities.Model;
 import tantalum.ui.PageDAO;
 import tantalum.util.UrlRequest;
 
@@ -28,7 +27,7 @@ import tantalum.util.UrlRequest;
 public class JsonServlet extends HttpServlet {
 	protected PrintWriter out;
 	private PageDAO pageDAO = new PageDAO();
-	private Page page = null;
+	private Model page = null;
 	private UrlRequest urlRequest = null;
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -75,11 +74,9 @@ public class JsonServlet extends HttpServlet {
 
 			DataSaver saver = new DataSaver();
 			try {
-				for (View view : page.getParentViews()) {
-					JSONObject json = (JSONObject) root.get(view.getName());
-					InstanceList list = InstanceUtility.convertFromJSON(json);
-					saver.save(view, list);
-				}
+				JSONObject json = (JSONObject) root.get(page.getName());
+				InstanceList list = InstanceUtility.convertFromJSON(json);
+				saver.save(page, list);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (NamingException e) {

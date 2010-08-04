@@ -1,0 +1,56 @@
+<form method="post" action="" class="yform">
+<fieldset>
+<legend>$view.label</legend>
+
+#if( $view.showPreviousNextButtons )
+<div id="${view.name}Navigation" class="type-button">
+	<input type="button" value="Previous" id="previous$view.model.name" onclick="return nav_${view.model.name}(-1);" name="buttonPrevious" />
+	<input type="button" value="Next" id="next$view.model.name" onclick="return nav_${view.model.name}(1);" name="buttonNext" />
+</div>
+#end
+
+#foreach ($field in $view.visibleFields)
+	#if($field.editable)
+		<div class="type-text">
+			<label for="$field.name">$field.label</label>
+			<input type="text" name="$field.name" id="$field.name" size="20" 
+				onchange="rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION].FIELDS.${field.name} = $(this).val(); rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION].DIRTY = true;" />
+		</div>
+	#{else}
+		<div class="type-text">
+			<label for="$field.name">$field.label</label>
+			<span id="$field.name"></span>
+		</div>
+	#end
+#end
+</fieldset>
+</form>
+
+<script type="text/javascript">
+#if( $view.viewType.formRegion )
+	function paintButtons_${view.name}() {
+		var rows = rows_${view.model.name};
+		if ($(rows).length > 0) {
+			$('#previous${view.model.name}').attr("disabled", (rows.POSITION == 0));
+			$('#next${view.model.name}').attr("disabled", (rows.POSITION == rows.DATA.length - 1));
+		} else {
+			$('#previous${view.model.name}').attr("disabled", true);
+			$('#next${view.model.name}').attr("disabled", true);
+		}
+	}
+
+	function paint_${view.name}() {
+		paintButtons_${view.name}();
+		
+		var row = rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION];
+		
+		#foreach ( $field in $view.fields )
+			#if($field.editable)
+				$("#$view.name").find('#${field.name}').val(row.FIELDS.${field.name});
+			#{else}
+				$("#$view.name").find('#${field.name}').html(row.FIELDS.${field.name});
+			#end
+		#end
+	}
+#end
+</script>

@@ -13,8 +13,8 @@ import javax.persistence.Transient;
 @Table(name = "tan_reference")
 public class Reference extends BaseTable {
 	@ManyToOne
-	@JoinColumn(name = "viewID")
-	private View view;
+	@JoinColumn(name = "modelID")
+	private Model model;
 	@ManyToOne
 	@JoinColumn(name = "parentID")
 	private Reference parent;
@@ -54,12 +54,12 @@ public class Reference extends BaseTable {
 		this.name = name;
 	}
 
-	public View getView() {
-		return view;
+	public Model getModel() {
+		return model;
 	}
 
-	public void setView(View view) {
-		this.view = view;
+	public void setModel(Model model) {
+		this.model = model;
 	}
 
 	public Join getJoin() {
@@ -86,21 +86,21 @@ public class Reference extends BaseTable {
 				referenceJoinClauses.add(rjc);
 				rjc.setToColumn(jc.getToColumn());
 				rjc.setFromColumn(jc.getFromColumn());
-				for (Field field : view.getParent().getFields()) {
+				for (Field field : model.getParent().getFields()) {
 					if (field.isBasisField()
 							&& field.getBasisColumn().equals(jc.getToColumn()))
 						rjc.setToField(field);
 				}
 				if (rjc.getToField() == null)
 					System.out.println("ERROR: unable to map toField ReferenceJoinClause for " + jc.getToColumn());
-				for (Field field : view.getFields()) {
+				for (Field field : model.getFields()) {
 					if (field.isBasisField()
 							&& field.getBasisColumn().equals(jc.getFromColumn()))
 						rjc.setFromField(field);
 				}
 				if (rjc.getFromField() == null) {
-					System.out.println("ERROR - unable to map fromField ReferenceJoinClause. Looking for " + jc.getFromColumn() + " view contained fields:");
-					for (Field field : view.getFields()) {
+					System.out.println("ERROR - unable to map fromField ReferenceJoinClause. Looking for " + jc.getFromColumn() + " model contained fields:");
+					for (Field field : model.getFields()) {
 						System.out.println(field);
 					}
 				}

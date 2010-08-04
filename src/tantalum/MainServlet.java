@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import tantalum.entities.Page;
+import tantalum.entities.Model;
 import tantalum.ui.PageBuilder;
 import tantalum.ui.PageDAO;
 import tantalum.util.UrlRequest;
@@ -23,14 +23,13 @@ public class MainServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
-
 		out = response.getWriter();
 		UrlRequest urlRequest = new UrlRequest(request);
 
 		PageDAO pageDAO = new PageDAO();
 		System.out.println("Getting page definition");
-		Page page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
-		//System.out.println(page.printAll());
+		Model page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
+		System.out.println(page.toString());
 		PageBuilder builder = new PageBuilder();
 		System.out.println("Parsing velocity template");
 		out.print(builder.draw(page, urlRequest));

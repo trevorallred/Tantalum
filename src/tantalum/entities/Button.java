@@ -11,18 +11,18 @@ import javax.persistence.Table;
 @Table(name = "tan_button")
 public class Button extends BaseNamedTable {
 	@ManyToOne
-	@JoinColumn(name = "pageID")
-	private Page page;
+	@JoinColumn(name = "viewID")
+	private View view;
 	@Enumerated(EnumType.STRING)
 	private ButtonType buttonType;
 	private String onClick;
 
-	public Page getPage() {
-		return page;
+	public View getView() {
+		return view;
 	}
 
-	public void setPage(Page page) {
-		this.page = page;
+	public void setView(View view) {
+		this.view = view;
 	}
 
 	public ButtonType getButtonType() {

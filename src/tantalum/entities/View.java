@@ -4,74 +4,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import tantalum.util.Strings;
-
+/**
+ * 
+ */
 @Entity
 @Table(name = "tan_view")
-public class View extends BaseTable {
-	@ManyToOne
-	@JoinColumn(name = "pageID")
-	private Page page;
-	private String name;
-	private int resultsPerPage = 100;
-	@ManyToOne
-	@JoinColumn(name = "basisTableID")
-	private MetaTable basisTable;
+public class View extends BaseNamedTable {
+	@Enumerated(EnumType.STRING)
+	private ViewType viewType;
+
 	@ManyToOne
 	@JoinColumn(name = "parentID")
 	private View parent;
+	
 	@ManyToOne
-	@JoinColumn(name = "referenceID")
-	private Reference reference;
-	private boolean allowAdd;
-	private boolean allowEdit;
-	private boolean allowDelete;
-
-	@OneToMany(mappedBy = "view")
-	private List<Field> fields = new ArrayList<Field>();
-	@OneToMany(mappedBy = "view")
-	private List<Reference> references = new ArrayList<Reference>();
-	@OneToMany(mappedBy = "view")
-	private List<Region> regions = new ArrayList<Region>();
+	@JoinColumn(name = "modelID")
+	private Model model;
+	private int displayOrder;
 
 	@OneToMany(mappedBy = "parent")
-	private List<View> childViews = new ArrayList<View>();
+	private List<View> childViews;
+	@OneToMany(mappedBy = "view")
+	@OrderBy(value = "displayOrder")
+	private List<Field> fields;
 
-	public Page getPage() {
-		return page;
+	public ViewType getViewType() {
+		return viewType;
 	}
 
-	public void setPage(Page page) {
-		this.page = page;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getResultsPerPage() {
-		return resultsPerPage;
-	}
-
-	public void setResultsPerPage(int resultsPerPage) {
-		this.resultsPerPage = resultsPerPage;
-	}
-
-	public MetaTable getBasisTable() {
-		return basisTable;
-	}
-
-	public void setBasisTable(MetaTable basisTable) {
-		this.basisTable = basisTable;
+	public void setViewType(ViewType viewType) {
+		this.viewType = viewType;
 	}
 
 	public View getParent() {
@@ -86,36 +56,28 @@ public class View extends BaseTable {
 		return parent == null;
 	}
 
-	public Reference getReference() {
-		return reference;
+	public Model getModel() {
+		return model;
 	}
 
-	public void setReference(Reference reference) {
-		this.reference = reference;
+	public void setModel(Model model) {
+		this.model = model;
 	}
 
-	public boolean isAllowAdd() {
-		return allowAdd;
+	public int getDisplayOrder() {
+		return displayOrder;
 	}
 
-	public void setAllowAdd(boolean allowAdd) {
-		this.allowAdd = allowAdd;
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
 	}
 
-	public boolean isAllowEdit() {
-		return allowEdit;
+	public List<View> getChildViews() {
+		return childViews;
 	}
 
-	public void setAllowEdit(boolean allowEdit) {
-		this.allowEdit = allowEdit;
-	}
-
-	public boolean isAllowDelete() {
-		return allowDelete;
-	}
-
-	public void setAllowDelete(boolean allowDelete) {
-		this.allowDelete = allowDelete;
+	public void setChildViews(List<View> childRegions) {
+		this.childViews = childRegions;
 	}
 
 	public List<Field> getFields() {
@@ -126,69 +88,28 @@ public class View extends BaseTable {
 		this.fields = fields;
 	}
 
-	public List<Reference> getReferences() {
-		return references;
-	}
-
-	public void setReferences(List<Reference> references) {
-		this.references = references;
-	}
-
-	public List<Region> getRegions() {
-		return regions;
-	}
-
-	public void setRegions(List<Region> regions) {
-		this.regions = regions;
-	}
-
-	public List<View> getChildViews() {
-		return childViews;
-	}
-
-	public void setChildViews(List<View> childViews) {
-		this.childViews = childViews;
-	}
-
-	/** Helper methods **/
-
-	public Field getField(String name) {
-		if (Strings.isEmpty(name))
-			return null;
+	public List<Field> getVisibleFields() {
+		List<Field> visibleFields = new ArrayList<Field>();
 		for (Field field : fields) {
-			if (name.equals(field.getName()))
-				return field;
+			if (field.isVisible())
+				visibleFields.add(field);
 		}
-		return null;
+		return visibleFields;
 	}
 
-	public Field getField(int fieldID) {
-		for (Field field : fields) {
-			if (fieldID == field.getId())
-				return field;
-		}
-		return null;
-	}
-
-	public Field getPrimaryKey() {
-		if (basisTable == null)
-			return null;
-		MetaColumn primaryKey = basisTable.getPrimaryKey();
-		for (Field field : fields) {
-			if (primaryKey.equals(field.getBasisColumn()))
-				return field;
-		}
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		String out = name + "(" + id + ")";
-		out += "\n    T: " + basisTable.toString();
-		for (Field field : fields)
-			out += "\n    F: " + field.toString();
-		for (Reference reference : references)
-			out += "\n    R: " + reference.toString();
-		return out;
+	/**
+	 * We may want to just store this value in the DB but for now I think I can
+	 * just guess it
+	 * 
+	 * @return
+	 */
+	public boolean isShowPreviousNextButtons() {
+		if (model == null)
+			return false;
+		if (getModel().getResultsPerPage() == 1)
+			return false;
+		if (isRoot())
+			return true;
+		return !model.equals(parent.getModel());
 	}
 }

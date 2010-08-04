@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @Table(name = "tan_submenu")
 public class SubMenu extends BaseNamedTable {
 	private SubMenu parent;
-	private Page page;
+	private Model page;
 	private List<SubMenu> subMenus;
 
 	public SubMenu getParent() {
@@ -20,11 +20,11 @@ public class SubMenu extends BaseNamedTable {
 		this.parent = parent;
 	}
 
-	public Page getPage() {
+	public Model getPage() {
 		return page;
 	}
 
-	public void setPage(Page page) {
+	public void setPage(Model page) {
 		this.page = page;
 	}
 

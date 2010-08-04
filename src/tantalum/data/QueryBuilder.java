@@ -8,20 +8,20 @@ import tantalum.entities.Field;
 import tantalum.entities.JoinColumns;
 import tantalum.entities.Reference;
 import tantalum.entities.SortDirection;
-import tantalum.entities.View;
+import tantalum.entities.Model;
 import tantalum.util.SelectSQL;
 
 public class QueryBuilder {
-	static public SelectSQL buildSelect(View view) {
-		SelectSQL sql = new SelectSQL(view.getBasisTable().getDbName()
+	static public SelectSQL buildSelect(Model model) {
+		SelectSQL sql = new SelectSQL(model.getBasisTable().getDbName()
 				+ " AS t0");
 		int aliasCounter = 0;
 		// TODO figure out smart way to order references based on dependencies
-		for (Reference r : view.getReferences()) {
+		for (Reference r : model.getReferences()) {
 			aliasCounter++;
 			r.setAlias(aliasCounter);
 		}
-		for (Reference r : view.getReferences()) {
+		for (Reference r : model.getReferences()) {
 			String join = "LEFT JOIN " + r.getJoin().getToTable().getDbName()
 					+ " AS t" + r.getAlias() + " ON ";
 			String parentAlias = (r.getParent() == null ? "t0" : "t"
@@ -34,7 +34,7 @@ public class QueryBuilder {
 			sql.addJoin(join);
 		}
 		List<OrderByClause> orderBys = new ArrayList<OrderByClause>();
-		for (Field field : view.getFields()) {
+		for (Field field : model.getFields()) {
 			String alias = (field.getReference() == null ? "t0" : "t"
 					+ field.getReference().getAlias());
 			sql.addField(alias + "." + field.getBasisColumn().getDbName()
@@ -47,8 +47,8 @@ public class QueryBuilder {
 		for (OrderByClause orderByClause : orderBys) {
 			sql.addOrderBy(orderByClause.getClause());
 		}
-		if (view.getResultsPerPage() > 0)
-			sql.setLimit(view.getResultsPerPage());
+		if (model.getResultsPerPage() > 0)
+			sql.setLimit(model.getResultsPerPage());
 		return sql;
 	}
 

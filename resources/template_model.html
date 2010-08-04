@@ -1,0 +1,103 @@
+var rows_${model.name} = null;
+function nav_${model.name}(amount) {
+	if (rows_${model.name} == null)
+		return false;
+
+	var r = rows_${model.name};
+	var maxPosition = r.DATA.length - 1;
+	
+	r.POSITION += amount;
+	if (r.POSITION < 0)
+		r.POSITION = 0;
+	if (r.POSITION > maxPosition)
+		r.POSITION = maxPosition;
+
+	position_${model.name}(r);
+	return false;
+}
+
+function position_${model.name}() {
+	// first paint all child views (not recursively), and then position all child models (recursively)
+	#foreach ( $view in $model.views )
+		#if( $view.visibleFields.size() > 0 )
+			paint_${view.name}();
+		#end
+	#end
+	
+	if (rows_${model.name} == undefined)
+		return;
+
+	var row = rows_${model.name}.DATA[rows_${model.name}.POSITION];
+	
+	#foreach ( $childModel in $model.childModels )
+		if (row.CHILDREN.${childModel.name} == undefined) {
+			row.CHILDREN.${childModel.name} = initializeList();
+		}
+		rows_${childModel.name} = row.CHILDREN.${childModel.name};
+		position_${childModel.name}();
+	#end
+}
+
+#if($model.allowAdd)
+function add_${model.name}() {
+	var r = rows_${model.name};
+	r.POSITION = r.DATA.length;
+	var o = new Object();
+	o.CHILDREN = new Object();
+	o.FIELDS = new Object();
+#foreach($field in $model.fields)
+	#if($field.defaultValue.length() > 0)
+		// TODO make this save for quotes
+		o.FIELDS.$field.name = "$field.defaultValue";
+	#end
+	#if($field.defaultScript.length() > 0)
+		// TODO make this save for quotes
+		o.FIELDS.$field.name = default_${field.name}(r.POSITION);
+	#end
+#end
+	o.ACTION = "NEW_EDIT";
+	o.DIRTY = false;
+	r.DATA[r.POSITION] = o;
+	position_${model.name}();
+}
+#end
+
+#if($model.allowEdit)
+function edit_${model.name}(row, value) {
+	var r = rows_${model.name};
+	r.POSITION = row;
+	if (value)
+		r.DATA[row].ACTION = "EDIT";
+	else {
+		if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
+			r.DATA.splice(row,1);
+		} else
+			r.DATA[row].ACTION = null;
+	}
+	position_${model.name}();
+}
+#end
+
+#if($model.allowDelete)
+function delete_${model.name}(row) {
+	var r = rows_${model.name};
+	rows_${model.name}.DATA[row].ACTION = "DELETE";
+	if (r.POSITION == row) {
+		if (row >= r.DATA.length)
+			r.POSITION = r.DATA.length - 1;
+	}
+	position_${model.name}();
+}
+#end
+
+#foreach($field in $model.fields)
+	#if($field.defaultScript.length() > 0)
+		function default_${field.name}(row) {
+			$field.defaultScript
+		}
+	#end
+#end
+
+#foreach($model in $model.childModels)
+	#parse("template_model.html")
+#end

@@ -27,9 +27,9 @@ public class CoreFactory {
 		addColumn(invoiceItem, "SubTotal", ColumnType.Decimal);
 	}
 
-	public View createInvoiceView() {
+	public Model createInvoiceView() {
 		setupModel();
-		View view = createView("DefineInvoice");
+		Model view = createModel("DefineInvoice");
 		view.setBasisTable(invoice);
 		for (MetaColumn column : invoice.getColumns()) {
 			addField(view, column);
@@ -37,29 +37,29 @@ public class CoreFactory {
 		return view;
 	}
 
-	public View createInvoiceWithItemsView() {
+	public Model createInvoiceWithItemsView() {
 		setupModel();
-		View view = createView("Invoice");
+		Model view = createModel("Invoice");
 		view.setBasisTable(invoice);
 		for (MetaColumn column : invoice.getColumns()) {
 			addField(view, column);
 		}
-		View itemView = createView("Item");
-		view.getChildViews().add(itemView);
+		Model itemView = createModel("Item");
+		view.getChildModels().add(itemView);
 		itemView.setBasisTable(invoiceItem);
 		for (MetaColumn column : invoiceItem.getColumns()) {
 			addField(itemView, column);
 		}
 		itemView.getFields().get(1).setDefaultField(view.getFields().get(0));
 		Reference itemInvoiceReference = new Reference();
-		itemInvoiceReference.setView(itemView);
+		itemInvoiceReference.setModel(itemView);
 		itemInvoiceReference.setJoin(itemInvoiceJoin);
 		itemView.setReference(itemInvoiceReference);
 		return view;
 	}
 
-	public static View createView(String name) {
-		View view = new View();
+	public static Model createModel(String name) {
+		Model view = new Model();
 		view.setName(name);
 		return view;
 	}
@@ -107,9 +107,9 @@ public class CoreFactory {
 		index.setUniqueIndex(true);
 	}
 
-	public static Field addField(View view, MetaColumn column) {
+	public static Field addField(Model view, MetaColumn column) {
 		Field field = new Field();
-		field.setView(view);
+		field.setModel(view);
 		view.getFields().add(field);
 		field.setBasisColumn(column);
 		field.setName(view.getName() + column.getName());

@@ -48,4 +48,5 @@ public class Strings {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return formatter.format(date);
 	}
+	
 }

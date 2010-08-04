@@ -1,0 +1,27 @@
+<div id="$view.name" class="view $view.viewType">
+#if( $view.label.length() > 0 )
+#end
+#if( $view.viewType.verticalContainer )
+	#foreach ( $view in $view.childViews )
+		#parse("template_view.html")
+	#end
+#end
+#if( $view.viewType.horizontalContainer )
+	<table class="horizontalContainer">
+	<tr>
+	#foreach ( $view in $view.childViews )
+		<td>#parse("template_view.html")</td>
+	#end
+	</tr>
+	</table>
+#end
+#if( $view.viewType.basicTable && $view.visibleFields.size() > 0 )
+	#parse("template_view_BasicTable.html")
+#end
+#if( $view.viewType.formRegion && $view.visibleFields.size() > 0 )
+	#parse("template_view_FormRegion.html")
+	#foreach ( $view in $view.childViews )
+		#parse("template_view.html")
+	#end
+#end
+</div>

@@ -10,9 +10,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
-import tantalum.entities.Page;
+import tantalum.entities.Model;
 import tantalum.util.UrlRequest;
-
 
 public class PageBuilder {
 	public PageBuilder() {
@@ -33,22 +32,19 @@ public class PageBuilder {
 		}
 	}
 
-	public String draw(Page page, UrlRequest urlRequest) {
+	public String draw(Model model, UrlRequest urlRequest) {
 		StringWriter result = new StringWriter();
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("page", page);
+		data.put("model", model);
 		// TODO figure out a better way of setting this
-		data.put("baseURL", "/Tantalum");
+		data.put("baseURL", urlRequest.getBaseURL());
 		data.put("urlRequest", urlRequest);
 		data.put("theme", "default");
 		VelocityContext velocityContext = new VelocityContext(data);
 		Velocity.setProperty(VelocityEngine.SET_NULL_ALLOWED, true);
 		try {
 			Template t;
-			if (page.getExceptions().size() > 0)
-				t = Velocity.getTemplate("exception.html");
-			else
-				t = Velocity.getTemplate("template.html");
+			t = Velocity.getTemplate("template.html");
 			t.merge(velocityContext, result);
 		} catch (Exception e) {
 			e.printStackTrace();

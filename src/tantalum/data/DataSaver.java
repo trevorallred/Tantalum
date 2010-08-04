@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.naming.NamingException;
 
@@ -18,7 +19,7 @@ import tantalum.entities.ColumnType;
 import tantalum.entities.Field;
 import tantalum.entities.MetaIndex;
 import tantalum.entities.MetaIndexColumn;
-import tantalum.entities.View;
+import tantalum.entities.Model;
 import tantalum.util.DbConnection;
 import tantalum.util.InsertSQL;
 import tantalum.util.Strings;
@@ -39,7 +40,7 @@ public class DataSaver {
 		conn = DbConnection.getConnection();
 	}
 
-	public void save(View view, InstanceList list) throws NamingException,
+	public void save(Model view, InstanceList list) throws NamingException,
 			SQLException {
 		open();
 		try {
@@ -65,7 +66,7 @@ public class DataSaver {
 		}
 	}
 
-	private void saveView(View view, InstanceList list) throws SQLException {
+	private void saveView(Model view, InstanceList list) throws SQLException {
 		Field primaryKeyField = null;
 		for (Field field : view.getFields()) {
 			if (field.getReference() == null
@@ -148,6 +149,8 @@ public class DataSaver {
 								// don't bother including the AutoIncrement
 								// columns
 								saveField = false;
+							} else if (field.getBasisColumn().getColumnType() == ColumnType.UUID) {
+								value = UUID.randomUUID().toString();
 							} else {
 								value = instance.getStringForDB(field);
 							}
@@ -260,7 +263,7 @@ public class DataSaver {
 					stmt.close();
 				}
 			}
-			for (View childView : view.getChildViews()) {
+			for (Model childView : view.getChildModels()) {
 				saveView(childView, instance
 						.getViewContent(childView.getName()));
 			}

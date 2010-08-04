@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 
 import tantalum.DatabaseException;
 import tantalum.entities.Field;
-import tantalum.entities.View;
+import tantalum.entities.Model;
 import tantalum.util.Strings;
 
 /**
@@ -23,7 +23,7 @@ import tantalum.util.Strings;
  */
 public class Instance extends PageContent {
 	private Map<String, Object> values = new HashMap<String, Object>();
-	private View view = null;
+	private Model view = null;
 	private boolean dirty = false;
 	private boolean delete = false;
 	private Instance parent;
@@ -64,7 +64,12 @@ public class Instance extends PageContent {
 		String value = getString(columnName);
 		if (Strings.isEmpty(value))
 			return null;
-		return Integer.parseInt(value);
+		try {
+			return Integer.parseInt(value);
+		} catch (Exception e) {
+			System.out.println("Failed to convert " + value + " into Integer for " + columnName);
+		}
+		return null;
 	}
 
 	public String getString(Field field) {
@@ -112,11 +117,11 @@ public class Instance extends PageContent {
 		return false;
 	}
 
-	public View getView() {
+	public Model getView() {
 		return view;
 	}
 
-	public void setView(View view) {
+	public void setView(Model view) {
 		this.view = view;
 	}
 

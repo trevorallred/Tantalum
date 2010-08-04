@@ -3,7 +3,7 @@ package tantalum.data;
 import org.junit.Test;
 
 import tantalum.entities.CoreFactory;
-import tantalum.entities.View;
+import tantalum.entities.Model;
 
 public class DataSaverTest {
 	private DataSaver saver = new DataSaver();
@@ -15,7 +15,7 @@ public class DataSaverTest {
 
 	@Test
 	public void save() {
-		View view = factory.createInvoiceView();
+		Model view = factory.createInvoiceView();
 		System.out.println(view.toString());
 		InstanceList list = new InstanceList();
 		

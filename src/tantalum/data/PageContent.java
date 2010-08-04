@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import tantalum.entities.View;
+import tantalum.entities.Model;
 
 /**
  * A set of 1 or more views. This could be a multi-headed page like a list of
@@ -32,7 +32,7 @@ public class PageContent {
 	 * @param childView
 	 * @param childContent
 	 */
-	public void addChildContent(View childView, Instance childContent) {
+	public void addChildContent(Model childView, Instance childContent) {
 		addChildContent(childView.getName(), childContent);
 	}
 

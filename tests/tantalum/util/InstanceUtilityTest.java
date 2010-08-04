@@ -9,7 +9,7 @@ import org.junit.Test;
 import tantalum.data.InstanceList;
 import tantalum.data.InstanceUtility;
 import tantalum.entities.CoreFactory;
-import tantalum.entities.View;
+import tantalum.entities.Model;
 
 public class InstanceUtilityTest {
 	@SuppressWarnings("unchecked")
@@ -22,7 +22,7 @@ public class InstanceUtilityTest {
 		JSONObject row = new JSONObject();
 		data.add(row);
 		CoreFactory factory = new CoreFactory();
-		View view = factory.createInvoiceView();
+		Model view = factory.createInvoiceView();
 		JSONObject rowData = createInvoiceInstance("123", "456", "2010-01-01",
 				"123.45", "This is you're description");
 		row.put("FIELDS", rowData);

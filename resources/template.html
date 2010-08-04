@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="generator" content="Tantalum 0.1"/>
-<title>$page.label</title>
+<title>$model.label</title>
 <link rel="stylesheet" type="text/css" href="$baseURL/themes/$theme/style.css" media="all" /> 
 <style type="text/css">
 @charset "UTF-8";
@@ -20,27 +20,23 @@
 var json;
 
 $(document).ready(function() {
-	jQuery.getJSON('$baseURL/ws/$page.name#if($urlRequest.pageId)/$urlRequest.pageId#end',
+	jQuery.getJSON('$baseURL/ws/$model.name#if($urlRequest.pageId)/$urlRequest.pageId#end',
 		function(jsonCallback) {
 			json = jsonCallback;
-			#foreach ( $view in $page.parentViews )
-			rows_${view.name} = json.${view.name};
-			position_${view.name}();
-			#end
+			rows_${model.name} = json.${model.name};
+			position_${model.name}();
 		}
 	);
 });
 
-#if($page.canSave)
+#if($model.canSave)
 function savePage() {
 	var json2 = JSON.stringify(json);
-	jQuery.post('$baseURL/ws/$page.name#if($urlRequest.pageId)/$urlRequest.pageId#{end}', json2,
+	jQuery.post('$baseURL/ws/$model.name#if($urlRequest.pageId)/$urlRequest.pageId#{end}', json2,
 		function(data) {
 			json = data;
-			#foreach ( $view in $page.parentViews )
-			rows_${view.name} = json.${view.name};
-			position_${view.name}();
-			#end
+			rows_${model.name} = json.${model.name};
+			position_${model.name}();
 		}
 	);
 	//$("#save").attr("disabled", true);
@@ -55,107 +51,7 @@ function initializeList() {
 	return list;
 }
 
-#foreach ( $view in $page.views )
-	var rows_${view.name} = null;
-	function nav_${view.name}(amount) {
-		if (rows_${view.name} == null)
-			return false;
-
-		var r = rows_${view.name};
-		var maxPosition = r.DATA.length - 1;
-		
-		r.POSITION += amount;
-		if (r.POSITION < 0)
-			r.POSITION = 0;
-		if (r.POSITION > maxPosition)
-			r.POSITION = maxPosition;
-
-		position_${view.name}(r);
-		return false;
-	}
-
-	function position_${view.name}() {
-		// first paint all child regions (not recursively), and then position all child views (recursively)
-		#foreach ( $region in $view.regions )
-			#if( $region.visibleFields.size() > 0 )
-				paint_${region.name}();
-			#end
-		#end
-		
-		if (rows_${view.name} == undefined)
-			return;
-	
-		var row = rows_${view.name}.DATA[rows_${view.name}.POSITION];
-		
-		#foreach ( $childView in $view.childViews )
-			if (row.CHILDREN.${childView.name} == undefined) {
-				row.CHILDREN.${childView.name} = initializeList();
-			}
-			rows_${childView.name} = row.CHILDREN.${childView.name};
-			position_${childView.name}();
-		#end
-	}
-
-	#if($view.allowAdd)
-	function add_${view.name}() {
-		var r = rows_${view.name};
-		r.POSITION = r.DATA.length;
-		var o = new Object();
-		o.CHILDREN = new Object();
-		o.FIELDS = new Object();
-#foreach($field in $view.fields)
-	#if($field.defaultValue.length() > 0)
-		// TODO make this save for quotes
-		o.FIELDS.$field.name = "$field.defaultValue";
-	#end
-	#if($field.defaultScript.length() > 0)
-		// TODO make this save for quotes
-		o.FIELDS.$field.name = default_${field.name}(r.POSITION);
-	#end
-#end
-		o.ACTION = "NEW_EDIT";
-		o.DIRTY = false;
-		r.DATA[r.POSITION] = o;
-		position_${view.name}();
-	}
-	#end
-
-	#if($view.allowEdit)
-	function edit_${view.name}(row, value) {
-		var r = rows_${view.name};
-		r.POSITION = row;
-		if (value)
-			r.DATA[row].ACTION = "EDIT";
-		else {
-			if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
-				r.DATA.splice(row,1);
-			} else
-				r.DATA[row].ACTION = null;
-		}
-		position_${view.name}();
-	}
-	#end
-	
-	#if($view.allowDelete)
-	function delete_${view.name}(row) {
-		var r = rows_${view.name};
-		rows_${view.name}.DATA[row].ACTION = "DELETE";
-		if (r.POSITION == row) {
-			if (row >= r.DATA.length)
-				r.POSITION = r.DATA.length - 1;
-		}
-		position_${view.name}();
-	}
-	#end
-
-	#foreach($field in $view.fields)
-		#if($field.defaultScript.length() > 0)
-			function default_${field.name}(row) {
-				$field.defaultScript
-			}
-		#end
-	#end
-#end
+#parse("template_model.html")
 
 </script>
 </head>
@@ -168,9 +64,9 @@ function initializeList() {
   </ul>
 </div>
 
-<h1>$page.label</h1>
+<h1>$model.label</h1>
 
-#if($page.canSave)
+#if($model.canSave)
 <form class="yform">
 <fieldset>
 <div class="type-button">
@@ -180,8 +76,8 @@ function initializeList() {
 </form>
 #end
 
-#foreach ( $region in $page.parentRegions )
-#parse("template_region.html")
+#foreach ( $view in $model.views )
+#parse("template_view.html")
 #end
 
 </body>

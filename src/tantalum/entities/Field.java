@@ -16,8 +16,8 @@ import tantalum.data.Instance;
 @Table(name = "tan_field")
 public class Field extends BaseNamedTable {
 	@ManyToOne
-	@JoinColumn(name = "viewID")
-	private View view;
+	@JoinColumn(name = "modelID")
+	private Model model;
 	private boolean visible = true;
 	private int displayOrder;
 	private boolean searchable = false;
@@ -38,8 +38,8 @@ public class Field extends BaseNamedTable {
 	private String defaultValue;
 	private String defaultScript;
 	@ManyToOne
-	@JoinColumn(name = "regionID")
-	private Region region;
+	@JoinColumn(name = "viewID")
+	private View view;
 
 	@ManyToOne
 	@JoinColumn(name = "basisColumnID")
@@ -55,12 +55,12 @@ public class Field extends BaseNamedTable {
 	@JoinColumn(name = "defaultActionID")
 	private FieldAction defaultAction;
 
-	public View getView() {
-		return view;
+	public Model getModel() {
+		return model;
 	}
 
-	public void setView(View view) {
-		this.view = view;
+	public void setModel(Model model) {
+		this.model = model;
 	}
 
 	public boolean isVisible() {
@@ -191,12 +191,12 @@ public class Field extends BaseNamedTable {
 		this.fieldActions = fieldActions;
 	}
 
-	public Region getRegion() {
-		return region;
+	public View getView() {
+		return view;
 	}
 
-	public void setRegion(Region region) {
-		this.region = region;
+	public void setView(View view) {
+		this.view = view;
 	}
 
 	public boolean isForceDefault() {
@@ -224,14 +224,14 @@ public class Field extends BaseNamedTable {
 	}
 
 	/**
-	 * Is this field based on a column from the view's basis table
+	 * Is this field based on a column from the model's basis table
 	 */
 	public boolean isBasisField() {
-		if (view.getBasisTable() == null)
+		if (model.getBasisTable() == null)
 			return false;
 		if (basisColumn == null)
 			return false;
-		return view.getBasisTable().equals(basisColumn.getTable());
+		return model.getBasisTable().equals(basisColumn.getTable());
 	}
 
 	public String getValue(Instance row) {
