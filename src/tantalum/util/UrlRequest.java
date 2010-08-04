@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 public class UrlRequest {
+	private String baseURL = "";
 	private String pageName = "error";
 	private String pageId = null;
 
@@ -12,6 +13,7 @@ public class UrlRequest {
 	private Map parameters = null;
 
 	public UrlRequest(HttpServletRequest request) {
+		baseURL = request.getContextPath();
 		String pathInfo = request.getPathInfo();
 		if (pathInfo.startsWith("/ws/"))
 			pathInfo = pathInfo.substring(3);
@@ -25,6 +27,10 @@ public class UrlRequest {
 			pageName = pathInfo.substring(1);
 		}
 		parameters = request.getParameterMap();
+	}
+
+	public String getBaseURL() {
+		return baseURL;
 	}
 
 	public String getPageName() {
