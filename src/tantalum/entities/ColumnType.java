@@ -2,8 +2,8 @@ package tantalum.entities;
 
 public enum ColumnType {
 	String, Date, DateTime, Integer, Decimal, Boolean, Blob, AutoIncrement, 
-	CreatedBy, UpdatedBy, CreationDate, UpdateDate, UpdateProcess;
-
+	CreatedBy, UpdatedBy, CreationDate, UpdateDate, UpdateProcess, UUID;
+	
 	public boolean isWho() {
 		if (this == CreatedBy)
 			return true;

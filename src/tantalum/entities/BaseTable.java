@@ -3,8 +3,6 @@ package tantalum.entities;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
@@ -13,9 +11,8 @@ import javax.persistence.TemporalType;
 @MappedSuperclass
 public abstract class BaseTable {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)
-	protected int id;
+	protected String id;
 	protected Integer createdBy;
 	@Temporal(TemporalType.TIMESTAMP)
 	protected Date creationDate;
@@ -23,11 +20,11 @@ public abstract class BaseTable {
 	@Temporal(TemporalType.TIMESTAMP)
 	protected Date updateDate;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
