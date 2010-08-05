@@ -1,5 +1,6 @@
 package tantalum.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -50,10 +51,7 @@ public class Field extends BaseNamedTable {
 	private Reference reference;
 
 	@OneToMany(mappedBy = "field")
-	private List<FieldAction> fieldActions;
-	@ManyToOne
-	@JoinColumn(name = "defaultActionID")
-	private FieldAction defaultAction;
+	private List<FieldAction> fieldActions = new ArrayList<FieldAction>();
 
 	public Model getModel() {
 		return model;
@@ -172,15 +170,15 @@ public class Field extends BaseNamedTable {
 	}
 
 	public boolean isHasLink() {
-		return defaultAction != null;
+		return getDefaultAction() != null;
 	}
 
 	public FieldAction getDefaultAction() {
-		return defaultAction;
-	}
-
-	public void setDefaultAction(FieldAction defaultAction) {
-		this.defaultAction = defaultAction;
+		for (FieldAction fa : fieldActions) {
+			if (fa.isDefaultAction())
+				return fa;
+		}
+		return null;
 	}
 
 	public List<FieldAction> getFieldActions() {

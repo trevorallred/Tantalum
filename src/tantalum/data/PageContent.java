@@ -15,7 +15,7 @@ import tantalum.entities.Model;
 public class PageContent {
 	private Map<String, InstanceList> views = new HashMap<String, InstanceList>();
 
-	public Set<String> getViewNames() {
+	public Set<String> getModelNames() {
 		return views.keySet();
 	}
 

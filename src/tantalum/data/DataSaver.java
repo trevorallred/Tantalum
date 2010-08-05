@@ -81,19 +81,24 @@ public class DataSaver {
 					+ view.getBasisTable() + " on " + view);
 		}
 		{
-			Set<Integer> idsToDelete = new HashSet<Integer>();
+			
+			StringBuilder idsToDelete = new StringBuilder();
 			for (Instance instance : list.getData()) {
 				if (instance.isDelete()) {
-					idsToDelete.add(instance.getInteger(primaryKeyField
-							.getName()));
+					if (idsToDelete.length() > 0)
+						idsToDelete.append(",");
+					idsToDelete.append("'");
+					idsToDelete.append(Strings.escapeQuotes(instance.getString(primaryKeyField
+							.getName())));
+					idsToDelete.append("'");
 					instance.setDirty(false);
 				}
 			}
-			if (idsToDelete.size() > 0) {
+			if (idsToDelete.length() > 0) {
 				String deleteSql = "DELETE FROM "
 						+ view.getBasisTable().getDbName() + " WHERE "
 						+ primaryKeyField.getBasisColumn().getDbName()
-						+ " IN (" + Strings.joinForDB(idsToDelete) + ")";
+						+ " IN (" + idsToDelete.toString() + ")";
 				Statement stmt = conn.createStatement();
 				System.out.println("Running: " + deleteSql.toString());
 				stmt.executeUpdate(deleteSql.toString());
@@ -204,7 +209,7 @@ public class DataSaver {
 							if (primaryKey) {
 								updateSql.addWhere(field.getBasisColumn()
 										.getDbName()
-										+ " = " + instance.getString(field));
+										+ " = '" + Strings.escapeQuotes(instance.getString(field)) + "'");
 							} else if (field.isEditable()) {
 								String value = null;
 								boolean saveField = true;

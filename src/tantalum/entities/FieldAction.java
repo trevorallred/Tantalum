@@ -14,6 +14,7 @@ public class FieldAction extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "fieldID")
 	private Field field;
+	private boolean defaultAction = false;
 	@OneToMany(mappedBy = "fieldAction")
 	private List<FieldActionDetail> columns;
 
@@ -23,6 +24,14 @@ public class FieldAction extends BaseNamedTable {
 
 	public void setField(Field field) {
 		this.field = field;
+	}
+
+	public boolean isDefaultAction() {
+		return defaultAction;
+	}
+
+	public void setDefaultAction(boolean defaultAction) {
+		this.defaultAction = defaultAction;
 	}
 
 	public List<FieldActionDetail> getColumns() {

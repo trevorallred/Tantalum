@@ -17,6 +17,9 @@
 #end
 #if( $view.viewType.basicTable && $view.visibleFields.size() > 0 )
 	#parse("template_view_BasicTable.html")
+	#foreach ( $view in $view.childViews )
+		#parse("template_view.html")
+	#end
 #end
 #if( $view.viewType.formRegion && $view.visibleFields.size() > 0 )
 	#parse("template_view_FormRegion.html")

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -32,7 +33,6 @@ public class JsonServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		resp.setContentType("application/json;");
 		resp.setStatus(HttpServletResponse.SC_OK);
 
 		out = resp.getWriter();
@@ -43,7 +43,15 @@ public class JsonServlet extends HttpServlet {
 		DataReader dao = new DataReader();
 		PageContent results = dao.getContent(page, urlRequest);
 
-		out.print(InstanceUtility.convertToJSON(results));
+		JSONObject json = InstanceUtility.convertToJSON(results);
+		if (urlRequest.getSelectorName() != null) {
+			json = (JSONObject)json.get(urlRequest.getPageName());
+			out.print(json.get("DATA"));
+			resp.setContentType("text/html");
+		} else {
+			out.print(json);
+			resp.setContentType("application/json;");
+		}
 		out.flush();
 	}
 

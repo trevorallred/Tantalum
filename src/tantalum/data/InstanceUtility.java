@@ -39,7 +39,7 @@ public class InstanceUtility {
 	@SuppressWarnings("unchecked")
 	public static JSONObject convertToJSON(PageContent results) {
 		JSONObject json = new JSONObject();
-		for (String view : results.getViewNames()) {
+		for (String view : results.getModelNames()) {
 			JSONObject jsonView = new JSONObject();
 			json.put(view, jsonView);
 			jsonView.put("POSITION", 0);

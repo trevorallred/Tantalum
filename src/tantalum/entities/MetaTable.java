@@ -27,6 +27,8 @@ public class MetaTable extends BaseTable {
 	@OneToMany(mappedBy = "table")
 	@OrderBy(value = "displayOrder")
 	private List<MetaIndex> indexes = new ArrayList<MetaIndex>();
+	@OneToMany(mappedBy = "fromTable")
+	private List<Join> joinsFrom = new ArrayList<Join>();
 
 	public String getName() {
 		return name;
@@ -68,11 +70,14 @@ public class MetaTable extends BaseTable {
 		this.indexes = indexes;
 	}
 
-	/**
-	 * TODO store this value on tan_table. For now we can assume it's just "id"
-	 * 
-	 * @return
-	 */
+	public List<Join> getJoinsFrom() {
+		return joinsFrom;
+	}
+
+	public void setJoinsFrom(List<Join> joinsFrom) {
+		this.joinsFrom = joinsFrom;
+	}
+
 	public MetaColumn getPrimaryKey() {
 		if (indexes == null)
 			return null;

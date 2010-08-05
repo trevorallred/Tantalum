@@ -2,11 +2,10 @@ package tantalum.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import tantalum.entities.Field;
 import tantalum.entities.Model;
 import tantalum.entities.ReferenceJoinClause;
 import tantalum.util.DbConnection;
@@ -19,19 +18,27 @@ public class DataReader {
 
 	private Map<Model, List<Instance>> viewData = new HashMap<Model, List<Instance>>();
 
-	public PageContent getContent(Model view, UrlRequest urlRequest) {
+	public PageContent getContent(Model model, UrlRequest urlRequest) {
 		String where = "";
-		if (!Strings.isEmpty(urlRequest.getPageId()))
-			// TODO injection on pageID, clean it up
-			where = "t0." + view.getPrimaryKey().getBasisColumn().getDbName()
+		if (!Strings.isEmpty(urlRequest.getPageId())) {
+			where = "t0." + model.getPrimaryKey().getBasisColumn().getDbName()
 					+ " = '" + Strings.escapeQuotes(urlRequest.getPageId())
 					+ "'";
-		queryData(view, where);
+		}
+		if (urlRequest.getSelectorName() != null && urlRequest.getSelectorValue() != null) {
+			Field field = model.getField(urlRequest.getSelectorName());
+			if (field.getReference() != null)
+				System.out.println("ERROR: We don't support ambiguous queries bases on non-basis fields yet. We'll try it anyway.");
+			where =  "t0." + field.getBasisColumn().getDbName()
+			+ " LIKE '%" + Strings.escapeQuotes(urlRequest.getSelectorValue())
+			+ "%'";
+		}
+		queryData(model, where);
 
 		PageContent content = new PageContent();
-		for (Instance row : viewData.get(view)) {
-			content.addChildContent(view, row);
-			appendChildren(row, view);
+		for (Instance row : viewData.get(model)) {
+			content.addChildContent(model, row);
+			appendChildren(row, model);
 		}
 		return content;
 	}

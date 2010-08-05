@@ -113,6 +113,8 @@ public class Reference extends BaseTable {
 		String out = "";
 		if (parent != null)
 			out += "\n  Child of " + parent;
+		if (join == null)
+			System.out.println("ERROR: Missing join for reference " + id + " for model " + model.getName());
 		out += "from " + this.join.getFromTable() + " to "
 				+ this.join.getToTable() + " on ";
 		for (JoinColumns jc : this.join.getJoinColumns()) {

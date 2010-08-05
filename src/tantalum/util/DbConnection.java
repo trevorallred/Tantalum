@@ -26,7 +26,7 @@ public class DbConnection {
 			SQLException {
 		Context initContext = new InitialContext();
 		Context envContext = (Context) initContext.lookup("java:/comp/env");
-		DataSource ds = (DataSource) envContext.lookup("jdbc/tantalumDB");
+		DataSource ds = (DataSource) envContext.lookup("ds/tantalumDB");
 		return ds.getConnection();
 	}
 
@@ -47,6 +47,7 @@ public class DbConnection {
 			conn = getConnection();
 			stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
+			System.out.println(sql);
 			rs = stmt.executeQuery(sql);
 			List<Instance> list = InstanceUtility.parseResultSet(rs);
 			rs.close();

@@ -8,9 +8,12 @@ public class UrlRequest {
 	private String baseURL = "";
 	private String pageName = "error";
 	private String pageId = null;
+	private String selector = null;
+	private String term = null;
 
 	@SuppressWarnings("unchecked")
 	private Map parameters = null;
+	private int limit = -1;
 
 	public UrlRequest(HttpServletRequest request) {
 		baseURL = request.getContextPath();
@@ -26,7 +29,12 @@ public class UrlRequest {
 		} else {
 			pageName = pathInfo.substring(1);
 		}
-		parameters = request.getParameterMap();
+		if (request.getParameter("selector") != null)
+			selector = request.getParameter("selector").toString();
+		if (request.getParameter("term") != null)
+			term = request.getParameter("term").toString();
+		if (request.getParameter("limit") != null)
+			limit  = Integer.parseInt(request.getParameter("limit"));
 	}
 
 	public String getBaseURL() {
@@ -39,6 +47,14 @@ public class UrlRequest {
 
 	public String getPageId() {
 		return pageId;
+	}
+
+	public String getSelectorName() {
+		return selector;
+	}
+	
+	public String getSelectorValue() {
+		return term;
 	}
 
 	@SuppressWarnings("unchecked")
