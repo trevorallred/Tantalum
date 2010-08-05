@@ -1,0 +1,75 @@
+<!--
+I should review this file later to potentially incorporate some ideas
+http://tomcat.apache.org/tomcat-4.1-doc/appdev/build.xml.txt
+ -->
+<project name="myproject" default="build-all">
+
+	<property name="dist.dir" value="dist" />
+	<property name="dist.dir.classes" value="${dist.dir}/classes" />
+	<property name="web.dir" value="WebContent" />
+	<property name="lib.dir" value="${web.dir}/WEB-INF/lib" />
+	<property name="src.dir" value="src" />
+	<property name="tests.dir" value="tests" />
+	<property name="resources.dir" value="resources" />
+	<property name="warname" value="tantalum-1.0.0" />
+
+	<target name="clean">
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="init">
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir.classes}" />
+	</target>
+
+	<target name="compile">
+		<javac destdir="${dist.dir.classes}">
+			<src path="${src.dir}" />
+			<src path="${tests.dir}" />
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+
+	</target>
+
+	<target name="mkwar">
+		<copy todir="${dist.dir}/${warname}">
+			<fileset dir="${web.dir}">
+				<include name="**/*.*" />
+				<exclude name="**/servletapi-2.3.jar" />
+			</fileset>
+		</copy>
+		<!--copy the WebContent to dist, merge in resources into the compiled output, merge compiled output into the dist/WebContent, etc -->
+		<copy todir="${dist.dir.classes}">
+			<fileset dir="${resources.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${dist.dir}/${warname}/WEB-INF/classes">
+			<fileset dir="${dist.dir.classes}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+
+
+	</target>
+
+	<target name="get-latest-from-git">
+		<!--someone somewhere has to have written an ant task to pull from git.  we'll call that here -->
+	</target>
+
+
+
+	<target name="build-all" depends="init,compile,mkwar">
+	</target>
+
+	<target name="build-all-from-git" depends="get-latest-from-git">
+		<antCall target="build-all" />
+	</target>
+
+</project>
