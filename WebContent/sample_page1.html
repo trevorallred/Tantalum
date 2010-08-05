@@ -1,137 +1,132 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="generator" content="Tantalum 0.1"/>
 <title>Manage Tables</title>
-<link rel="stylesheet" href="/Tantalum/themes/default/style.css"
-	type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="/Tantalum/themes/default/print.css"
-	type="text/css" media="print">
-<script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="/Tantalum/js/main.js"></script>
+<link rel="stylesheet" type="text/css" href="/Tantalum/themes/default/style.css" media="all" /> 
+<style type="text/css">
+@charset "UTF-8";
+@import url(/Tantalum/yaml/core/base.css);
+@import url(/Tantalum/yaml/navigation/nav_shinybuttons.css);
+@import url(/Tantalum/yaml/screen/content_default.css);
+@import url(/Tantalum/yaml/screen/forms.css);
+@import url(/Tantalum/yaml/print/print_003_draft.css);
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="/Tantalum/js/json2min.js"></script>
+<link rel="stylesheet" href="http://dev.jquery.com/view/trunk/plugins/autocomplete/jquery.autocomplete.css" type="text/css" />
+<script type="text/javascript" src="http://dev.jquery.com/view/trunk/plugins/autocomplete/lib/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="http://dev.jquery.com/view/trunk/plugins/autocomplete/lib/jquery.dimensions.js"></script>
+<script type="text/javascript" src="http://dev.jquery.com/view/trunk/plugins/autocomplete/jquery.autocomplete.js"></script>
 <script type="text/javascript">
 	var json;
+	var tableSelector = [];
 
 	$(document).ready(function() {
 		jQuery.getJSON('/Tantalum/ws/ManageTables', function(jsonCallback) {
 			json = jsonCallback;
-			rows_ManageTables = json.ManageTables;
-			position_ManageTables();
+			
+			rows_Table = json.Table;
+			tablePicker = [];
+			for ( var i = 0; i < json.Table.DATA.length; i++) {
+				tablePicker[i] = json.Table.DATA[i].FIELDS;
+			}
+			position_Table();
 		});
 	});
 
-	var rows_ManageTables = null;
-	function nav_ManageTables(amount) {
-		if (rows_ManageTables == null)
-			return false;
-
-		var r = rows_ManageTables;
-		var maxPosition = r.DATA.length - 1;
-
-		r.POSITION += amount;
-		if (r.POSITION < 0)
-			r.POSITION = 0;
-		if (r.POSITION > maxPosition)
-			r.POSITION = maxPosition;
-
-		position_ManageTables(r);
-		return false;
+	var rows_Table = null;
+	
+	function position_Table() {
+		paint_Tables();
 	}
 
-	function position_ManageTables() {
-		// first paint all child regions (not recursively), and then position all child views (recursively)
-		paint_ManageTables();
-
-		if (rows_ManageTables == undefined)
-			return;
-
-		var row = rows_ManageTables.DATA[rows_ManageTables.POSITION];
-
+	function edit_Table(row, value) {
+		var r = rows_Table;
+		r.POSITION = row;
+		if (value)
+			r.DATA[row].ACTION = "EDIT";
+		else {
+			if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
+				r.DATA.splice(row, 1);
+			} else
+				r.DATA[row].ACTION = null;
+		}
+		position_Table();
 	}
 </script>
 </head>
 <body>
-[
-<a href='/Tantalum/t/ManageTables'>Manage Tables</a>
-] [
-<a href='/Tantalum/t/WebpageList'>List Web Pages</a>
-]
-
-
-<h1>Manage Tables</h1>
-
-<div id="ManageTables" class="region BasicTable">
-<h2>Tables</h2>
+<div id="Tables" class="region BasicTable">
 <table class="basicTable">
-	<thead>
-		<tr>
-			<th><a href='#'>ID</a></th>
-			<th><a href='#'>Table name</a></th>
-			<th><a href='#'>DB name</a></th>
-		</tr>
-	</thead>
 	<tbody>
-		<tr class='template view'>
-			<td class="ManageTablesTableID">ManageTablesTableID</td>
-			<td><a href="#"
-				class="ManageTablesName">ManageTablesName</a></td>
-			<td class="ManageTablesDatabaseName">ManageTablesDatabaseName</td>
+		<tr>
+			<th scope="col"></th>
+			<th scope="col">ID</th>
+			<th scope="col">Table name</th>
+			<th scope="col">DB name</th>
+		</tr>
+		<tr class="template edit">
+			<th scope="row" class="actionButtons"><a href="#" class="cancel"
+				title="Cancel">Cancel</a></th>
+			<td><span class="ManageTablesTableID"></span></td>
+			<td><input type="text" class="ManageTablesName"
+				name="ManageTablesName" /></td>
+			<td><input type="text" class="ManageTablesDatabaseName"
+				name="ManageTablesDatabaseName" /></td>
 		</tr>
 	</tbody>
 </table>
 
 <script type="text/javascript">
-	function paint_ManageTables() {
-		var tbody = $("#ManageTables").find("tbody");
+	function paint_Tables() {
+		var tbody = $("#Tables").find("tbody");
 
 		$(tbody).find("tr.data").remove();
 		var template = $(tbody).find('tr.template');
-		var rows = rows_ManageTables;
+		var rows = rows_Table;
 		if (rows != null) {
 			for ( var i = 0; i < rows.DATA.length; i++) {
-				addRow_ManageTables(tbody, template, rows.DATA[i].FIELDS);
+				addRow_Tables(tbody, template, rows.DATA[i], i);
 			}
 		}
-
-		$(tbody).find("tr.data").dblclick(function() {
-			$(this).hide();
-			$(row).next("tr.edit").show();
-			return false;
+		$("input.ManageTablesName").autocomplete(tablePicker, {
+			mustMatch: true,
+			matchContains: true,
+			formatItem: function(row, i, max) {
+				return row.ManageTablesName + " (" + row.ManageTablesTableID + ")";
+			},
+			formatMatch: function(row, i, max) {
+				return row.ManageTablesName;
+			}
 		});
-
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.edit").click(
-				function() {
-					var row = $(this).parentsUntil('tbody')[1];
-					$(row).hide();
-					$(row).next("tr.edit").show();
-					return false;
-				});
-		$(tbody).find("tr.data").find("td.actionButtons").find("a.cancel")
-				.click(function() {
-					var row = $(this).parentsUntil('tbody')[1];
-					$(row).hide();
-					$(row).prev("tr.view").show();
-					return false;
-				});
-
-		$(tbody).find("tr.edit").hide();
+		$("input.ManageTablesName").result(function(event, data, formatted) {
+			rows_Table.DATA[rows_Table.POSITION].FIELDS = data;
+			paint_Tables();
+		});
+		
 		$(template).hide();
 	}
-	function addRow_ManageTables(tbody, template, row) {
+	function addRow_Tables(tbody, template, data, i) {
+		if (data.ACTION == "DELETE")
+			return;
+		var row = data.FIELDS;
 		var rowHTML = $(template).clone();
 		rowHTML.show();
 		rowHTML.addClass("data");
 		rowHTML.removeClass("template");
 		$(rowHTML).find('.ManageTablesTableID').html(row.ManageTablesTableID);
-		$(rowHTML).find('.ManageTablesName').attr("href", "/Tantalum/t/DefineTable/"+row.ManageTablesTableID);
-		$(rowHTML).find('.ManageTablesName').html(row.ManageTablesName);
-		$(rowHTML).find('.ManageTablesDatabaseName').html(
-				row.ManageTablesDatabaseName);
+		$(rowHTML).find('input.ManageTablesName').val(row.ManageTablesName);
+		$(rowHTML).find('input.ManageTablesDatabaseName').val(row.ManageTablesDatabaseName);
+		$(rowHTML).find("input.ManageTablesDatabaseName").autocomplete(data);
 
+		$(rowHTML[1]).show(); // tr.edit
 		tbody.append(rowHTML);
 	}
-</script></div>
+</script>
+
+</div>
 
 </body>
 </html>

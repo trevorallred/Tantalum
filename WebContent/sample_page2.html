@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="generator" content="Tantalum 0.1"/>
-<title>Define Table</title>
+<title>Define Webpage</title>
 <link rel="stylesheet" type="text/css" href="/Tantalum/themes/default/style.css" media="all" /> 
 <style type="text/css">
 @charset "UTF-8";
@@ -15,31 +15,55 @@
 </style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="/Tantalum/js/json2min.js"></script>
+
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+
 <script type="text/javascript">
 
 var json;
 
 $(document).ready(function() {
-	jQuery.getJSON('/Tantalum/ws/DefineTable/2',
+	jQuery.getJSON('/Tantalum/ws/DefineWebpage/095e1122-9f58-11df-936f-e37ecc873ea2',
 		function(jsonCallback) {
 			json = jsonCallback;
-						rows_Table = json.Table;
-			position_Table();
-					}
+			rows_DefineWebpage = json.DefineWebpage;
+			paint_Models();
+		}
 	);
-});
 
-function savePage() {
-	var json2 = JSON.stringify(json);
-	jQuery.post('/Tantalum/ws/DefineTable/2', json2,
-		function(data) {
-			json = data;
-						rows_Table = json.Table;
-			position_Table();
+	var cache = {};
+	$("input#ModelBasisTableName").autocomplete({
+		source: function(request, response) {
+			if ( request.term in cache ) {
+				response( cache[ request.term ] );
+				return;
+			}
+			
+			$.ajax({
+				url: "/Tantalum/ws/ManageTables/?selector=ManageTablesName",
+				dataType: "json",
+				data: request,
+				success: function( data ) {
+					cache[ request.term ] = data;
+					var display = [];
+					for(var i=0; i < data.length; i++) {
+						display[i] = {"label": data[i].FIELDS.ManageTablesName, "value": data[i]};
 					}
-	);
-	//$("#save").attr("disabled", true);
-}
+					response( display );
+				}
+			});
+		},
+		focus: function(event, ui) {return false;},
+		select: function(event, ui) {
+			var row = rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION];
+			row.FIELDS.ModelBasisTableID = ui.item.value.FIELDS.ManageTablesTableID;
+			row.FIELDS.ModelBasisTableName = ui.item.value.FIELDS.ManageTablesName;
+			paint_Models();
+			return false;
+		}
+	});
+});
 
 function initializeList() {
 	var list = new Object;
@@ -49,831 +73,90 @@ function initializeList() {
 	return list;
 }
 
-	var rows_Table = null;
-	function nav_Table(amount) {
-		if (rows_Table == null)
-			return false;
+var rows_DefineWebpage = null;
 
-		var r = rows_Table;
-		var maxPosition = r.DATA.length - 1;
-		
-		r.POSITION += amount;
-		if (r.POSITION < 0)
-			r.POSITION = 0;
-		if (r.POSITION > maxPosition)
-			r.POSITION = maxPosition;
-
-		position_Table(r);
-		return false;
-	}
-
-	function position_Table() {
-		// first paint all child regions (not recursively), and then position all child views (recursively)
-									paint_Tables();
-							
-		if (rows_Table == undefined)
-			return;
-	
-		var row = rows_Table.DATA[rows_Table.POSITION];
-		
-					if (row.CHILDREN.DefineTableColumn == undefined) {
-				row.CHILDREN.DefineTableColumn = initializeList();
-			}
-			rows_DefineTableColumn = row.CHILDREN.DefineTableColumn;
-			position_DefineTableColumn();
-					if (row.CHILDREN.DefineTableJoinParent == undefined) {
-				row.CHILDREN.DefineTableJoinParent = initializeList();
-			}
-			rows_DefineTableJoinParent = row.CHILDREN.DefineTableJoinParent;
-			position_DefineTableJoinParent();
-			}
-
-		function add_Table() {
-		var r = rows_Table;
-		r.POSITION = r.DATA.length;
-		var o = new Object();
-		o.CHILDREN = new Object();
-		o.FIELDS = new Object();
-								o.ACTION = "NEW_EDIT";
-		o.DIRTY = false;
-		r.DATA[r.POSITION] = o;
-		position_Table();
-	}
-	
-		function edit_Table(row, value) {
-		var r = rows_Table;
-		r.POSITION = row;
-		if (value)
-			r.DATA[row].ACTION = "EDIT";
-		else {
-			if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
-				r.DATA.splice(row,1);
-			} else
-				r.DATA[row].ACTION = null;
-		}
-		position_Table();
-	}
-		
-		function delete_Table(row) {
-		var r = rows_Table;
-		rows_Table.DATA[row].ACTION = "DELETE";
-		if (r.POSITION == row) {
-			if (row >= r.DATA.length)
-				r.POSITION = r.DATA.length - 1;
-		}
-		position_Table();
-	}
-	
-											var rows_DefineTableColumn = null;
-	function nav_DefineTableColumn(amount) {
-		if (rows_DefineTableColumn == null)
-			return false;
-
-		var r = rows_DefineTableColumn;
-		var maxPosition = r.DATA.length - 1;
-		
-		r.POSITION += amount;
-		if (r.POSITION < 0)
-			r.POSITION = 0;
-		if (r.POSITION > maxPosition)
-			r.POSITION = maxPosition;
-
-		position_DefineTableColumn(r);
-		return false;
-	}
-
-	function position_DefineTableColumn() {
-		// first paint all child regions (not recursively), and then position all child views (recursively)
-									paint_Columns();
-							
-		if (rows_DefineTableColumn == undefined)
-			return;
-	
-		var row = rows_DefineTableColumn.DATA[rows_DefineTableColumn.POSITION];
-		
-			}
-
-		function add_DefineTableColumn() {
-		var r = rows_DefineTableColumn;
-		r.POSITION = r.DATA.length;
-		var o = new Object();
-		o.CHILDREN = new Object();
-		o.FIELDS = new Object();
-										// TODO make this save for quotes
-		o.FIELDS.DefineTableColumnDisplayOrder = default_DefineTableColumnDisplayOrder(r.POSITION);
-									o.ACTION = "NEW_EDIT";
-		o.DIRTY = false;
-		r.DATA[r.POSITION] = o;
-		position_DefineTableColumn();
-	}
-	
-		function edit_DefineTableColumn(row, value) {
-		var r = rows_DefineTableColumn;
-		r.POSITION = row;
-		if (value)
-			r.DATA[row].ACTION = "EDIT";
-		else {
-			if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
-				r.DATA.splice(row,1);
-			} else
-				r.DATA[row].ACTION = null;
-		}
-		position_DefineTableColumn();
-	}
-		
-		function delete_DefineTableColumn(row) {
-		var r = rows_DefineTableColumn;
-		rows_DefineTableColumn.DATA[row].ACTION = "DELETE";
-		if (r.POSITION == row) {
-			if (row >= r.DATA.length)
-				r.POSITION = r.DATA.length - 1;
-		}
-		position_DefineTableColumn();
-	}
-	
-															function default_DefineTableColumnDisplayOrder(row) {
-				return (row * 10) + 10;
-			}
-													var rows_DefineTableJoinParent = null;
-	function nav_DefineTableJoinParent(amount) {
-		if (rows_DefineTableJoinParent == null)
-			return false;
-
-		var r = rows_DefineTableJoinParent;
-		var maxPosition = r.DATA.length - 1;
-		
-		r.POSITION += amount;
-		if (r.POSITION < 0)
-			r.POSITION = 0;
-		if (r.POSITION > maxPosition)
-			r.POSITION = maxPosition;
-
-		position_DefineTableJoinParent(r);
-		return false;
-	}
-
-	function position_DefineTableJoinParent() {
-		// first paint all child regions (not recursively), and then position all child views (recursively)
-									paint_Join();
-							
-		if (rows_DefineTableJoinParent == undefined)
-			return;
-	
-		var row = rows_DefineTableJoinParent.DATA[rows_DefineTableJoinParent.POSITION];
-		
-			}
-
-		function add_DefineTableJoinParent() {
-		var r = rows_DefineTableJoinParent;
-		r.POSITION = r.DATA.length;
-		var o = new Object();
-		o.CHILDREN = new Object();
-		o.FIELDS = new Object();
-													// TODO make this save for quotes
-		o.FIELDS.JoinJoinType = "0";
-				o.ACTION = "NEW_EDIT";
-		o.DIRTY = false;
-		r.DATA[r.POSITION] = o;
-		position_DefineTableJoinParent();
-	}
-	
-		function edit_DefineTableJoinParent(row, value) {
-		var r = rows_DefineTableJoinParent;
-		r.POSITION = row;
-		if (value)
-			r.DATA[row].ACTION = "EDIT";
-		else {
-			if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
-				r.DATA.splice(row,1);
-			} else
-				r.DATA[row].ACTION = null;
-		}
-		position_DefineTableJoinParent();
-	}
-		
-		function delete_DefineTableJoinParent(row) {
-		var r = rows_DefineTableJoinParent;
-		rows_DefineTableJoinParent.DATA[row].ACTION = "DELETE";
-		if (r.POSITION == row) {
-			if (row >= r.DATA.length)
-				r.POSITION = r.DATA.length - 1;
-		}
-		position_DefineTableJoinParent();
-	}
-	
-																			
 </script>
 </head>
 
 <body>
 
-<div class="hlist" >
-  <ul>
-    <li><a href="/Tantalum/t/ManageTables">Manage Tables</a></li>
-    <li><a href="/Tantalum/t/WebpageList">List Web Pages</a></li>
-  </ul>
-</div>
-
-<h1>Define Table</h1>
-
-<form class="yform">
-<fieldset>
-<div class="type-button">
-	<input type="button" value="Save" id="save" onclick="savePage();" />
-</div>
-</fieldset>
-</form>
-
-<div id="ManageTables" class="region VerticalContainer">
-			<div id="Tables" class="region FormRegion">
+<div id="Models" class="view FormRegion">
 	<form method="post" action="" class="yform">
 <fieldset>
-<legend>Table</legend>
+<legend>Model</legend>
 
-<div id="TablesNavigation" class="type-button">
-	<input type="button" value="Previous" id="previousTable" onclick="return nav_Table(-1);" name="buttonPrevious" />
-	<input type="button" value="Next" id="nextTable" onclick="return nav_Table(1);" name="buttonNext" />
-</div>
-
-			<div class="type-text">
-			<label for="DefineTableTableID">ID</label>
-			<span id="DefineTableTableID"></span>
-		</div>
-
-				<div class="type-text">
-			<label for="DefineTableName">Table name</label>
-			<input type="text" name="DefineTableName" id="DefineTableName" size="20" 
-				onchange="rows_Table.DATA[rows_Table.POSITION].FIELDS.DefineTableName = $(this).val(); rows_Table.DATA[rows_Table.POSITION].DIRTY = true;" />
+		<div class="type-text">
+			<label for="ModelName">Name</label>
+			<input type="text" name="ModelName" id="ModelName" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelName = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
 		</div>
 				<div class="type-text">
-			<label for="DefineTableDatabaseName">DB name</label>
-			<input type="text" name="DefineTableDatabaseName" id="DefineTableDatabaseName" size="20" 
-				onchange="rows_Table.DATA[rows_Table.POSITION].FIELDS.DefineTableDatabaseName = $(this).val(); rows_Table.DATA[rows_Table.POSITION].DIRTY = true;" />
-		</div>
 
+			<label for="ModelLabel">Label</label>
+			<input type="text" name="ModelLabel" id="ModelLabel" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelLabel = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
+		</div>
+		<div class="type-text">
+			<label for="ModelBasisTableID">BasisTableID</label>
+			<span id="ModelBasisTableID">XXX</span>
+		</div>
+		<div class="type-text">
+			<label for="ModelBasisTableName">Basis Table</label>
+			<input type="text" name="ModelBasisTableName" id="ModelBasisTableName" size="20" />
+		</div>
+		<div class="type-text">
+			<label for="ModelParentID">Parent</label>
+			<input type="text" name="ModelParentID" id="ModelParentID" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelParentID = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
+		</div>
+				<div class="type-text">
+			<label for="ModelReferenceID">Reference</label>
+			<input type="text" name="ModelReferenceID" id="ModelReferenceID" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelReferenceID = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
+		</div>
+				<div class="type-text">
+
+			<label for="ModelResultsPerPage">Results per page</label>
+			<input type="text" name="ModelResultsPerPage" id="ModelResultsPerPage" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelResultsPerPage = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
+		</div>
+				<div class="type-text">
+			<label for="ModelAllowAdd">Add</label>
+			<input type="text" name="ModelAllowAdd" id="ModelAllowAdd" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelAllowAdd = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
+		</div>
+				<div class="type-text">
+
+			<label for="ModelAllowEdit">Edit</label>
+			<input type="text" name="ModelAllowEdit" id="ModelAllowEdit" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelAllowEdit = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
+		</div>
+				<div class="type-text">
+			<label for="ModelAllowDelete">Delete</label>
+			<input type="text" name="ModelAllowDelete" id="ModelAllowDelete" size="20" 
+				onchange="rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].FIELDS.ModelAllowDelete = $(this).val(); rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION].DIRTY = true;" />
+		</div>
 	</fieldset>
+
 </form>
 
 <script type="text/javascript">
-	function paintButtons_Tables() {
-		var rows = rows_Table;
-		if ($(rows).length > 0) {
-			$('#previousTable').attr("disabled", (rows.POSITION == 0));
-			$('#nextTable').attr("disabled", (rows.POSITION == rows.DATA.length - 1));
-		} else {
-			$('#previousTable').attr("disabled", true);
-			$('#nextTable').attr("disabled", true);
-		}
+	function paint_Models() {
+		var row = rows_DefineWebpage.DATA[rows_DefineWebpage.POSITION];
+		
+		$("#Models").find('#ModelName').val(row.FIELDS.ModelName);
+		$("#Models").find('#ModelLabel').val(row.FIELDS.ModelLabel);
+		$("#Models").find('#ModelBasisTableID').html(row.FIELDS.ModelBasisTableID);
+		$("#Models").find('#ModelBasisTableName').val(row.FIELDS.ModelBasisTableName);
+		$("#Models").find('#ModelParentID').val(row.FIELDS.ModelParentID);
+		$("#Models").find('#ModelReferenceID').val(row.FIELDS.ModelReferenceID);
+		$("#Models").find('#ModelResultsPerPage').val(row.FIELDS.ModelResultsPerPage);
+		$("#Models").find('#ModelAllowAdd').val(row.FIELDS.ModelAllowAdd);
+		$("#Models").find('#ModelAllowEdit').val(row.FIELDS.ModelAllowEdit);
+		$("#Models").find('#ModelAllowDelete').val(row.FIELDS.ModelAllowDelete);
 	}
-
-	function paint_Tables() {
-		paintButtons_Tables();
-		
-		var row = rows_Table.DATA[rows_Table.POSITION];
-		
-									$("#Tables").find('#DefineTableTableID').html(row.FIELDS.DefineTableTableID);
-												$("#Tables").find('#DefineTableName').val(row.FIELDS.DefineTableName);
-												$("#Tables").find('#DefineTableDatabaseName').val(row.FIELDS.DefineTableDatabaseName);
-						}
 </script>
-	</div>
-			<div id="JoinColumnContainer" class="region HorizontalContainer">
-	<table class="horizontalContainer">
-	<tr>
-			<td><div id="Columns" class="region BasicTable">
-	<table class="basicTable">
 
-<thead>
-	<tr>
-		<th colspan="7">Columns</th>
-	</tr>
-</thead>
-<tbody>
-	<tr>
-		<th scope="col"></th>
-			<th scope="col" onclick="sort_DefineTableColumnID(this)">ID</th>
-
-			<th scope="col" onclick="sort_DefineTableColumnDisplayOrder(this)">Order</th>
-			<th scope="col" onclick="sort_DefineTableColumnName(this)">Name</th>
-			<th scope="col" onclick="sort_DefineTableColumnRequired(this)">Required</th>
-			<th scope="col" onclick="sort_DefineTableColumnDbName(this)">Database</th>
-			<th scope="col" onclick="sort_ColumnColumnType(this)">Type</th>
-		</tr>
-
-	<tr class='template view'>
-		<th scope="row" class="actionButtons">
-							<a href="#" class="edit" title="Edit">Edit</a>
-										<a href="#" class="delete" title="Delete">Delete</a>
-					</th>
-						<td class="DefineTableColumnID"></td>
-								<td class="DefineTableColumnDisplayOrder"></td>
-								<td class="DefineTableColumnName"></td>
-
-								<td><input type="checkbox" class="DefineTableColumnRequired" name="DefineTableColumnRequired" disabled="disabled" /></td>
-								<td class="DefineTableColumnDbName"></td>
-								<td class="ColumnColumnType"></td>
-				</tr>
-			<tr class="template edit">
-			<th scope="row" class="actionButtons">
-				<a href="#" class="cancel" title="Cancel">Cancel</a>
-			</th>
-
-					<td>
-							<span class="DefineTableColumnID"></span>
-						</td>
-					<td>
-							<input type="text" class="DefineTableColumnDisplayOrder" name="DefineTableColumnDisplayOrder" />
-						</td>
-					<td>
-							<input type="text" class="DefineTableColumnName" name="DefineTableColumnName" />
-						</td>
-
-					<td>
-							<input type="checkbox" class="DefineTableColumnRequired" name="DefineTableColumnRequired" />
-						</td>
-					<td>
-							<input type="text" class="DefineTableColumnDbName" name="DefineTableColumnDbName" />
-						</td>
-					<td>
-							<input type="text" class="ColumnColumnType" name="ColumnColumnType" />
-						</td>
-
-				</tr>
-	</tbody>
-<tfoot>
-	<tr>
-		<th class="actionButtons">
-			<a href="#" class="add" onclick="add_DefineTableColumn(); return false;" id="addDefineTableColumn">Add</a>
-		</th>
-		<td colspan="6" />
-	</tr>
-
-</tfoot>
-</table>
-
-<script type="text/javascript">
-	function paint_Columns() {
-		var tbody = $("#Columns").find("tbody");
-		
-		$(tbody).find("tr.data").remove();
-		var template = $(tbody).find('tr.template');
-		var rows = rows_DefineTableColumn;
-		if (rows != null) {
-			for ( var i = 0; i < rows.DATA.length; i++) {
-				addRow_Columns(tbody, template, rows.DATA[i], i);
-			}
-		}
-		$(template).hide();
-	}
-	function addRow_Columns(tbody, template, data, i) {
-		if (data.ACTION == "DELETE")
-			return;
-		var row = data.FIELDS;
-		var rowHTML = $(template).clone();
-		rowHTML.show();
-		rowHTML.addClass("data");
-		rowHTML.removeClass("template");
-									$(rowHTML).find('.DefineTableColumnID').html(row.DefineTableColumnID);
-																				$(rowHTML).find('.DefineTableColumnTableID').html(row.DefineTableColumnTableID);
-									$(rowHTML).find('input.DefineTableColumnTableID').val(row.DefineTableColumnTableID);
-					$(rowHTML).find('input.DefineTableColumnTableID').attr("onchange", "rows_DefineTableColumn.DATA[" + i + "].FIELDS.DefineTableColumnTableID = $(this).val(); rows_DefineTableColumn.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('.DefineTableColumnDisplayOrder').html(row.DefineTableColumnDisplayOrder);
-									$(rowHTML).find('input.DefineTableColumnDisplayOrder').val(row.DefineTableColumnDisplayOrder);
-					$(rowHTML).find('input.DefineTableColumnDisplayOrder').attr("onchange", "rows_DefineTableColumn.DATA[" + i + "].FIELDS.DefineTableColumnDisplayOrder = $(this).val(); rows_DefineTableColumn.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('.DefineTableColumnName').html(row.DefineTableColumnName);
-									$(rowHTML).find('input.DefineTableColumnName').val(row.DefineTableColumnName);
-					$(rowHTML).find('input.DefineTableColumnName').attr("onchange", "rows_DefineTableColumn.DATA[" + i + "].FIELDS.DefineTableColumnName = $(this).val(); rows_DefineTableColumn.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('input.DefineTableColumnRequired').attr("checked",row.DefineTableColumnRequired==1 ? "checked" : "");
-				$(rowHTML).find('input.DefineTableColumnRequired').attr("onchange", "rows_DefineTableColumn.DATA[" + i + "].FIELDS.DefineTableColumnRequired = $(this).attr('checked'); rows_DefineTableColumn.DATA[" + i + "].DIRTY = true;");
-												$(rowHTML).find('.DefineTableColumnDbName').html(row.DefineTableColumnDbName);
-									$(rowHTML).find('input.DefineTableColumnDbName').val(row.DefineTableColumnDbName);
-					$(rowHTML).find('input.DefineTableColumnDbName').attr("onchange", "rows_DefineTableColumn.DATA[" + i + "].FIELDS.DefineTableColumnDbName = $(this).val(); rows_DefineTableColumn.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('.ColumnColumnType').html(row.ColumnColumnType);
-									$(rowHTML).find('input.ColumnColumnType').val(row.ColumnColumnType);
-					$(rowHTML).find('input.ColumnColumnType').attr("onchange", "rows_DefineTableColumn.DATA[" + i + "].FIELDS.ColumnColumnType = $(this).val(); rows_DefineTableColumn.DATA[" + i + "].DIRTY = true;");
-													
-				$(rowHTML).find('a.delete').click(function(){delete_DefineTableColumn(i); return false;});
-						$(rowHTML).find('a.edit').click(function(){edit_DefineTableColumn(i, true); return false;});
-		$(rowHTML).dblclick(function(){edit_DefineTableColumn(i, true); return false;});
-				$(rowHTML).find('a.cancel').click(function(){edit_DefineTableColumn(i, false); return false;});
-
-		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {
-			$(rowHTML[0]).hide(); // tr.view
-			$(rowHTML[1]).show(); // tr.edit
-		} else {
-			$(rowHTML[0]).show(); // tr.view
-			$(rowHTML[1]).hide(); // tr.edit
-		}
-		tbody.append(rowHTML);
-	}
-
-			var sortDirection_DefineTableColumnID = null;
-		function sort_DefineTableColumnID(header) {
-			if (sortDirection_DefineTableColumnID)
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnIDDESC);
-			else
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnIDASC);
-			sortDirection_DefineTableColumnID = !sortDirection_DefineTableColumnID;
-			//$(header).attr("style", "background-color: red");
-			paint_Columns();
-			return false;
-		}
-					function sortFunction_DefineTableColumnIDASC(a, b) {
-				var nameA=a.FIELDS.DefineTableColumnID.toLowerCase(), nameB=b.FIELDS.DefineTableColumnID.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_DefineTableColumnIDDESC(b, a) {
-				var nameA=a.FIELDS.DefineTableColumnID.toLowerCase(), nameB=b.FIELDS.DefineTableColumnID.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_DefineTableColumnDisplayOrder = null;
-		function sort_DefineTableColumnDisplayOrder(header) {
-			if (sortDirection_DefineTableColumnDisplayOrder)
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnDisplayOrderDESC);
-			else
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnDisplayOrderASC);
-			sortDirection_DefineTableColumnDisplayOrder = !sortDirection_DefineTableColumnDisplayOrder;
-			//$(header).attr("style", "background-color: red");
-			paint_Columns();
-			return false;
-		}
-					function sortFunction_DefineTableColumnDisplayOrderASC(a, b) {
-				var nameA=a.FIELDS.DefineTableColumnDisplayOrder.toLowerCase(), nameB=b.FIELDS.DefineTableColumnDisplayOrder.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_DefineTableColumnDisplayOrderDESC(b, a) {
-				var nameA=a.FIELDS.DefineTableColumnDisplayOrder.toLowerCase(), nameB=b.FIELDS.DefineTableColumnDisplayOrder.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_DefineTableColumnName = null;
-		function sort_DefineTableColumnName(header) {
-			if (sortDirection_DefineTableColumnName)
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnNameDESC);
-			else
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnNameASC);
-			sortDirection_DefineTableColumnName = !sortDirection_DefineTableColumnName;
-			//$(header).attr("style", "background-color: red");
-			paint_Columns();
-			return false;
-		}
-					function sortFunction_DefineTableColumnNameASC(a, b) {
-				var nameA=a.FIELDS.DefineTableColumnName.toLowerCase(), nameB=b.FIELDS.DefineTableColumnName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_DefineTableColumnNameDESC(b, a) {
-				var nameA=a.FIELDS.DefineTableColumnName.toLowerCase(), nameB=b.FIELDS.DefineTableColumnName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_DefineTableColumnRequired = null;
-		function sort_DefineTableColumnRequired(header) {
-			if (sortDirection_DefineTableColumnRequired)
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnRequiredDESC);
-			else
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnRequiredASC);
-			sortDirection_DefineTableColumnRequired = !sortDirection_DefineTableColumnRequired;
-			//$(header).attr("style", "background-color: red");
-			paint_Columns();
-			return false;
-		}
-					function sortFunction_DefineTableColumnRequiredASC(a, b) {
-				var nameA=a.FIELDS.DefineTableColumnRequired.toLowerCase(), nameB=b.FIELDS.DefineTableColumnRequired.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_DefineTableColumnRequiredDESC(b, a) {
-				var nameA=a.FIELDS.DefineTableColumnRequired.toLowerCase(), nameB=b.FIELDS.DefineTableColumnRequired.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_DefineTableColumnDbName = null;
-		function sort_DefineTableColumnDbName(header) {
-			if (sortDirection_DefineTableColumnDbName)
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnDbNameDESC);
-			else
-				rows_DefineTableColumn.DATA.sort(sortFunction_DefineTableColumnDbNameASC);
-			sortDirection_DefineTableColumnDbName = !sortDirection_DefineTableColumnDbName;
-			//$(header).attr("style", "background-color: red");
-			paint_Columns();
-			return false;
-		}
-					function sortFunction_DefineTableColumnDbNameASC(a, b) {
-				var nameA=a.FIELDS.DefineTableColumnDbName.toLowerCase(), nameB=b.FIELDS.DefineTableColumnDbName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_DefineTableColumnDbNameDESC(b, a) {
-				var nameA=a.FIELDS.DefineTableColumnDbName.toLowerCase(), nameB=b.FIELDS.DefineTableColumnDbName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_ColumnColumnType = null;
-		function sort_ColumnColumnType(header) {
-			if (sortDirection_ColumnColumnType)
-				rows_DefineTableColumn.DATA.sort(sortFunction_ColumnColumnTypeDESC);
-			else
-				rows_DefineTableColumn.DATA.sort(sortFunction_ColumnColumnTypeASC);
-			sortDirection_ColumnColumnType = !sortDirection_ColumnColumnType;
-			//$(header).attr("style", "background-color: red");
-			paint_Columns();
-			return false;
-		}
-					function sortFunction_ColumnColumnTypeASC(a, b) {
-				var nameA=a.FIELDS.ColumnColumnType.toLowerCase(), nameB=b.FIELDS.ColumnColumnType.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_ColumnColumnTypeDESC(b, a) {
-				var nameA=a.FIELDS.ColumnColumnType.toLowerCase(), nameB=b.FIELDS.ColumnColumnType.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-	</script>
-</div>
-</td>
-			<td><div id="Join" class="region BasicTable">
-	<table class="basicTable">
-<thead>
-	<tr>
-		<th colspan="5">Joins to parents</th>
-
-	</tr>
-</thead>
-<tbody>
-	<tr>
-		<th scope="col"></th>
-			<th scope="col" onclick="sort_JoinToTableID(this)">To table</th>
-			<th scope="col" onclick="sort_JoinToTableName(this)">To table</th>
-			<th scope="col" onclick="sort_JoinName(this)">Name</th>
-
-			<th scope="col" onclick="sort_JoinJoinType(this)">Type</th>
-		</tr>
-	<tr class='template view'>
-		<th scope="row" class="actionButtons">
-							<a href="#" class="edit" title="Edit">Edit</a>
-										<a href="#" class="delete" title="Delete">Delete</a>
-					</th>
-
-						<td class="JoinToTableID"></td>
-								<td><a href="#" class="JoinToTableName">JoinToTableName</a></td>
-								<td class="JoinName"></td>
-								<td class="JoinJoinType"></td>
-				</tr>
-			<tr class="template edit">
-			<th scope="row" class="actionButtons">
-				<a href="#" class="cancel" title="Cancel">Cancel</a>
-
-			</th>
-					<td>
-							<input type="text" class="JoinToTableID" name="JoinToTableID" />
-						</td>
-					<td>
-							<input type="text" class="JoinToTableName" name="JoinToTableName" />
-						</td>
-					<td>
-							<input type="text" class="JoinName" name="JoinName" />
-
-						</td>
-					<td>
-							<input type="text" class="JoinJoinType" name="JoinJoinType" />
-						</td>
-				</tr>
-	</tbody>
-<tfoot>
-	<tr>
-		<th class="actionButtons">
-
-			<a href="#" class="add" onclick="add_DefineTableJoinParent(); return false;" id="addDefineTableJoinParent">Add</a>
-		</th>
-		<td colspan="4" />
-	</tr>
-</tfoot>
-</table>
-
-<script type="text/javascript">
-	function paint_Join() {
-		var tbody = $("#Join").find("tbody");
-		
-		$(tbody).find("tr.data").remove();
-		var template = $(tbody).find('tr.template');
-		var rows = rows_DefineTableJoinParent;
-		if (rows != null) {
-			for ( var i = 0; i < rows.DATA.length; i++) {
-				addRow_Join(tbody, template, rows.DATA[i], i);
-			}
-		}
-		$(template).hide();
-	}
-	function addRow_Join(tbody, template, data, i) {
-		if (data.ACTION == "DELETE")
-			return;
-		var row = data.FIELDS;
-		var rowHTML = $(template).clone();
-		rowHTML.show();
-		rowHTML.addClass("data");
-		rowHTML.removeClass("template");
-									$(rowHTML).find('.JoinFromTableID').html(row.JoinFromTableID);
-									$(rowHTML).find('input.JoinFromTableID').val(row.JoinFromTableID);
-					$(rowHTML).find('input.JoinFromTableID').attr("onchange", "rows_DefineTableJoinParent.DATA[" + i + "].FIELDS.JoinFromTableID = $(this).val(); rows_DefineTableJoinParent.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('.JoinJoinID').html(row.JoinJoinID);
-									$(rowHTML).find('input.JoinJoinID').val(row.JoinJoinID);
-					$(rowHTML).find('input.JoinJoinID').attr("onchange", "rows_DefineTableJoinParent.DATA[" + i + "].FIELDS.JoinJoinID = $(this).val(); rows_DefineTableJoinParent.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('.JoinToTableID').html(row.JoinToTableID);
-									$(rowHTML).find('input.JoinToTableID').val(row.JoinToTableID);
-					$(rowHTML).find('input.JoinToTableID').attr("onchange", "rows_DefineTableJoinParent.DATA[" + i + "].FIELDS.JoinToTableID = $(this).val(); rows_DefineTableJoinParent.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('.JoinToTableName').html(row.JoinToTableName);
-									$(rowHTML).find('input.JoinToTableName').val(row.JoinToTableName);
-					$(rowHTML).find('input.JoinToTableName').attr("onchange", "rows_DefineTableJoinParent.DATA[" + i + "].FIELDS.JoinToTableName = $(this).val(); rows_DefineTableJoinParent.DATA[" + i + "].DIRTY = true;");
-													$(rowHTML).find('a.JoinToTableName').html(row.JoinToTableName);
-											$(rowHTML).find('a.JoinToTableName').attr("href", "/Tantalum/t/DefineTable/" + row.JoinToTableID);
-																					$(rowHTML).find('.JoinName').html(row.JoinName);
-									$(rowHTML).find('input.JoinName').val(row.JoinName);
-					$(rowHTML).find('input.JoinName').attr("onchange", "rows_DefineTableJoinParent.DATA[" + i + "].FIELDS.JoinName = $(this).val(); rows_DefineTableJoinParent.DATA[" + i + "].DIRTY = true;");
-																				$(rowHTML).find('.JoinJoinType').html(row.JoinJoinType);
-									$(rowHTML).find('input.JoinJoinType').val(row.JoinJoinType);
-					$(rowHTML).find('input.JoinJoinType').attr("onchange", "rows_DefineTableJoinParent.DATA[" + i + "].FIELDS.JoinJoinType = $(this).val(); rows_DefineTableJoinParent.DATA[" + i + "].DIRTY = true;");
-													
-				$(rowHTML).find('a.delete').click(function(){delete_DefineTableJoinParent(i); return false;});
-						$(rowHTML).find('a.edit').click(function(){edit_DefineTableJoinParent(i, true); return false;});
-		$(rowHTML).dblclick(function(){edit_DefineTableJoinParent(i, true); return false;});
-				$(rowHTML).find('a.cancel').click(function(){edit_DefineTableJoinParent(i, false); return false;});
-
-		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {
-			$(rowHTML[0]).hide(); // tr.view
-			$(rowHTML[1]).show(); // tr.edit
-		} else {
-			$(rowHTML[0]).show(); // tr.view
-			$(rowHTML[1]).hide(); // tr.edit
-		}
-		tbody.append(rowHTML);
-	}
-
-			var sortDirection_JoinToTableID = null;
-		function sort_JoinToTableID(header) {
-			if (sortDirection_JoinToTableID)
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinToTableIDDESC);
-			else
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinToTableIDASC);
-			sortDirection_JoinToTableID = !sortDirection_JoinToTableID;
-			//$(header).attr("style", "background-color: red");
-			paint_Join();
-			return false;
-		}
-					function sortFunction_JoinToTableIDASC(a, b) {
-				var nameA=a.FIELDS.JoinToTableID.toLowerCase(), nameB=b.FIELDS.JoinToTableID.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_JoinToTableIDDESC(b, a) {
-				var nameA=a.FIELDS.JoinToTableID.toLowerCase(), nameB=b.FIELDS.JoinToTableID.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_JoinToTableName = null;
-		function sort_JoinToTableName(header) {
-			if (sortDirection_JoinToTableName)
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinToTableNameDESC);
-			else
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinToTableNameASC);
-			sortDirection_JoinToTableName = !sortDirection_JoinToTableName;
-			//$(header).attr("style", "background-color: red");
-			paint_Join();
-			return false;
-		}
-					function sortFunction_JoinToTableNameASC(a, b) {
-				var nameA=a.FIELDS.JoinToTableName.toLowerCase(), nameB=b.FIELDS.JoinToTableName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_JoinToTableNameDESC(b, a) {
-				var nameA=a.FIELDS.JoinToTableName.toLowerCase(), nameB=b.FIELDS.JoinToTableName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_JoinName = null;
-		function sort_JoinName(header) {
-			if (sortDirection_JoinName)
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinNameDESC);
-			else
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinNameASC);
-			sortDirection_JoinName = !sortDirection_JoinName;
-			//$(header).attr("style", "background-color: red");
-			paint_Join();
-			return false;
-		}
-					function sortFunction_JoinNameASC(a, b) {
-				var nameA=a.FIELDS.JoinName.toLowerCase(), nameB=b.FIELDS.JoinName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_JoinNameDESC(b, a) {
-				var nameA=a.FIELDS.JoinName.toLowerCase(), nameB=b.FIELDS.JoinName.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-			var sortDirection_JoinJoinType = null;
-		function sort_JoinJoinType(header) {
-			if (sortDirection_JoinJoinType)
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinJoinTypeDESC);
-			else
-				rows_DefineTableJoinParent.DATA.sort(sortFunction_JoinJoinTypeASC);
-			sortDirection_JoinJoinType = !sortDirection_JoinJoinType;
-			//$(header).attr("style", "background-color: red");
-			paint_Join();
-			return false;
-		}
-					function sortFunction_JoinJoinTypeASC(a, b) {
-				var nameA=a.FIELDS.JoinJoinType.toLowerCase(), nameB=b.FIELDS.JoinJoinType.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-			function sortFunction_JoinJoinTypeDESC(b, a) {
-				var nameA=a.FIELDS.JoinJoinType.toLowerCase(), nameB=b.FIELDS.JoinJoinType.toLowerCase();
-				if (nameA < nameB)
-					return -1;
-				if (nameA > nameB)
-					return 1;
-				return 0;
-			}
-				 
-	</script>
-</div>
-</td>
-		</tr>
-
-	</table>
-</div>
 	</div>
 
 </body>
