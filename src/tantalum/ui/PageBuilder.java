@@ -17,13 +17,9 @@ public class PageBuilder {
 	public PageBuilder() {
 		Properties props = new Properties();
 		props.put("resource.loader", "class");
-		props.setProperty("runtime.log.logsystem.class",
-				"org.apache.velocity.runtime.log.NullLogSystem");
-		props.setProperty("class.resource.loader.description",
-				"Velocity Classpath Resource Loader");
-		props
-				.put("class.resource.loader.class",
-						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		props.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
+		props.setProperty("class.resource.loader.description", "Velocity Classpath Resource Loader");
+		props.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 		try {
 			Velocity.init(props);
 		} catch (Exception e) {

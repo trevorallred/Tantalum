@@ -24,17 +24,20 @@ public class View extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "parentID")
 	private View parent;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "modelID")
 	private Model model;
 	private int displayOrder;
 
 	@OneToMany(mappedBy = "parent")
+	@OrderBy(value = "displayOrder")
 	private List<View> childViews;
 	@OneToMany(mappedBy = "view")
 	@OrderBy(value = "displayOrder")
 	private List<Field> fields;
+	@OneToMany(mappedBy = "view")
+	private List<Button> buttons;
 
 	public ViewType getViewType() {
 		return viewType;
@@ -97,9 +100,16 @@ public class View extends BaseNamedTable {
 		return visibleFields;
 	}
 
+	public List<Button> getButtons() {
+		return buttons;
+	}
+
+	public void setButtons(List<Button> buttons) {
+		this.buttons = buttons;
+	}
+
 	/**
-	 * We may want to just store this value in the DB but for now I think I can
-	 * just guess it
+	 * We may want to just store this value in the DB but for now I think I can just guess it
 	 * 
 	 * @return
 	 */

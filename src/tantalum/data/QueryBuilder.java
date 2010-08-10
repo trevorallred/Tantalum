@@ -13,8 +13,7 @@ import tantalum.util.SelectSQL;
 
 public class QueryBuilder {
 	static public SelectSQL buildSelect(Model model) {
-		SelectSQL sql = new SelectSQL(model.getBasisTable().getDbName()
-				+ " AS t0");
+		SelectSQL sql = new SelectSQL(model.getBasisTable().getDbName() + " AS t0");
 		int aliasCounter = 0;
 		// TODO figure out smart way to order references based on dependencies
 		for (Reference r : model.getReferences()) {
@@ -22,25 +21,22 @@ public class QueryBuilder {
 			r.setAlias(aliasCounter);
 		}
 		for (Reference r : model.getReferences()) {
-			String join = "LEFT JOIN " + r.getJoin().getToTable().getDbName()
-					+ " AS t" + r.getAlias() + " ON ";
-			String parentAlias = (r.getParent() == null ? "t0" : "t"
-					+ r.getParent().getAlias());
+			String join = "LEFT JOIN " + r.getJoin().getToTable().getDbName() + " AS t" + r.getAlias() + " ON ";
+			String parentAlias = (r.getParent() == null ? "t0" : "t" + r.getParent().getAlias());
 			for (JoinColumns jc : r.getJoin().getJoinColumns()) {
-				join += parentAlias + "." + jc.getFromColumn().getDbName()
-						+ " = t" + r.getAlias() + "."
+				join += parentAlias + "." + jc.getFromColumn().getDbName() + " = t" + r.getAlias() + "."
 						+ jc.getToColumn().getDbName();
 			}
 			sql.addJoin(join);
 		}
 		List<OrderByClause> orderBys = new ArrayList<OrderByClause>();
 		for (Field field : model.getFields()) {
-			String alias = (field.getReference() == null ? "t0" : "t"
-					+ field.getReference().getAlias());
-			sql.addField(alias + "." + field.getBasisColumn().getDbName()
-					+ " AS '" + field.getName() + "'");
-			if (field.getSortOrder() != null) {
-				orderBys.add(new OrderByClause(field));
+			if (field.getBasisColumn() != null) {
+				String alias = (field.getReference() == null ? "t0" : "t" + field.getReference().getAlias());
+				sql.addField(alias + "." + field.getBasisColumn().getDbName() + " AS '" + field.getName() + "'");
+				if (field.getSortOrder() != null) {
+					orderBys.add(new OrderByClause(field));
+				}
 			}
 		}
 		Collections.sort(orderBys);
@@ -63,8 +59,7 @@ public class QueryBuilder {
 
 		public String getClause() {
 			if (SortDirection.Descending.equals(field.getSortDirection()))
-				return field.getName() + " "
-						+ SortDirection.Descending.getAbbreviation();
+				return field.getName() + " " + SortDirection.Descending.getAbbreviation();
 			return field.getName();
 		}
 

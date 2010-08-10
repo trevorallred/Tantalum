@@ -41,15 +41,18 @@ public class Field extends BaseNamedTable {
 	@ManyToOne
 	@JoinColumn(name = "viewID")
 	private View view;
-
 	@ManyToOne
 	@JoinColumn(name = "basisColumnID")
 	private MetaColumn basisColumn;
-
 	@ManyToOne
 	@JoinColumn(name = "referenceID")
 	private Reference reference;
+	@ManyToOne
+	@JoinColumn(name = "selectorID")
+	private Model selector;
 
+	@OneToMany(mappedBy = "field")
+	private List<FieldSelector> fieldSelectors = new ArrayList<FieldSelector>();
 	@OneToMany(mappedBy = "field")
 	private List<FieldAction> fieldActions = new ArrayList<FieldAction>();
 
@@ -187,6 +190,34 @@ public class Field extends BaseNamedTable {
 
 	public void setFieldActions(List<FieldAction> fieldActions) {
 		this.fieldActions = fieldActions;
+	}
+
+	public boolean isHasSelector() {
+		return getSelector() != null;
+	}
+	
+	public String getSelectorTarget() {
+		for (FieldSelector selectorField : fieldSelectors) {
+			if (selectorField.getSource() != null && this.equals(selectorField.getTarget()))
+				return selectorField.getSource().getName();
+		}
+		return "";
+	}
+
+	public Model getSelector() {
+		return selector;
+	}
+
+	public void setSelector(Model selector) {
+		this.selector = selector;
+	}
+
+	public List<FieldSelector> getFieldSelectors() {
+		return fieldSelectors;
+	}
+
+	public void setFieldSelectors(List<FieldSelector> fieldSelectors) {
+		this.fieldSelectors = fieldSelectors;
 	}
 
 	public View getView() {

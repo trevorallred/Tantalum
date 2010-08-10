@@ -1,5 +1,8 @@
 package tantalum.entities;
 
+/**
+ * This is a transient helper class that helps the Tantalum DB mapper
+ */
 public class ReferenceJoinClause {
 	private MetaColumn toColumn;
 	private Field toField;

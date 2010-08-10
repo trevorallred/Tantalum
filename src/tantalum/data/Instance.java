@@ -79,7 +79,10 @@ public class Instance extends PageContent {
 	public String getStringForDB(Field field) {
 		switch (field.getBasisColumn().getColumnType()) {
 		case Integer:
-			return getInteger(field.getName()).toString();
+			Integer value = getInteger(field.getName());
+			if (value == null)
+				return null;
+			return value.toString();
 		case AutoIncrement:
 			return getInteger(field.getName()).toString();
 		case Boolean:
@@ -90,6 +93,10 @@ public class Instance extends PageContent {
 	}
 
 	public String getString(String columnName) {
+		if (columnName == null) {
+			System.out.println("WARNING!! columnName is NULL");
+			return null;
+		}
 		Object value = values.get(columnName);
 		if (value == null)
 			return null;

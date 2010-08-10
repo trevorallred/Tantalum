@@ -12,34 +12,35 @@
 @import url($baseURL/yaml/screen/content_default.css);
 @import url($baseURL/yaml/screen/forms.css);
 @import url($baseURL/yaml/print/print_003_draft.css);
+@import url($baseURL/jqueryui/css/smoothness/jquery-ui-1.8.4.custom.css);
 </style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
 <script type="text/javascript" src="$baseURL/js/json2min.js"></script>
 <script type="text/javascript">
 
 var json;
 
-$(document).ready(function() {
-	jQuery.getJSON('$baseURL/ws/$model.name#if($urlRequest.pageId)/$urlRequest.pageId#end',
-		function(jsonCallback) {
-			json = jsonCallback;
-			rows_${model.name} = json.${model.name};
-			position_${model.name}();
+var loaddata = function(jsonCallback) {
+	if (jsonCallback.__STATUS__ == "success") {
+		json = jsonCallback;
+		rows_${model.name} = json.${model.name};
+		position_${model.name}();
+	} else {
+		for ( var i = 0; i < jsonCallback.errors.length; i++) {
+			alert(jsonCallback.errors[i]);
 		}
-	);
+	}
+}
+
+$(document).ready(function() {
+	jQuery.getJSON('$baseURL/ws/$model.name#if($urlRequest.pageId)/$urlRequest.pageId#end', loaddata);
 });
 
 #if($model.canSave)
 function savePage() {
 	var json2 = JSON.stringify(json);
-	jQuery.post('$baseURL/ws/$model.name#if($urlRequest.pageId)/$urlRequest.pageId#{end}', json2,
-		function(data) {
-			json = data;
-			rows_${model.name} = json.${model.name};
-			position_${model.name}();
-		}
-	);
-	//$("#save").attr("disabled", true);
+	jQuery.post('$baseURL/ws/$model.name#if($urlRequest.pageId)/$urlRequest.pageId#{end}', json2, loaddata);
 }
 #end
 

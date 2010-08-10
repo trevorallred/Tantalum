@@ -98,6 +98,12 @@ public class Printer {
 			out.append("</ul>");
 		}
 
+		out.append("Buttons: <ul>");
+		for (Button button : view.getButtons()) {
+			out.append("<li>").append(print(button)).append("</li>");
+		}
+		out.append("</ul>");
+		
 		out.append("<ul>");
 		for (View child : view.getChildViews()) {
 			out.append("<li>").append(print(child)).append("</li>");
@@ -105,6 +111,10 @@ public class Printer {
 		out.append("</ul>");
 
 		return out.toString();
+	}
+
+	private static Object print(Button button) {
+		return button.getLabel() + " (" + button.getId() + ")";
 	}
 
 	private static String print(Reference reference) {
@@ -119,6 +129,8 @@ public class Printer {
 	}
 
 	private static String print(Join join) {
+		if (join == null)
+			return "Join: NULL";
 		StringBuilder out = new StringBuilder();
 		append(out, "Join Name", join.getName());
 		append(out, "Join ID", join.getId());
@@ -148,9 +160,21 @@ public class Printer {
 			out += " based on " + field.getBasisColumn().getTable().getName()
 					+ "." + field.getBasisColumn().getName();
 		if (field.getDefaultField() != null)
-			out += " <br>default from " + print(field.getDefaultField());
+			out += " <br>default from " + field.getDefaultField().getName();
 		if (field.getReference() != null)
 			out += " <br>thru reference " + field.getReference().getName();
+		if (field.getSelector() != null) {
+			out += " <br>selector from " + field.getSelector().getName();
+			out += " with fields: ";
+			for (FieldSelector selectorFields : field.getFieldSelectors()) {
+				out += selectorFields.getSource().getName();
+				if (selectorFields.getTarget() != null)
+					out += " to "+ selectorFields.getTarget().getName();
+				if (selectorFields.getWhen() != null)
+					out += " when " + selectorFields.getWhen().getName();
+				out += ", ";
+			}
+		}
 		return out;
 	}
 

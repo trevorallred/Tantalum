@@ -27,4 +27,12 @@
 		#parse("template_view.html")
 	#end
 #end
+<div>
+	#foreach ( $button in $view.buttons )
+		<button name="$button.name" onclick="button${button.name}();">$button.label</button>
+		<script type="text/javascript">
+		$button.onClick
+		</script>
+	#end
+</div>
 </div>

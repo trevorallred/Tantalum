@@ -3,9 +3,7 @@ package tantalum;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,32 +29,39 @@ public class JsonServlet extends HttpServlet {
 	private Model page = null;
 	private UrlRequest urlRequest = null;
 
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setStatus(HttpServletResponse.SC_OK);
 
 		out = resp.getWriter();
 		urlRequest = new UrlRequest(req);
 
-		page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
+		JSONArray errors = new JSONArray();
+		try {
+			page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
 
-		DataReader dao = new DataReader();
-		PageContent results = dao.getContent(page, urlRequest);
+			DataReader dao = new DataReader();
+			PageContent results = dao.getContent(page, urlRequest);
 
-		JSONObject json = InstanceUtility.convertToJSON(results);
-		if (urlRequest.getSelectorName() != null) {
-			json = (JSONObject)json.get(urlRequest.getPageName());
-			out.print(json.get("DATA"));
-			resp.setContentType("text/html");
-		} else {
+			JSONObject json = InstanceUtility.convertToJSON(results);
+			json.put("__STATUS__", "success");
+			
 			out.print(json);
 			resp.setContentType("application/json;");
+		} catch (Exception e) {
+			errors.add(e.getMessage());
+			e.printStackTrace();
+			
+			JSONObject json = new JSONObject();
+			json.put("__STATUS__", "error");
+			json.put("errors", errors);
+			out.print(json);
 		}
 		out.flush();
 	}
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
 			BufferedReader reader = req.getReader();
 			StringBuilder sb = new StringBuilder();
@@ -80,22 +85,28 @@ public class JsonServlet extends HttpServlet {
 
 			JSONObject root = (JSONObject) JSONValue.parse(data);
 
+			JSONArray errors = new JSONArray();
 			DataSaver saver = new DataSaver();
 			try {
 				JSONObject json = (JSONObject) root.get(page.getName());
 				InstanceList list = InstanceUtility.convertFromJSON(json);
 				saver.save(page, list);
-			} catch (SQLException e) {
+				DataReader dao = new DataReader();
+				PageContent results = dao.getContent(page, urlRequest);
+
+				json = InstanceUtility.convertToJSON(results);
+				json.put("__STATUS__", "success");
+				out.print(json);
+			} catch (Exception e) {
+				errors.add(e.toString());
 				e.printStackTrace();
-			} catch (NamingException e) {
-				e.printStackTrace();
+				JSONObject json = new JSONObject();
+				json.put("__STATUS__", "error");
+				json.put("errors", errors);
+				out.print(json);
 			}
-
-			DataReader dao = new DataReader();
-			PageContent results = dao.getContent(page, urlRequest);
-
-			out.print(InstanceUtility.convertToJSON(results));
 			out.flush();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -29,7 +29,7 @@ public class MainServlet extends HttpServlet {
 		PageDAO pageDAO = new PageDAO();
 		System.out.println("Getting page definition");
 		Model page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
-		System.out.println(page.toString());
+		//System.out.println(page.toString());
 		PageBuilder builder = new PageBuilder();
 		System.out.println("Parsing velocity template");
 		out.print(builder.draw(page, urlRequest));

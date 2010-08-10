@@ -10,24 +10,53 @@
 #end
 
 #foreach ($field in $view.visibleFields)
-	#if($field.editable)
-		<div class="type-text">
-			<label for="$field.name">$field.label</label>
+	<div class="type-text">
+		<label for="$field.name">$field.label</label>
+		#if($field.displayType.checkbox)
+			<input type="checkbox" class="$field.name" id="$field.name" name="$field.name"
+				onchange="rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION].FIELDS.${field.name} = $(this).attr('checked'); rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION].DIRTY = true;" />
+		#elseif(!$field.editable)
+				<span class="$field.name"></span>
+		#else
 			<input type="text" name="$field.name" id="$field.name" size="20" 
 				onchange="rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION].FIELDS.${field.name} = $(this).val(); rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION].DIRTY = true;" />
-		</div>
-	#{else}
-		<div class="type-text">
-			<label for="$field.name">$field.label</label>
-			<span id="$field.name"></span>
-		</div>
+		#end
+	#if($field.hasSelector)
+		<script type="text/javascript">
+			$("#${field.name}").autocomplete({
+				source: function(request, response) {
+					jQuery.getJSON("${baseURL}/ws/${field.selector.name}",
+						{term: request.term, selector: "${field.selectorTarget}"},
+						function(data) {
+							response(jQuery.map(data.ManageTables.DATA, function(item) {
+								return {
+									label: item.FIELDS.${field.selectorTarget},
+									value: item.FIELDS
+								}
+							}))
+						}
+					);
+				},
+				select: function(event, ui) {
+					var row = rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION];
+					#foreach ($selectorField in $field.fieldSelectors)
+						row.FIELDS.${selectorField.target.name} = ui.item.value.${selectorField.source.name};
+					#end
+					paint_${view.name}();
+					return false;
+				},
+				focus: function(event, ui) { return false; },
+				minLength: 0
+			});
+		</script>
 	#end
+	</div>
 #end
 </fieldset>
 </form>
 
 <script type="text/javascript">
-#if( $view.viewType.formRegion )
+#if( $view.showPreviousNextButtons )
 	function paintButtons_${view.name}() {
 		var rows = rows_${view.model.name};
 		if ($(rows).length > 0) {
@@ -38,19 +67,29 @@
 			$('#next${view.model.name}').attr("disabled", true);
 		}
 	}
-
+#end
 	function paint_${view.name}() {
-		paintButtons_${view.name}();
+		#if( $view.showPreviousNextButtons )
+			paintButtons_${view.name}();
+		#end
 		
 		var row = rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION];
 		
 		#foreach ( $field in $view.fields )
-			#if($field.editable)
-				$("#$view.name").find('#${field.name}').val(row.FIELDS.${field.name});
-			#{else}
+			#if($field.displayType.checkbox)
+				$("#$view.name").find('input.${field.name}').attr("checked",row.FIELDS.${field.name}==1 ? "checked" : "");
+			#else
 				$("#$view.name").find('#${field.name}').html(row.FIELDS.${field.name});
+				#if($field.editable)
+					$("#$view.name").find('#${field.name}').val(row.FIELDS.${field.name});
+				#end
+				#if($field.hasLink)
+					$("#$view.name").find('a.${field.name}').html(row.FIELDS.${field.name});
+					#foreach($actionDetail in $field.defaultAction.columns)
+						$(rowHTML).find('a.${field.name}').attr("href", "$baseURL/t/${actionDetail.toField.model.name}/" + row.FIELDS.${actionDetail.fromField.name});
+					#end
+				#end
 			#end
 		#end
 	}
-#end
 </script>

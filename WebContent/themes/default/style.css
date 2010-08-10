@@ -2,6 +2,9 @@ input.text {
 	padding: 1px 0;
 }
 
+table.horizontalContainer {
+	width: 100%;
+}
 table.horizontalContainer td {
 	vertical-align: top;
 }
