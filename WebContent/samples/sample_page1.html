@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="generator" content="Tantalum 0.1"/>
+<title>List Webpages</title>
+<link rel="stylesheet" type="text/css" href="/Tantalum/themes/default/style.css" media="all" /> 
+<style type="text/css">
+@charset "UTF-8";
+@import url(/Tantalum/yaml/core/base.css);
+@import url(/Tantalum/yaml/navigation/nav_shinybuttons.css);
+@import url(/Tantalum/yaml/screen/content_default.css);
+@import url(/Tantalum/yaml/screen/forms.css);
+@import url(/Tantalum/yaml/print/print_003_draft.css);
+@import url(/Tantalum/jqueryui/css/smoothness/jquery-ui-1.8.4.custom.css);
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/Tantalum/js/json2min.js"></script>
+<script type="text/javascript">
+
+var json;
+
+var loaddata = function(jsonCallback) {
+	if (jsonCallback.__STATUS__ == "success") {
+		json = jsonCallback;
+		rows_WebpageList = json.WebpageList;
+		position_WebpageList();
+	} else {
+		for ( var i = 0; i < jsonCallback.errors.length; i++) {
+			alert(jsonCallback.errors[i]);
+		}
+	}
+}
+
+$(document).ready(function() {
+	jQuery.getJSON('/Tantalum/ws/WebpageList', loaddata);
+});
+
+function savePage() {
+	var json2 = JSON.stringify(json);
+	jQuery.post('/Tantalum/ws/WebpageList', json2, loaddata);
+}
+
+function initializeList() {
+	var list = new Object;
+	list.DATA = [];
+	list.POSITION = -1;
+	list.FULLY_LOADED = true;
+	return list;
+}
+
+var rows_WebpageList = null;
+function nav_WebpageList(amount) {
+	if (rows_WebpageList == null)
+		return false;
+
+	var r = rows_WebpageList;
+	var maxPosition = r.DATA.length - 1;
+	
+	r.POSITION += amount;
+	if (r.POSITION < 0)
+		r.POSITION = 0;
+	if (r.POSITION > maxPosition)
+		r.POSITION = maxPosition;
+
+	position_WebpageList(r);
+	return false;
+}
+
+function position_WebpageList() {
+	paint_Page();
+}
+
+function add_WebpageList() {
+	var r = rows_WebpageList;
+	r.POSITION = r.DATA.length;
+	var o = new Object();
+	o.CHILDREN = new Object();
+	o.FIELDS = new Object();
+	o.ACTION = "NEW_EDIT";
+	o.DIRTY = false;
+	r.DATA[r.POSITION] = o;
+	position_WebpageList();
+}
+
+function edit_WebpageList(row, value) {
+	var r = rows_WebpageList;
+	r.POSITION = row;
+	if (value)
+		r.DATA[row].ACTION = "EDIT";
+	else {
+		if (r.DATA[row].DIRTY == false && r.DATA[row].ACTION == "NEW_EDIT") {
+			r.DATA.splice(row,1);
+		} else
+			r.DATA[row].ACTION = null;
+	}
+	position_WebpageList();
+}
+
+</script>
+</head>
+<body>
+
+<div class="hlist" >
+  <ul>
+    <li><a href="/Tantalum/t/ManageTables">Manage Tables</a></li>
+    <li><a href="/Tantalum/t/WebpageList">List Web Pages</a></li>
+  </ul>
+</div>
+
+<h1>List Webpages</h1>
+
+<form class="yform">
+<fieldset>
+<div class="type-button">
+	<input type="button" value="Save" id="save" onclick="savePage();" />
+</div>
+</fieldset>
+</form>
+
+<div id="Page" class="view BasicTable">
+	<table class="basicTable">
+<thead>
+	<tr>
+		<th colspan="5">Page</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<th scope="col"></th>
+		<th scope="col" onclick="sort_Name(this)">Name</th>
+		<th scope="col" onclick="sort_ParentiD(this)">ParentID</th>
+		<th scope="col" onclick="sort_BasisTableName(this)">Basis Table</th>
+		<th scope="col" onclick="sort_BasisTableTableID(this)">TableID</th>
+	</tr>
+	<tr class='template view'>
+		<th scope="row" class="actionButtons"><a href="#" class="edit" title="Edit">Edit</a></th>
+		<td><a href="#" class="Name">Name</a></td>
+		<td class="ParentiD"></td>
+		<td class="BasisTableName"></td>
+		<td class="BasisTableTableID"></td>
+	</tr>
+	<tr class="template edit">
+		<th scope="row" class="actionButtons"><a href="#" class="cancel"
+			title="Cancel">Cancel</a></th>
+		<td><input type="text" class="Name" name="Name" /></td>
+		<td><input type="text" class="ParentiD" name="ParentiD" /></td>
+		<td><input type="text" class="BasisTableName" name="BasisTableName" /></td>
+		<td><input type="text" class="BasisTableTableID" name="BasisTableTableID" /></td>
+	</tr>
+</tbody>
+<tfoot>
+	<tr>
+		<th class="actionButtons">
+			<a href="#" class="add" onclick="add_WebpageList(); return false;" id="addWebpageList">Add</a>
+		</th>
+		<td colspan="4" />
+	</tr>
+</tfoot>
+</table>
+
+<script type="text/javascript">
+	function paint_Page() {
+		var tbody = $("#Page").find("tbody");
+		
+		$(tbody).find("tr.data").remove();
+		var template = $(tbody).find('tr.template');
+		var rows = rows_WebpageList;
+		if (rows != null) {
+			for ( var i = 0; i < rows.DATA.length; i++) {
+				addRow_Page(tbody, template, rows.DATA[i], i);
+			}
+		}
+		$(template).hide();
+		$("input.BasisTableName").autocomplete({
+			source: function(request, response) {
+				jQuery.getJSON("/Tantalum/ws/ManageTables",
+					{term: request.term, selector: "ManageTablesName"},
+					function(data) {
+						response(jQuery.map(data.ManageTables.DATA, function(item) {
+							return {
+								label: item.FIELDS.ManageTablesName,
+								value: item.FIELDS
+							}
+						}))
+					}
+				);
+			},
+			select: function(event, ui) {
+				var row = rows_WebpageList.DATA[rows_WebpageList.POSITION];
+				row.FIELDS.BasisTableName = ui.item.value.ManageTablesName;
+				row.FIELDS.BasisTableTableID = ui.item.value.ManageTablesTableID;
+				paint_Page();
+				this.focus();
+				return false;
+			},
+			focus: function(event, ui) { return false; },
+			minLength: 0
+		});
+	}
+	function addRow_Page(tbody, template, data, i) {
+		if (data.ACTION == "DELETE")
+			return;
+		var row = data.FIELDS;
+		var rowHTML = $(template).clone();
+		rowHTML.show();
+		rowHTML.addClass("data");
+		rowHTML.removeClass("template");
+		$(rowHTML).find('.Name').html(row.Name);
+		$(rowHTML).find('input.Name').val(row.Name);
+		$(rowHTML).find('input.Name').attr("onchange", "rows_WebpageList.DATA[" + i + "].FIELDS.Name = $(this).val(); rows_WebpageList.DATA[" + i + "].DIRTY = true;");
+		$(rowHTML).find('a.Name').html(row.Name);
+		$(rowHTML).find('a.Name').attr("href", "/Tantalum/t/DefineWebpage/" + row.ModelID);
+		$(rowHTML).find('.ParentiD').html(row.ParentiD);
+		$(rowHTML).find('input.ParentiD').val(row.ParentiD);
+		$(rowHTML).find('input.ParentiD').attr("onchange", "rows_WebpageList.DATA[" + i + "].FIELDS.ParentiD = $(this).val(); rows_WebpageList.DATA[" + i + "].DIRTY = true;");
+		$(rowHTML).find('.BasisTableName').html(row.BasisTableName);
+		$(rowHTML).find('input.BasisTableName').val(row.BasisTableName);
+		$(rowHTML).find('input.BasisTableName').attr("onchange", "rows_WebpageList.DATA[" + i + "].FIELDS.BasisTableName = $(this).val(); rows_WebpageList.DATA[" + i + "].DIRTY = true;");
+		$(rowHTML).find('.BasisTableTableID').html(row.BasisTableTableID);
+		$(rowHTML).find('input.BasisTableTableID').val(row.BasisTableTableID);
+		$(rowHTML).find('input.BasisTableTableID').attr("onchange", "rows_WebpageList.DATA[" + i + "].FIELDS.BasisTableTableID = $(this).val(); rows_WebpageList.DATA[" + i + "].DIRTY = true;");
+		$(rowHTML).find('a.edit').click(function(){edit_WebpageList(i, true); return false;});
+		
+		$(rowHTML).find('input').focusin(function(){rows_WebpageList.POSITION = i;});
+		$(rowHTML).click(function(){rows_WebpageList.POSITION = i;});
+		$(rowHTML).dblclick(function(){edit_WebpageList(i, true);});
+		$(rowHTML).find('a.cancel').click(function(){edit_WebpageList(i, false); return false;});
+
+		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {
+			$(rowHTML[0]).hide(); // tr.view
+			$(rowHTML[1]).show(); // tr.edit
+		} else {
+			$(rowHTML[0]).show(); // tr.view
+			$(rowHTML[1]).hide(); // tr.edit
+		}
+		tbody.append(rowHTML);
+	}
+	</script>
+</div>
+</body>
+</html>
