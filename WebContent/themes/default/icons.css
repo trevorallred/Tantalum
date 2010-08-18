@@ -1,9 +1,3 @@
-.icon-plus {
-	background-image:url(icons/add.png) ! important;
-}
-.icon-minus {
-	background-image:url(icons/delete.png) ! important;
-}
 .icon-check, .icon-check-off {
 	background-image:url(../../ext/resources/images/default/menu/unchecked.gif) ! important;
 }
@@ -19,47 +13,21 @@
 .icon-blank-img {
 	background-image:url(../../ext/resources/images/default/s.gif) ! important;
 }
-.icon-key {
-	background-image:url(icons/key.png) ! important;
-}
-.icon-key2 {
-	background-image:url(icons/key_16.png) ! important;
-}
-.icon-trash-empty {
-	background-image:url(icons/bin_empty.png) ! important;
-}
-.icon-trash-closed {
-	background-image:url(icons/bin_closed.png) ! important;
-}
-.icon-disk {
-	background-image:url(icons/disk.png) ! important;
-}
-.icon-undo {
-	background-image:url(icons/arrow_undo.png) ! important;
-}
-.icon-magnifier {
-	background-image:url(icons/magnifier.png) ! important;
-}
-.icon-wrench {
-	background-image:url(icons/wrench_16.png) ! important;
-}
-.icon-star {
-	background-image:url(icons/star.png) ! important;
-}
-.icon-cancel {
-	background-image:url(icons/cancel16.png) ! important;
-}
-.icon-cross {
-	background-image:url(icons/cross.png) ! important;
-}
-.icon-upload {
-	background-image:url(icons/up.png) ! important;
-}
-.icon-folder-add {
-	background-image:url(icons/folder_add.png) ! important;
-}
+
 .icon-ok {
-	background-image:url("icons/accept.png") !important;
+	background-image:url(icons/accept.png) !important;
+}
+.icon-plus {
+	background-image:url(icons/add.png) ! important;
+}
+.icon-open-popup {
+	background-image:url(icons/application_double.png) ! important;
+}
+.icon-form-add {
+	background-image:url(icons/application_form_add.png) ! important;
+}
+.icon-form-edit {
+	background-image:url(icons/application_form_edit.png) ! important;
 }
 .icon-open {
 	background-image:url(icons/application_go.png) ! important;
@@ -67,57 +35,77 @@
 .icon-open-self {
 	background-image:url(icons/application.png) ! important;
 }
-.icon-open-popup {
-	background-image:url(icons/application_double.png) ! important;
+.icon-arrow-down {
+	background-image:url(icons/arrow_down.png) ! important;
 }
-.icon-open-blank {
-	background-image:url(icons/application_cascade.png) ! important;
+.icon-arrow-left {
+	background-image:url(icons/arrow_left.png) ! important;
 }
-.icon-open-download {
-	background-image:url(icons/application_put.png) ! important;
+.icon-redo {
+	background-image:url(icons/arrow_redo.png) ! important;
 }
 .icon-refresh {
 	background-image:url(icons/arrow_refresh.png) ! important;
 }
-.icon-pencil {
-	background-image:url(icons/pencil.png) ! important;
+.icon-arrow-right {
+	background-image:url(icons/arrow_right.png) ! important;
 }
-.icon-stop {
-	background-image:url(icons/control_stop.png) ! important;
+.icon-undo {
+	background-image:url(icons/arrow_undo.png) ! important;
 }
-.icon-zoom {
-	background-image:url(icons/zoom.png) ! important;
+.icon-up {
+	background-image:url(icons/arrow_up.png) ! important;
 }
-.icon-print {
-	background-image:url(icons/printer.png) ! important;
+.icon-attach {
+	background-image:url(icons/attach.png) ! important;
+}
+
+.icon-calendar {
+	background-image:url(icons/calendar.png) ! important;
 }
 .icon-error {
 	background-image:url(icons/cancel.png) ! important;
 }
+.icon-stop {
+	background-image:url(icons/control_stop.png) ! important;
+}
+.icon-cross {
+	background-image:url(icons/cross.png) ! important;
+}
+.icon-minus {
+	background-image:url(icons/delete.png) ! important;
+}
+.icon-disk {
+	background-image:url(icons/disk.png) ! important;
+}
 .icon-warn {
 	background-image:url(icons/error.png) ! important;
 }
-.icon-arrow-down {
-	background-image:url(icons/arrow_down.png) ! important;
+.icon-folder {
+	background-image:url(icons/folder.png) ! important;
 }
-.icon-arrow-right {
-	background-image:url(icons/arrow_right.png) ! important;
+
+.icon-key {
+	background-image:url(icons/key.png) ! important;
 }
-.icon-delete {
-	background-image:url(icons/bin_empty.png) ! important;
+.icon-link {
+	background-image:url(icons/link.png) ! important;
 }
-.icon-tree {
-	background-image:url(icons/tree_16.png) ! important;
+.icon-magnifier {
+	background-image:url(icons/magnifier.png) ! important;
 }
-.icon-form-edit {
-	background-image:url(icons/application_form_edit.png) ! important;
+.icon-pencil {
+	background-image:url(icons/pencil.png) ! important;
 }
-.icon-form-add {
-	background-image:url(icons/application_form_add.png) ! important;
+.icon-print {
+	background-image:url(icons/printer.png) ! important;
 }
-.icon-filter {
-	background-image:url(icons/view-filter16.png) ! important;
+.icon-star {
+	background-image:url(icons/star.png) ! important;
 }
-.icon-filter-active {
-	background-image:url(icons/view-filter-go16.png) ! important;
+.icon-wrench {
+	background-image:url(icons/wrench.png) ! important;
+}
+.icon-zoom {
+	background-image:url(icons/zoom.png) ! important;
 }
