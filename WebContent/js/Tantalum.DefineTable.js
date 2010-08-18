@@ -5,17 +5,87 @@ Tantalum.DefineTableUi = Ext.extend(Ext.Viewport, {
 		var tableStore = new Tantalum.tableStore();
 		var columnStore = new Tantalum.columnStore();
 		var joinParentStore = new Tantalum.joinParentStore();
+		var tableIndexesStore = new Tantalum.TableIndexesStore();
+		var tableIndexColumnsStore = new Tantalum.TableIndexColumnsStore();
 		tableStore.on('load', function(store) {
 			columnStore.loadData(tableStore.reader.jsonData);
 			joinParentStore.loadData(tableStore.reader.jsonData);
+			tableIndexesStore.loadData(tableStore.reader.jsonData);
+			tableIndexColumnsStore.loadData(tableStore.reader.jsonData);
 			if (tableStore.getCount() > 0) {
 				columnStore.filter('DefineTableColumnTableID', tableStore.getAt(0).data.DefineTableTableID);
 				joinParentStore.filter('JoinFromTableID', tableStore.getAt(0).data.DefineTableTableID);
+				tableIndexesStore.filter('ModelIndexTableID', tableStore.getAt(0).data.DefineTableTableID);
+				if (tableIndexesStore.snapshot.length > 0) {
+					tableIndexColumnsStore.filter('TableIndexColumnsIndexID', tableIndexesStore.getAt(0).data.ModelIndexIndexID);
+				}
 			}
 		});
-
+		
 		this.items = [ {
+			xtype: 'panel',
+			region: 'north',
+			bbar: [ {
+                xtype: 'tbtext',
+                text: '<b>Tantalum</b>'
+			}, {
+                xtype: 'tbseparator'
+			}, {
+                xtype: 'button',
+                text: 'Designer',
+                menu: {
+                    xtype: 'menu',
+                    items: [
+                        {
+                            xtype: 'menuitem',
+                            text: 'Manage Tables',
+                            iconCls: 'icon-print',
+                            handler: function(btn) {
+            					alert('Not yet implemented');
+            				}
+                        }, {
+                            xtype: 'menuitem',
+                            disabled: true,
+                            text: 'Manage Pages'
+                        }
+                    ]
+                }
+			}, {
+                xtype: 'button',
+                text: 'Edit',
+                menu: {
+                    xtype: 'menu',
+                    items: [
+                        {
+                            xtype: 'menuitem',
+                            text: 'Save',
+                            iconCls: 'icon-disk'
+                        }, {
+                            xtype: 'menuitem',
+                            text: 'Toggle Auto Save'
+                        }, {
+                            xtype: 'menuitem',
+                            text: 'Add New'
+                        }, {
+                            xtype: 'menuitem',
+                            text: 'Delete Selected'
+                        }
+                    ]
+                }
+			}, {
+				xtype: 'button',
+				text: 'Logout'
+			} ]
+		}, {
+			xtype: 'panel',
+			region: 'south',
+			bbar: [ {
+                xtype: 'tbtext',
+                text: 'Status'
+			} ]
+		}, {
 			xtype : 'editorgrid',
+			region : 'west',
 			store : tableStore,
 			width : 150,
 			title : 'Table',
@@ -33,6 +103,10 @@ Tantalum.DefineTableUi = Ext.extend(Ext.Viewport, {
 			                this.boundRecord = record;
 			                columnStore.filter('DefineTableColumnTableID', record.data.DefineTableTableID);
 							joinParentStore.filter('JoinFromTableID', record.data.DefineTableTableID);
+							tableIndexesStore.filter('ModelIndexTableID', record.data.DefineTableTableID);
+							if (tableIndexesStore.snapshot.length > 0) {
+								tableIndexColumnsStore.filter('TableIndexColumnsIndexID', tableIndexesStore.getAt(0).data.ModelIndexIndexID);
+							}
 			            } else if(!record) {
 	                        Ext.BindMgr.unbind(this.boundRecord);
 	                        this.boundRecord = null;
@@ -42,7 +116,6 @@ Tantalum.DefineTableUi = Ext.extend(Ext.Viewport, {
 	    	}
 
 		    }),
-			region : 'west',
 			split : true,
 			stripeRows : true,
 			collapsible : true,
@@ -107,14 +180,50 @@ Tantalum.DefineTableUi = Ext.extend(Ext.Viewport, {
 								xtype : 'textfield'
 							}
 						}, {
+							xtype : 'gridcolumn',
+							dataIndex : 'ColumnColumnType',
+							header : 'Type',
+							editor : {
+								xtype : 'combo',
+								typeAhead: true,
+							    triggerAction: 'all',
+							    lazyRender:true,
+							    allowBlank : false,
+							    forceSelection : true,
+							    selectOnFocus : true,
+							    title : 'Column Type',
+							    mode: 'local',
+							    listeners:{
+							    	  change:function(combo, newVal, oldVal) {
+							    	    alert(newVal);
+							    	  }
+								},
+							    store: new Ext.data.ArrayStore({
+							        id: 0,
+							        fields: [
+							            'enumCode',
+							            'meaning'
+							        ],
+							        data: [
+							            ['0','UUID'], 
+							            ['1','String'], 
+							            ['2','Number'], 
+							            ['3','CreationDate'], 
+							            ['5','CreatedBy'],
+							            ['4','UpdateDate'], 
+							             ['6','UpdatedBy']
+							       ]
+							    }),
+							    displayField: 'meaning'
+							}
+						}, {
 							xtype : 'booleancolumn',
 							dataIndex : 'DefineTableColumnRequired',
 							header : 'Required',
 							sortable : true,
 							width : 100,
 							editor : {
-								xtype : 'checkbox',
-								boxLabel : 'BoxLabel'
+								xtype : 'checkbox'
 							}
 						} ]
 					} ]
@@ -163,15 +272,58 @@ Tantalum.DefineTableUi = Ext.extend(Ext.Viewport, {
 					} ]
 				}, {
 					xtype : 'panel',
-					title : 'Indexes'
-				} ]
-			}, {
-				xtype : 'toolbar',
-				autoHeight : true,
-				region : 'south',
-				items : [ {
-					xtype : 'button',
-					text : 'MyButton'
+					title : 'Indexes',
+					layout : 'hbox',
+					layoutConfig : {
+						align: 'stretch'
+					},
+					items : [ {
+						xtype : 'editorgrid',
+						store : tableIndexesStore,
+						flex : 1,
+						sm: new Ext.grid.RowSelectionModel({
+					    	singleSelect: true,
+					    	listeners: {
+					        	rowselect: {
+						        	fn: function(sm,index,record) {
+							        	if(record && (this.boundRecord !== record)) {
+							        		tableIndexColumnsStore.filter('TableIndexColumnsIndexID', record.data.ModelIndexIndexID);
+							            } else if(!record) {
+							            	tableIndexColumnsStore.filter('TableIndexColumnsIndexID', '');
+					                    }
+						        	}
+					        	}
+					    	}
+						}),
+						columns : [ {
+							xtype : 'gridcolumn',
+							dataIndex : 'ModelIndexIndexID',
+							hidden : true,
+							header : 'ID'
+						}, {
+							xtype : 'gridcolumn',
+							dataIndex : 'ModelIndexDisplayOrder',
+							header : 'Order'
+						}, {
+							xtype : 'gridcolumn',
+							dataIndex : 'ModelIndexUniqueIndex',
+							header : 'Unique'
+						} ]
+					}, {
+						xtype : 'editorgrid',
+						store : tableIndexColumnsStore,
+						title : 'Index Columns',
+						flex : 1,
+						columns : [ {
+							xtype : 'gridcolumn',
+							dataIndex : 'ModelIndexDisplayOrder',
+							header : 'Order'
+						}, {
+							xtype : 'gridcolumn',
+							dataIndex : 'TableIndexColumnsColumnName',
+							header : 'Column'
+						} ]
+					} ]
 				} ]
 			} ]
 		} ];
@@ -182,6 +334,7 @@ Tantalum.DefineTableUi = Ext.extend(Ext.Viewport, {
 
 Tantalum.tableForm = Ext.extend(Ext.form.FormPanel, {
     defaultType: 'textfield',
+    padding: 5,
     onBind:function(record) {
         this.boundRecord = record;
         this.updateBound(record);
@@ -251,11 +404,14 @@ Tantalum.columnStore = Ext.extend(Ext.data.JsonStore, {
 				name : 'DefineTableColumnTableID'
 			}, {
 				name : 'DefineTableColumnDisplayOrder'
+			}, {
+				name : 'DefineTableColumnRequired'
+			}, {
+				name : 'ColumnColumnType'
 			} ]
 		}, cfg));
 	}
 });
-
 
 Tantalum.joinParentStore = Ext.extend(Ext.data.JsonStore, {
 	constructor : function(cfg) {
@@ -275,6 +431,46 @@ Tantalum.joinParentStore = Ext.extend(Ext.data.JsonStore, {
 				name : 'JoinName'
 			}, {
 				name : 'JoinJoinType'
+			} ]
+		}, cfg));
+	}
+});
+
+Tantalum.TableIndexesStore = Ext.extend(Ext.data.JsonStore, {
+	constructor : function(cfg) {
+		cfg = cfg || {};
+		Tantalum.TableIndexesStore.superclass.constructor.call(this, Ext.apply( {
+			idProperty : 'ModelIndexIndexID',
+			autoDestroy : true,
+			root : 'TableIndexes',
+			fields : [ {
+				name : 'ModelIndexIndexID'
+			}, {
+				name : 'ModelIndexTableID'
+			}, {
+				name : 'ModelIndexDisplayOrder'
+			}, {
+				name : 'ModelIndexUniqueIndex'
+			} ]
+		}, cfg));
+	}
+});
+
+Tantalum.TableIndexColumnsStore = Ext.extend(Ext.data.JsonStore, {
+	constructor : function(cfg) {
+		cfg = cfg || {};
+		Tantalum.TableIndexColumnsStore.superclass.constructor.call(this, Ext.apply( {
+			idProperty : 'TableIndexColumnsID',
+			autoDestroy : true,
+			root : 'TableIndexColumns',
+			fields : [ {
+				name : 'TableIndexColumnsID'
+			}, {
+				name : 'TableIndexColumnsIndexID'
+			}, {
+				name : 'TableIndexColumnsColumnID'
+			}, {
+				name : 'TableIndexColumnsColumnName'
 			} ]
 		}, cfg));
 	}
