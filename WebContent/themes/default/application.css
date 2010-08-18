@@ -8,3 +8,7 @@ table.horizontalContainer {
 table.horizontalContainer td {
 	vertical-align: top;
 }
+
+tr.template {
+	display: none;
+}
