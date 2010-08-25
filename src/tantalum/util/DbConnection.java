@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 
 import tantalum.DatabaseException;
 import tantalum.NoResultFoundException;
-import tantalum.data.Instance;
+import tantalum.data.Record;
 import tantalum.data.InstanceUtility;
 
 
@@ -30,15 +30,15 @@ public class DbConnection {
 		return ds.getConnection();
 	}
 
-	public List<Instance> select(SelectSQL sql) throws DatabaseException {
+	public List<Record> select(SelectSQL sql) throws DatabaseException {
 		return select(sql.toString(), false);
 	}
 
-	public List<Instance> select(String sql) throws DatabaseException {
+	public List<Record> select(String sql) throws DatabaseException {
 		return select(sql, false);
 	}
 
-	public List<Instance> select(String sql, boolean countRows)
+	public List<Record> select(String sql, boolean countRows)
 			throws DatabaseException {
 		Connection conn = null;
 		Statement stmt = null; // Or PreparedStatement if needed
@@ -49,7 +49,7 @@ public class DbConnection {
 					ResultSet.CONCUR_READ_ONLY);
 			System.out.println(sql);
 			rs = stmt.executeQuery(sql);
-			List<Instance> list = InstanceUtility.parseResultSet(rs);
+			List<Record> list = InstanceUtility.parseResultSet(rs);
 			rs.close();
 			rs = null;
 
@@ -97,14 +97,14 @@ public class DbConnection {
 		}
 	}
 
-	public Instance selectSingle(SelectSQL sql)
+	public Record selectSingle(SelectSQL sql)
 			throws NoResultFoundException {
 		return selectSingle(sql.toString());
 	}
 
-	public Instance selectSingle(String sql)
+	public Record selectSingle(String sql)
 			throws NoResultFoundException {
-		List<Instance> result = select(sql);
+		List<Record> result = select(sql);
 		if (result.size() == 0)
 			throw new NoResultFoundException();
 		return result.get(0);

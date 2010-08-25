@@ -3,6 +3,8 @@ package tantalum;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,53 +17,40 @@ import org.json.simple.JSONValue;
 
 import tantalum.data.DataReader;
 import tantalum.data.DataSaver;
-import tantalum.data.InstanceList;
 import tantalum.data.InstanceUtility;
-import tantalum.data.PageContent;
+import tantalum.data.Record;
+import tantalum.data.Store;
 import tantalum.entities.Model;
 import tantalum.ui.PageDAO;
+import tantalum.util.RequestFilter;
 import tantalum.util.UrlRequest;
 
 @SuppressWarnings("serial")
 public class JsonServlet extends HttpServlet {
-	protected PrintWriter out;
-	private PageDAO pageDAO = new PageDAO();
-	private Model page = null;
-	private UrlRequest urlRequest = null;
-
-	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setStatus(HttpServletResponse.SC_OK);
-
-		out = resp.getWriter();
-		urlRequest = new UrlRequest(req);
-
-		JSONArray errors = new JSONArray();
-		try {
-			page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
-
-			DataReader dao = new DataReader();
-			PageContent results = dao.getContent(page, urlRequest);
-
-			JSONObject json = InstanceUtility.convertToJSON(results);
-			json.put("__STATUS__", "success");
-			
-			out.print(json);
-			resp.setContentType("application/json;");
-		} catch (Exception e) {
-			errors.add(e.getMessage());
-			e.printStackTrace();
-			
-			JSONObject json = new JSONObject();
-			json.put("__STATUS__", "error");
-			json.put("errors", errors);
-			out.print(json);
-		}
-		out.flush();
+		doPost(req, resp);
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("application/json;");
+		resp.setStatus(HttpServletResponse.SC_OK);
+
+		JSONArray errors = new JSONArray();
+		JSONObject json = new JSONObject();
+		boolean success = true;
+
+		boolean query = true; // Assume we are running a query
+		try {
+			if (req.getParameterValues("xaction")[0].equals("save"))
+				query = false;
+		} catch (Exception e) {
+			errors.add("xaction was missing from request object. Using default of 'query'.");
+		}
+
+		UrlRequest urlRequest = new UrlRequest(req);
+		Model page = new PageDAO().getWebPageDefinition(urlRequest.getPageName());
+
 		try {
 			BufferedReader reader = req.getReader();
 			StringBuilder sb = new StringBuilder();
@@ -73,42 +62,39 @@ public class JsonServlet extends HttpServlet {
 				}
 			}
 			reader.close();
-			String data = sb.toString();
+			JSONObject requestJson = (JSONObject) JSONValue.parse(sb.toString());
 
-			resp.setContentType("application/json;");
-			resp.setStatus(HttpServletResponse.SC_OK);
-
-			out = resp.getWriter();
-			urlRequest = new UrlRequest(req);
-
-			page = pageDAO.getWebPageDefinition(urlRequest.getPageName());
-
-			JSONObject root = (JSONObject) JSONValue.parse(data);
-
-			JSONArray errors = new JSONArray();
-			DataSaver saver = new DataSaver();
-			try {
-				JSONObject json = (JSONObject) root.get(page.getName());
-				InstanceList list = InstanceUtility.convertFromJSON(json);
-				saver.save(page, list);
+			if (query) {
+				// Read data for set
 				DataReader dao = new DataReader();
-				PageContent results = dao.getContent(page, urlRequest);
+				RequestFilter filter = new RequestFilter(req);
+				Map<Model, List<Record>> results = dao.getContent(page, filter);
 
-				json = InstanceUtility.convertToJSON(results);
-				json.put("__STATUS__", "success");
-				out.print(json);
-			} catch (Exception e) {
-				errors.add(e.toString());
-				e.printStackTrace();
-				JSONObject json = new JSONObject();
-				json.put("__STATUS__", "error");
-				json.put("errors", errors);
-				out.print(json);
+				for (Model model : results.keySet()) {
+					JSONObject modelJson = new JSONObject();
+					modelJson.put("total", dao.getContentCount(model));
+					modelJson.put("read", InstanceUtility.convertToJSON(results.get(model)));
+					json.put(model.getName(), modelJson);
+				}
+			} else {
+				// Save data for set
+				DataSaver saver = new DataSaver();
+				Map<Model, Store> stores = InstanceUtility.convertFromJSON(page, requestJson);
+				saver.save(page, stores);
+				json = InstanceUtility.convertToJSON(page, stores);
 			}
-			out.flush();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			errors.add(e.getMessage());
+			success = false;
 		}
+
+		json.put("success", success);
+		if (errors.size() > 0)
+			json.put("errors", errors);
+
+		PrintWriter out = resp.getWriter();
+		out.print(json.toJSONString());
+		out.flush();
 	}
 }

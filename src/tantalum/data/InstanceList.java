@@ -4,22 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The result of a single query. This contains a list of rows and some
- * information about those records. This is the same as a "View"
+ * The result of a single query. This contains a list of rows and some information about those records. This is the same
+ * as a "View". This is model after the Ext.data.JsonReader
  */
 public class InstanceList {
 	private int totalRecords = -1;
-	private List<Instance> data = new ArrayList<Instance>();
+	private String idProperty = "id";
+
+	private List<Record> rows = new ArrayList<Record>();
 
 	public InstanceList() {
 	}
 
-	public InstanceList(List<Instance> list) {
-		data = list;
+	public InstanceList(List<Record> list) {
+		rows = list;
+	}
+
+	public String getIdProperty() {
+		return idProperty;
+	}
+
+	public void setIdProperty(String idProperty) {
+		this.idProperty = idProperty;
 	}
 
 	public int getReturnedRecords() {
-		return data.size();
+		return rows.size();
 	}
 
 	public int getTotalRecords() {
@@ -28,8 +38,8 @@ public class InstanceList {
 		return totalRecords;
 	}
 
-	public List<Instance> getData() {
-		return data;
+	public List<Record> getRows() {
+		return rows;
 	}
 
 }

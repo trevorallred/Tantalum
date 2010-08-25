@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import tantalum.data.Instance;
+import tantalum.data.Record;
 
 @Entity
 @Table(name = "tan_field")
@@ -263,7 +263,7 @@ public class Field extends BaseNamedTable {
 		return model.getBasisTable().equals(basisColumn.getTable());
 	}
 
-	public String getValue(Instance row) {
+	public String getValue(Record row) {
 		return row.getString(name);
 		// if (object == null)
 		// return "";

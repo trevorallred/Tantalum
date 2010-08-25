@@ -4,18 +4,21 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import tantalum.DatabaseException;
+import tantalum.entities.Model;
 
 public class InstanceUtility {
-	public static List<Instance> parseResultSet(ResultSet rs) {
-		List<Instance> rows = new ArrayList<Instance>();
+	public static List<Record> parseResultSet(ResultSet rs) {
+		List<Record> rows = new ArrayList<Record>();
 		try {
 			ResultSetMetaData rsMetaData = rs.getMetaData();
 			int numberOfColumns = rsMetaData.getColumnCount();
@@ -26,7 +29,7 @@ public class InstanceUtility {
 			}
 
 			while (rs.next()) {
-				Instance row = new Instance(rs, columnNames);
+				Record row = new Record(rs, columnNames);
 				rows.add(row);
 			}
 		} catch (SQLException e) {
@@ -37,65 +40,81 @@ public class InstanceUtility {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static JSONObject convertToJSON(PageContent results) {
+	public static JSONObject convertToJSON(Model model, Map<Model, Store> stores) {
+		Store store = stores.get(model);
+		JSONObject jsonStore = new JSONObject();
+		if (store.getCreates().size() > 0) {
+			jsonStore.put(RecordAction.Create.toString().toLowerCase(), convertToJSON(store.getCreates()));
+		}
+		if (store.getUpdates().size() > 0) {
+			jsonStore.put(RecordAction.Update.toString().toLowerCase(), convertToJSON(store.getUpdates()));
+		}
+		if (store.getDestroys().size() > 0) {
+			jsonStore.put(RecordAction.Destroy.toString().toLowerCase(), convertToJSON(store.getDestroys()));
+		}
+
 		JSONObject json = new JSONObject();
-		for (String view : results.getModelNames()) {
-			JSONObject jsonView = new JSONObject();
-			json.put(view, jsonView);
-			jsonView.put("POSITION", 0);
-			// When we do lazy loading we'll set fullyLoaded this dynamically
-			jsonView.put("FULLY_LOADED", true);
-			JSONArray dataArray = new JSONArray();
-			jsonView.put("DATA", dataArray);
-			for (Instance row : results.getViewContent(view).getData()) {
-				JSONObject record = new JSONObject();
-				dataArray.add(record);
-
-				JSONObject recordFields = new JSONObject();
-				record.put("ACTION", null);
-				record.put("DIRTY", row.isDirty());
-				record.put("FIELDS", recordFields);
-				for (String fieldname : row.getFieldNames()) {
-					recordFields.put(fieldname, row.getString(fieldname));
-				}
-
-				record.put("CHILDREN", convertToJSON(row));
-			}
+		json.put(model.getName(), jsonStore);
+		for (Model childModel : model.getChildModels()) {
+			JSONObject jsonChild = convertToJSON(childModel, stores);
+			json.putAll(jsonChild);
 		}
 		return json;
 	}
 
-	public static InstanceList convertFromJSON(JSONObject json) {
-		InstanceList list = new InstanceList();
-		if (json == null)
-			return list;
-		JSONArray data = (JSONArray) json.get("DATA");
-		if (data == null)
-			return list;
-		for (Object o : data) {
-			JSONObject row = (JSONObject) o;
-			JSONObject rowData = (JSONObject) row.get("FIELDS");
+	@SuppressWarnings("unchecked")
+	public static JSONArray convertToJSON(List<Record> list) {
+		JSONArray dataArray = new JSONArray();
+		for (Record row : list) {
+			JSONObject record = new JSONObject();
+			dataArray.add(record);
 
-			Instance instance = new Instance(rowData);
-			instance.setDirty(row.get("DIRTY").toString().equals("true"));
-			Object action = row.get("ACTION");
-			if (action != null)
-				instance.setDelete(action.toString().equals("DELETE"));
-			list.getData().add(instance);
+			for (String fieldname : row.getFieldNames()) {
+				record.put(fieldname, row.getString(fieldname));
+			}
+		}
+		return dataArray;
+	}
 
-			JSONObject children = (JSONObject) row.get("CHILDREN");
-			if (children != null) {
-				for (Object childView : children.keySet()) {
-					String childViewName = childView.toString();
-					InstanceList childContent = convertFromJSON((JSONObject) children
-							.get(childViewName));
-					for (Instance childInstance : childContent.getData()) {
-						childInstance.setParent(instance);
-					}
-					instance.addChildContent(childViewName, childContent);
+	public static Map<Model, Store> convertFromJSON(Model model, JSONObject jsonStores) {
+		Map<Model, Store> storeData = new HashMap<Model, Store>();
+		JSONObject modelJson = (JSONObject) jsonStores.get(model.getName());
+
+		storeData.put(model, convertStoreFromJSON(modelJson));
+		for (Model childModel : model.getChildModels()) {
+			storeData.putAll(convertFromJSON(childModel, jsonStores));
+		}
+		return storeData;
+	}
+
+	private static Store convertStoreFromJSON(JSONObject jsonStore) {
+		Store store = new Store();
+
+		for (RecordAction action : RecordAction.values()) {
+			JSONArray jsonRecords = (JSONArray) jsonStore.get(action.toString().toLowerCase());
+			if (jsonRecords != null) {
+				List<Record> list = new ArrayList<Record>();
+				for (Object o : jsonRecords) {
+					JSONObject row = (JSONObject) o;
+
+					Record instance = new Record(row);
+					instance.setAction(action);
+					list.add(instance);
+				}
+				switch (action) {
+				case Create:
+					store.setCreates(list);
+					break;
+				case Update:
+					store.setUpdates(list);
+					break;
+				case Destroy:
+					store.setDestroys(list);
+					break;
 				}
 			}
 		}
-		return list;
+
+		return store;
 	}
 }

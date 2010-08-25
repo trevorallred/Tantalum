@@ -18,46 +18,42 @@ import tantalum.entities.Model;
 import tantalum.util.Strings;
 
 /**
- * A single line returned in a query. This extends PageContent which means a
- * line can also have 1 or more child views associated with that data.
+ * A single line returned in a query. This was modeled after Ext.data.Record
  */
-public class Instance extends PageContent {
-	private Map<String, Object> values = new HashMap<String, Object>();
+public class Record {
+	private Map<String, Object> data = new HashMap<String, Object>();
 	private Model view = null;
-	private boolean dirty = false;
-	private boolean delete = false;
-	private Instance parent;
+	private RecordAction action = null;
 
-	public Instance() {
+	public Record() {
 	}
 
-	public Instance(ResultSet rs, Set<String> columnNames)
-			throws DatabaseException {
+	public Record(ResultSet rs, Set<String> columnNames) throws DatabaseException {
 		try {
 			for (String columnName : columnNames) {
-				values.put(columnName, rs.getObject(columnName));
+				data.put(columnName, rs.getObject(columnName));
 			}
 		} catch (SQLException e) {
 			throw new DatabaseException();
 		}
 	}
 
-	public Instance(JSONObject json) {
+	public Record(JSONObject json) {
 		for (Object key : json.keySet()) {
 			Object o = json.get(key);
 			if (o == null)
-				values.put(key.toString(), null);
+				data.put(key.toString(), null);
 			else
-				values.put(key.toString(), o.toString());
+				data.put(key.toString(), o.toString());
 		}
 	}
 
 	public void setValue(String columnName, String value) {
-		values.put(columnName, value);
+		data.put(columnName, value);
 	}
 
 	public Set<String> getFieldNames() {
-		return values.keySet();
+		return data.keySet();
 	}
 
 	public Integer getInteger(String columnName) {
@@ -97,7 +93,7 @@ public class Instance extends PageContent {
 			System.out.println("WARNING!! columnName is NULL");
 			return null;
 		}
-		Object value = values.get(columnName);
+		Object value = data.get(columnName);
 		if (value == null)
 			return null;
 		return value.toString();
@@ -132,28 +128,12 @@ public class Instance extends PageContent {
 		this.view = view;
 	}
 
-	public boolean isDirty() {
-		return dirty;
+	public RecordAction getAction() {
+		return action;
 	}
 
-	public void setDirty(boolean dirty) {
-		this.dirty = dirty;
-	}
-
-	public boolean isDelete() {
-		return delete;
-	}
-
-	public void setDelete(boolean delete) {
-		this.delete = delete;
-	}
-
-	public Instance getParent() {
-		return parent;
-	}
-
-	public void setParent(Instance parent) {
-		this.parent = parent;
+	public void setAction(RecordAction action) {
+		this.action = action;
 	}
 
 }
