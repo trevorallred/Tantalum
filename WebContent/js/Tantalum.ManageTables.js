@@ -6,7 +6,7 @@
 		constructor : function(cfg) {
 			cfg = cfg || {};
 			Tantalum.tableStore.superclass.constructor.call(this, Ext.apply( {
-				url : '/Tantalum/ws/ManageTables',
+				url : 'ws/ManageTables',
 				root : 'ManageTables.read',
 				batch : true,
 				autoSave : false,
