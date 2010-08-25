@@ -74,14 +74,43 @@
 				addRow_${view.name}(tbody, template, rows.DATA[i], i);
 			}
 		}
-		$(template).hide();
+		#foreach ($field in $view.visibleFields)
+			#if($field.hasSelector)
+				$("input.${field.name}").autocomplete({
+					source: function(request, response) {
+						jQuery.getJSON("${baseURL}/ws/${field.selector.name}",
+							{term: request.term, selector: "${field.selectorTarget}"},
+							function(data) {
+								response(jQuery.map(data.ManageTables.DATA, function(item) {
+									return {
+										label: item.FIELDS.${field.selectorTarget},
+										value: item.FIELDS
+									}
+								}))
+							}
+						);
+					},
+					select: function(event, ui) {
+						var row = rows_${view.model.name}.DATA[rows_${view.model.name}.POSITION];
+						#foreach ($selectorField in $field.fieldSelectors)
+							row.FIELDS.${selectorField.target.name} = ui.item.value.${selectorField.source.name};
+						#end
+						row.DIRTY = true;
+						paint_${view.name}();
+						return false;
+					},
+					focus: function(event, ui) { return false; },
+					minLength: 0
+				});
+			#end
+		#end
 	}
 	function addRow_${view.name}(tbody, template, data, i) {
 		if (data.ACTION == "DELETE")
 			return;
 		var row = data.FIELDS;
 		var rowHTML = $(template).clone();
-		rowHTML.show();
+		//rowHTML.show();
 		rowHTML.addClass("data");
 		rowHTML.removeClass("template");
 		#foreach ( $field in $view.fields )
@@ -110,6 +139,9 @@
 		$(rowHTML).find('a.edit').click(function(){edit_${view.model.name}(i, true); return false;});
 		$(rowHTML).dblclick(function(){edit_${view.model.name}(i, true); return false;});
 		#end
+		$(rowHTML).find('input').focusin(function(){rows_${view.model.name}.POSITION = i; position_${view.model.name}();});
+		$(rowHTML).click(function(){rows_${view.model.name}.POSITION = i; position_${view.model.name}();});
+		
 		$(rowHTML).find('a.cancel').click(function(){edit_${view.model.name}(i, false); return false;});
 
 		if (data.ACTION == "EDIT" || data.ACTION == "NEW_EDIT") {

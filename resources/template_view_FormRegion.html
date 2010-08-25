@@ -42,6 +42,7 @@
 					#foreach ($selectorField in $field.fieldSelectors)
 						row.FIELDS.${selectorField.target.name} = ui.item.value.${selectorField.source.name};
 					#end
+					row.DIRTY = true;
 					paint_${view.name}();
 					return false;
 				},
