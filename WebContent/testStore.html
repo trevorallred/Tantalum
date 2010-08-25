@@ -1,0 +1,147 @@
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Tantalum</title>
+<link rel="stylesheet" type="text/css"
+	href="ext/resources/css/ext-all.css">
+<script type="text/javascript" src="ext/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="ext/ext-all-debug.js"></script>
+
+<script type="text/javascript">
+	Ext.BLANK_IMAGE_URL = 'ext/resources/images/default/s.gif';
+
+	Ext.onReady(function() {
+		Ext.QuickTips.init();
+
+		var saveQueue;
+		var writer = new Ext.data.JsonWriter( {});
+		var store = new Ext.data.JsonStore( {
+			url : '/Tantalum/ws/ManageTables',
+			root : 'ManageTables.read',
+			batch : true,
+			autoSave : false,
+			writer : writer,
+			idProperty : 'ManageTablesTableID',
+			fields : [ 'ManageTablesTableID', 'ManageTablesName', 'ManageTablesDatabaseName' ]
+		});
+
+		store.addListener('beforewrite', function(store, action, rs, options) {
+			saveQueue[action] = [];
+			if (Ext.isArray(rs)) {
+				saveQueue[action] = rs;
+			} else {
+				saveQueue[action].push(rs);
+			}
+			return false;
+		});
+
+		store.load();
+
+		function goHandler(button, event) {
+			/**
+			var r = new store.recordType();
+			r.data.ManageTablesName = "Foobar";
+			r.data.ManageTablesDatabaseName = "tan_foobar";
+			store.add(r);
+
+			// Remove Trevor
+			store.remove(store.getById("cfadf28f-aea6-4baa-82b7-a71747bc4fcb"));
+
+			var r3 = store.getById("7e640a5b-288e-4c88-9d3b-4f370942f211");
+			r3.set('ManageTablesName', "Buttons");
+			**/
+
+			var savejson = new Object();
+			var savejsonModel = new Object();
+			saveQueue = new Object();
+			store.save();
+			for ( var action in saveQueue) {
+				if (Ext.isDefined(action)) {
+					savejsonModel[action] = [];
+					for ( var i = 0; i < saveQueue[action].length; i++) {
+						savejsonModel[action].push(saveQueue[action][i].data);
+					}
+				}
+			}
+			savejson['ManageTables'] = savejsonModel;
+
+			Ext.Ajax.request( {
+				url : store.url,
+				success : function(response, opts) {
+					var obj = Ext.decode(response.responseText);
+
+					if (obj.success === false) {
+						alert("Failed to save data");
+						return;
+					}
+					for ( var action in saveQueue) {
+						if (Ext.isDefined(action)) {
+							this['on' + Ext.util.Format.capitalize(action) + 'Records'](obj.success, saveQueue[action],
+									obj.ManageTables[action]);
+						}
+					}
+				},
+				failure : function(response, opts) {
+					alert("Failed to save data with status code " + response.status);
+				},
+				params : {
+					xaction : 'save'
+				},
+				scope : store,
+				jsonData : Ext.util.JSON.encode(savejson)
+			});
+
+			return;
+		}
+
+		MyWindowUi = Ext.extend(Ext.Window, {
+			title : 'My Window',
+			initComponent : function() {
+				this.items = [ {
+					xtype : 'editorgrid',
+					title : 'My Grid',
+					autoHeight : true,
+					store : store,
+					columns : [ {
+						header : 'ID',
+						xtype : 'gridcolumn',
+						dataIndex : 'ManageTablesTableID',
+						editable : false
+					}, {
+						header : 'Table',
+						xtype : 'gridcolumn',
+						dataIndex : 'ManageTablesName',
+						sortable : true,
+						editor : {
+							xtype : 'textfield'
+						}
+					}, {
+						header : 'Database',
+						xtype : 'gridcolumn',
+						dataIndex : 'ManageTablesDatabaseName',
+						sortable : true,
+						editor : {
+							xtype : 'textfield'
+						}
+					} ]
+				} ];
+				this.tbar = {
+					xtype : 'toolbar',
+					items : [ {
+						xtype : 'button',
+						handler : goHandler,
+						text : 'Go'
+					} ]
+				};
+				MyWindowUi.superclass.initComponent.call(this);
+			}
+		});
+
+		var myWindow = new MyWindowUi();
+		myWindow.show(this);
+	});
+</script>
+
+</head>
+<body id="body"></body>
+</html>
