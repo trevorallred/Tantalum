@@ -10,10 +10,8 @@
 <script type="text/javascript" src="ext/ext-all-debug.js"></script>
 <script type="text/javascript" src="js/Ext.ux.data.BindMgr.js"></script>
 
-<script type="text/javascript" src="application.js"></script>
-
 <script type="text/javascript" src="js/Tantalum.Menu.js"></script>
-<script type="text/javascript" src="js/Tantalum.DefineTable.js"></script>
+<script type="text/javascript" src="application.js"></script>
 
 </head>
 <body></body>

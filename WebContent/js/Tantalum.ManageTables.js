@@ -1,184 +1,142 @@
-Application.PersonnelGrid = Ext.extend(Ext.grid.GridPanel, {
-});
+(function() {
+	var writer = new Ext.data.JsonWriter( {});
 
-Ext.onReady(function() {
-	Ext.QuickTips.init();
-	var store = new Ext.data.JsonStore({
-	    autoDestroy: true,
-	    url: '/Tantalum/ws/ManageTables',
-	    storeId: 'ManageTables',
-	    root: ['ManageTables.DATA'],
-	    idProperty: 'FIELDS.ManageTablesTableID',
-	    fields: [
- 	        {name: 'ManageTablesDatabaseName', mapping: 'FIELDS.ManageTablesDatabaseName'},
- 	        {name: 'ManageTablesName', mapping: 'FIELDS.ManageTablesName'},
- 	        {name: 'ManageTablesTableID', mapping: 'FIELDS.ManageTablesTableID'}
- 	    ],
- 	    sortInfo: {field:'ManageTablesName', direction:'ASC'}
+	Tantalum.tableStore = Ext.extend(Ext.data.JsonStore, {
+		saveQueue : new Object(),
+		constructor : function(cfg) {
+			cfg = cfg || {};
+			Tantalum.tableStore.superclass.constructor.call(this, Ext.apply( {
+				url : '/Tantalum/ws/ManageTables',
+				root : 'ManageTables.read',
+				batch : true,
+				autoSave : false,
+				pruneModifiedRecords : true,
+				writer : writer,
+				idProperty : 'ManageTablesTableID',
+				fields : [ {
+					name : 'ManageTablesTableID'
+				}, {
+					name : 'ManageTablesName',
+					allowBlank : false
+				}, {
+					name : 'ManageTablesDatabaseName',
+					allowBlank : false
+				} ]
+			}, cfg));
+		}
+	});
+	var tableStore = new Tantalum.tableStore();
+	tableStore.addListener('beforewrite', function(store, action, rs, options) {
+		store.saveQueue[action] = [];
+		if (Ext.isArray(rs)) {
+			store.saveQueue[action] = rs;
+		} else {
+			store.saveQueue[action].push(rs);
+		}
+		return false;
+	});
+	tableStore.load();
+
+	var page = new Ext.grid.EditorGridPanel( {
+		title : 'ManageTables',
+		store : tableStore,
+		defaults : {
+			sortable : true
+		},
+		stripeRows : true,
+		columns : [ {
+			header : 'Table ID',
+			xtype : 'gridcolumn',
+			width : 230,
+			dataIndex : 'ManageTablesTableID',
+			hidden : true,
+			editable : false
+		}, {
+			header : 'Table name',
+			xtype : 'gridcolumn',
+			dataIndex : 'ManageTablesName',
+			width : 140,
+			sortable : true,
+			editor : {
+				xtype : 'textfield'
+			}
+		}, {
+			header : 'Database Implementation',
+			xtype : 'gridcolumn',
+			dataIndex : 'ManageTablesDatabaseName',
+			width : 170,
+			sortable : true,
+			editor : {
+				xtype : 'textfield'
+			}
+		} ],
+		refresh : function() {
+			this.store.reload();
+		},
+		save : function() {
+			this.store.save();
+
+			var savejson = new Object();
+			var savejsonModel = new Object();
+			for ( var action in this.store.saveQueue) {
+				if (Ext.isDefined(action)) {
+					savejsonModel[action] = [];
+					for ( var i = 0; i < this.store.saveQueue[action].length; i++) {
+						savejsonModel[action].push(this.store.saveQueue[action][i].data);
+					}
+				}
+			}
+			savejson['ManageTables'] = savejsonModel;
+
+			Ext.Ajax.request( {
+				url : this.store.url,
+				success : function(response, opts) {
+					var obj = Ext.decode(response.responseText);
+
+					if (obj.success === false) {
+						alert("Failed to save data: " + obj.errors[0]);
+						return;
+					}
+					for ( var action in this.saveQueue) {
+						if (Ext.isDefined(action)) {
+							this['on' + Ext.util.Format.capitalize(action) + 'Records'](obj.success,
+									this.saveQueue[action], obj.ManageTables[action]);
+						}
+					}
+				},
+				failure : function(response, opts) {
+					alert("Failed to save data with status code " + response.status);
+				},
+				params : {
+					xaction : 'save'
+				},
+				scope : this.store,
+				jsonData : Ext.util.JSON.encode(savejson)
+			});
+		},
+		insertRecord : function() {
+			var r = new this.store.recordType();
+			this.store.add(r);
+			this.getSelectionModel().select(this.store.getCount() - 1, 0);
+		},
+		deleteRecord : function() {
+			var selectedCell = this.getSelectionModel().getSelectedCell();
+			if (selectedCell == null) {
+				alert("No rows were selected");
+				return;
+			}
+			var nextRow = selectedCell[0];
+			var selectedItem = this.store.getAt(nextRow);
+			this.store.remove(selectedItem);
+
+			if (nextRow >= this.store.getCount())
+				nextRow = nextRow - 1;
+			if (nextRow < 0)
+				return;
+			this.getSelectionModel().select(nextRow, 0);
+		}
+
 	});
 
-	var storeChild = new Ext.data.SimpleStore({
-        fields:[
-             {name:'teamID'}
-            ,{name:'firstName'}
-            ,{name:'lastName'}
-        ]
-        ,data:[
-             [1, 'Joe', 'Doe']
-            ,[1, 'John', 'Black']
-            ,[2, 'Sue', 'Brown']
-            ,[1, 'Carin', 'White']
-        ]
-	});
-
-    var fm = Ext.form;
-    
-    var cm = new Ext.grid.ColumnModel({
-    	columns: [
-			{
-   				header: "Table Name", 
-   				dataIndex: 'ManageTablesName',
-   				editor: new fm.TextField({
-   	               allowBlank: false,
-   	               blankText: "TableName"
-   				})
-   			},
-			{
-   				header: "Database", 
-   				dataIndex: 'ManageTablesDatabaseName',
-   				editor: new fm.TextField({
-   	               allowBlank: false
-   				})
-   			}
-   		],
-   		defaults: {sortable: true}
-   	});
-    cm.defaultSortable = true;
-    
-    var grid = new Ext.grid.EditorGridPanel( {
-    	id: 'grid',
-		store: store,
-		cm: cm,
-		title: 'Manage Tables',
-        frame: true,
-        clicksToEdit: 2,
-        region: 'center',
-        layout: 'fit',
-        sm: new Ext.grid.RowSelectionModel({
-        	singleSelect: true,
-        	listeners: {
-	        	rowselect: {
-		        	fn: function(sm,index,record) {
-			        	if(record && (this.boundRecord !== record)) {
-			                Ext.BindMgr.unbind(this.boundRecord);
-			                Ext.BindMgr.bind(record, ['form']);
-			                this.boundRecord = record;
-			            } else if(!record) {
-                            Ext.BindMgr.unbind(this.boundRecord);
-                            this.boundRecord = null;
-                        }
-		        	}
-	        	}
-        	}
-        }),
-        loadMask: {
-    		msg:"Loading ManageTables...",
-    		store: store
-    	},
-        bbar: new Ext.PagingToolbar({
-        	pageSize: 3,
-        	store: store
-        	}),
-       	listeners: {
-       		afteredit: function(e){
-       			e.record.commit();
-        	}
-     	},
-        tbar: [{
-            text:'Add Record'
-           ,iconCls:'icon-plus'
-           ,scope:this
-           ,handler:function() {
-               var s = grid.getStore();
-               var r = new (s.recordType)({});
-               s.add(r);
-               grid.startEditing(s.indexOf(r), 0);
-           }
-       },{
-           text:'Unselect'
-               //,scope:this
-           ,iconCls:'icon-undo'
-           ,handler:function() {
-               var sm = grid.getSelectionModel().clearSelections();
-           }
-       }]
-	});
-
-    var cmChild = new Ext.grid.ColumnModel({
-    	columns: [
-			{
-   				header: "Field Name", 
-   				dataIndex: 'firstName'
-   			},
-			{
-   				header: "Database", 
-   				dataIndex: 'lastName'
-   			}
-   		],
-   		defaults: {sortable: true}
-   	});
-
-    var gridChild = new Ext.grid.EditorGridPanel( {
-        title: 'Fields',
-        height: 100,
-        split: true,
-        maxSize: 150,
-        layout: 'fit',
-    	cm: cmChild,
-		store: storeChild,
-        region: 'south'
-	});
-
-    var form = new Ext.form.FormPanel({
-    	id: 'form',
-        title: 'Define Table',
-        region: 'west',
-        defaultType: 'textfield',
-        items: [{
-        	name:'ManageTablesName',
-			fieldLabel:'Table name',
-			grow: true,
-			growMin: 100,
-			emptyText: "TableName"
-        },{
-        	name:'ManageTablesDatabaseName',
-			fieldLabel:'Database implementation'
-        }],
-        onBind:function(record) {
-            this.boundRecord = record;
-            this.updateBound(record);
-        },
-        onUnbind:function(record) {
-            this.boundRecord = null;
-            this.updateBound();
-        },
-        afterEdit:this.updateBound,
-        afterReject:this.updateBound,
-        updateBound:function(record) {
-            this.form.loadRecord(record ? record : {data:{firstName:'', lastName:''}});
-        },
-        width: 400,
-        collapsible: true
-    });
-    
-    var myBorderPanel = new Ext.Viewport({
-	    renderTo: document.body,
-	    height: 500,
-	    layout: 'border',
-	    border:false,
-	    items: [form, gridChild, grid]
-	});
-    
-    store.load({});
-    storeChild.filter('teamID', 1);
-});
+	return page;
+})();
